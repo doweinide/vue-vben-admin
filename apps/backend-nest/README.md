@@ -1,98 +1,315 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Vben Admin Backend (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+这是 Vben Admin 项目的 NestJS 后端服务，提供完整的用户管理、认证授权等功能。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 项目结构
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ pnpm install
+```
+src/
+├── app.controller.ts          # 应用主控制器
+├── app.module.ts             # 应用主模块
+├── app.service.ts            # 应用主服务
+├── main.ts                   # 应用入口文件
+├── config/                   # 配置文件
+│   ├── app.config.ts         # 应用配置
+│   ├── database.config.ts    # 数据库配置
+│   └── index.ts              # 配置入口
+├── common/                   # 通用模块
+│   ├── dto/                  # 数据传输对象
+│   │   ├── pagination.dto.ts # 分页 DTO
+│   │   ├── response.dto.ts   # 响应 DTO
+│   │   └── index.ts
+│   ├── filters/              # 异常过滤器
+│   │   ├── http-exception.filter.ts
+│   │   └── index.ts
+│   ├── guards/               # 守卫
+│   │   ├── auth.guard.ts     # 认证守卫
+│   │   └── index.ts
+│   ├── interceptors/         # 拦截器
+│   │   ├── response.interceptor.ts # 响应拦截器
+│   │   └── index.ts
+│   ├── decorators/           # 装饰器
+│   │   ├── public.decorator.ts # 公共路由装饰器
+│   │   └── index.ts
+│   └── index.ts
+└── modules/                  # 业务模块
+    ├── user/                 # 用户模块
+    │   ├── entities/
+    │   │   └── user.entity.ts
+    │   ├── dto/
+    │   │   ├── create-user.dto.ts
+    │   │   ├── update-user.dto.ts
+    │   │   └── index.ts
+    │   ├── user.controller.ts
+    │   ├── user.service.ts
+    │   └── user.module.ts
+    ├── auth/                 # 认证模块
+    │   ├── dto/
+    │   │   ├── login.dto.ts
+    │   │   └── index.ts
+    │   ├── auth.controller.ts
+    │   ├── auth.service.ts
+    │   └── auth.module.ts
+    └── index.ts
 ```
 
-## Compile and run the project
+## 技术栈
+
+- **框架**: NestJS 11.x
+- **数据库**: MySQL + TypeORM
+- **认证**: JWT
+- **验证**: class-validator + class-transformer
+- **密码加密**: bcryptjs
+- **配置管理**: @nestjs/config
+
+## 功能特性
+
+### 🔐 认证授权
+
+- JWT 令牌认证
+- 用户登录/注册
+- 路由守卫保护
+- 公共路由装饰器
+
+### 👥 用户管理
+
+- 用户 CRUD 操作
+- 密码加密存储
+- 用户状态管理
+- 角色权限支持
+
+### 📊 数据处理
+
+- 统一响应格式
+- 分页查询支持
+- 数据验证管道
+- 异常处理过滤器
+
+### ⚙️ 系统配置
+
+- 环境变量配置
+- 数据库连接配置
+- CORS 跨域支持
+- 全局路由前缀
+
+## 快速开始
+
+### 1. 环境准备
+
+确保已安装以下软件：
+
+- Node.js (>= 18.x)
+- pnpm
+- MySQL (>= 8.0)
+
+### 2. 安装依赖
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm install
 ```
 
-## Run tests
+### 3. 环境配置
+
+复制环境变量文件并配置：
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+编辑 `.env` 文件，配置数据库连接等信息：
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```env
+# Application Configuration
+PORT=3333
+NODE_ENV=development
+API_PREFIX=api
+CORS_ORIGIN=*
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+# Database Configuration
+DB_TYPE=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=your_password
+DB_DATABASE=vben_admin
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key
+```
+
+### 4. 数据库设置
+
+创建数据库：
+
+```sql
+CREATE DATABASE vben_admin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 5. 启动应用
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# 开发模式
+pnpm start:dev
+
+# 生产模式
+pnpm build
+pnpm start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+应用将在 `http://localhost:3333/api` 启动。
 
-## Resources
+## API 文档
 
-Check out a few resources that may come in handy when working with NestJS:
+### 认证相关
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+#### 用户登录
 
-## Support
+```http
+POST /api/auth/login
+Content-Type: application/json
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+{
+  "username": "admin",
+  "password": "123456"
+}
+```
 
-## Stay in touch
+#### 获取用户信息
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```http
+GET /api/auth/profile
+Authorization: Bearer <token>
+```
 
-## License
+### 用户管理
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+#### 创建用户
+
+```http
+POST /api/users
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "email": "user@example.com",
+  "password": "123456",
+  "roles": ["user"]
+}
+```
+
+#### 获取用户列表
+
+```http
+GET /api/users?page=1&limit=10
+Authorization: Bearer <token>
+```
+
+#### 获取用户详情
+
+```http
+GET /api/users/:id
+Authorization: Bearer <token>
+```
+
+#### 更新用户
+
+```http
+PATCH /api/users/:id
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "email": "newemail@example.com",
+  "isActive": true
+}
+```
+
+#### 删除用户
+
+```http
+DELETE /api/users/:id
+Authorization: Bearer <token>
+```
+
+### 系统接口
+
+#### 健康检查
+
+```http
+GET /api/health
+```
+
+## 开发指南
+
+### 添加新模块
+
+1. 在 `src/modules/` 下创建新模块文件夹
+2. 创建实体、DTO、服务、控制器和模块文件
+3. 在 `app.module.ts` 中导入新模块
+
+### 数据库迁移
+
+```bash
+# 生成迁移文件
+pnpm typeorm migration:generate -n MigrationName
+
+# 运行迁移
+pnpm typeorm migration:run
+
+# 回滚迁移
+pnpm typeorm migration:revert
+```
+
+### 测试
+
+```bash
+# 单元测试
+pnpm test
+
+# 端到端测试
+pnpm test:e2e
+
+# 测试覆盖率
+pnpm test:cov
+```
+
+## 部署
+
+### Docker 部署
+
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN pnpm install --only=production
+
+COPY . .
+RUN pnpm build
+
+EXPOSE 3333
+
+CMD ["pnpm", "start:prod"]
+```
+
+### 环境变量
+
+生产环境需要设置以下环境变量：
+
+- `NODE_ENV=production`
+- `JWT_SECRET`: 强密码的 JWT 密钥
+- `DB_*`: 数据库连接信息
+- `PORT`: 服务端口
+
+## 贡献指南
+
+1. Fork 项目
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 打开 Pull Request
+
+## 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
