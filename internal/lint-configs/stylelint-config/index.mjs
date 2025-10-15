@@ -62,6 +62,8 @@ export default {
           'variants',
           'responsive',
           'screen',
+          'theme',
+          'layer',
           'function',
           'each',
           'use',
@@ -124,6 +126,7 @@ export default {
           'variants',
           'responsive',
           'screen',
+          'theme', // ✅ 加上这行
           'function',
           'each',
           'use',

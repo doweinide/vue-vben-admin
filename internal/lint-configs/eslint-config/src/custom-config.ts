@@ -68,6 +68,7 @@ const customConfig: Linter.Config[] = [
         },
       ],
       'perfectionist/sort-interfaces': 'off',
+      'unicorn/no-empty-file': 'off',
     },
   },
   {

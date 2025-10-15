@@ -17,6 +17,10 @@
       "path": "apps/web-naive",
     },
     {
+      "name": "web-next",
+      "path": "apps/web-next",
+    },
+    {
       "name": "@vben/docs",
       "path": "docs",
     },
