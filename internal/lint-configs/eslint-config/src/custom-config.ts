@@ -143,11 +143,16 @@ const customConfig: Linter.Config[] = [
     files: ['apps/backend-mock/**/**', 'apps/backend-nest/**/**', 'docs/**/**'],
     rules: {
       '@typescript-eslint/no-extraneous-class': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
       'n/no-extraneous-import': 'off',
       'n/prefer-global/buffer': 'off',
       'n/prefer-global/process': 'off',
       'no-console': 'off',
+      'unicorn/no-process-exit': 'off',
       'unicorn/prefer-module': 'off',
+      'unicorn/prefer-single-call': 'off',
     },
   },
   {

@@ -1,0 +1,31 @@
+/**
+ * Prisma 基础配置文件
+ *
+ * 此文件包含 Prisma 的基础配置，包括：
+ * - 客户端生成器配置
+ * - 数据源配置
+ *
+ * 这些配置是所有 Prisma 项目的基础，必须在合并后的 schema.prisma 文件中首先出现
+ */
+
+/**
+ * Prisma 客户端生成器配置
+ *
+ * 生成 TypeScript 类型安全的数据库客户端
+ * 生成的客户端将包含所有模型的 CRUD 操作方法
+ */
+generator client {
+  provider = "prisma-client-js"
+}
+
+/**
+ * 数据源配置
+ *
+ * 使用 SQLite 作为数据库提供者
+ * 数据库连接 URL 从环境变量 DATABASE_URL 中读取
+ * SQLite 适合开发和小型应用，数据存储在本地文件中
+ */
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}

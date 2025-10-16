@@ -1,31 +1,18 @@
 /**
- * Prisma 数据库模式定义文件
+ * 用户模块数据模型
  * 
- * 此文件由 merge.js 脚本自动生成，请勿手动编辑
- * 如需修改，请编辑 prisma/schemas 目录下的对应文件
- * 
- * 生成时间: 2025/10/16 14:51:15
- * 
- * 更多信息请参考: https://pris.ly/d/prisma-schema
+ * 此文件定义了用户相关的数据模型，包括：
+ * - 用户基本信息
+ * - 用户认证信息
+ * - 用户权限和状态
  */
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 
 /**
- * 数据源配置
- *
- * 使用 SQLite 作为数据库提供者
- * 数据库连接 URL 从环境变量 DATABASE_URL 中读取
- * SQLite 适合开发和小型应用，数据存储在本地文件中
+ * 用户数据模型
+ * 
+ * 定义系统中用户的基本信息和属性
+ * 包含用户认证、授权和基本资料信息
  */
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
-
 model User {
   /// 用户唯一标识符，自动递增的主键
   id        Int      @id @default(autoincrement())
