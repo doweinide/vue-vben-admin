@@ -32,10 +32,11 @@ src/
 │   │   ├── public.decorator.ts # 公共路由装饰器
 │   │   └── index.ts
 │   └── index.ts
+├── prisma/                   # Prisma 数据库服务
+│   ├── prisma.service.ts     # Prisma 服务
+│   └── prisma.module.ts      # Prisma 模块
 └── modules/                  # 业务模块
     ├── user/                 # 用户模块
-    │   ├── entities/
-    │   │   └── user.entity.ts
     │   ├── dto/
     │   │   ├── create-user.dto.ts
     │   │   ├── update-user.dto.ts
@@ -43,24 +44,28 @@ src/
     │   ├── user.controller.ts
     │   ├── user.service.ts
     │   └── user.module.ts
-    ├── auth/                 # 认证模块
-    │   ├── dto/
-    │   │   ├── login.dto.ts
-    │   │   └── index.ts
-    │   ├── auth.controller.ts
-    │   ├── auth.service.ts
-    │   └── auth.module.ts
-    └── index.ts
+    └── auth/                 # 认证模块
+        ├── dto/
+        │   ├── login.dto.ts
+        │   └── index.ts
+        ├── auth.controller.ts
+        ├── auth.service.ts
+        └── auth.module.ts
+
+prisma/
+├── schema.prisma             # Prisma 数据库模式定义
+└── migrations/               # 数据库迁移文件
 ```
 
 ## 技术栈
 
 - **框架**: NestJS 11.x
-- **数据库**: MySQL + TypeORM
+- **数据库**: SQLite + Prisma ORM
 - **认证**: JWT
 - **验证**: class-validator + class-transformer
 - **密码加密**: bcryptjs
 - **配置管理**: @nestjs/config
+- **API 文档**: Swagger/OpenAPI
 
 ## 功能特性
 
@@ -100,7 +105,6 @@ src/
 
 - Node.js (>= 18.x)
 - pnpm
-- MySQL (>= 8.0)
 
 ### 2. 安装依赖
 
@@ -110,13 +114,7 @@ pnpm install
 
 ### 3. 环境配置
 
-复制环境变量文件并配置：
-
-```bash
-cp .env.example .env
-```
-
-编辑 `.env` 文件，配置数据库连接等信息：
+创建 `.env` 文件并配置：
 
 ```env
 # Application Configuration
@@ -125,13 +123,8 @@ NODE_ENV=development
 API_PREFIX=api
 CORS_ORIGIN=*
 
-# Database Configuration
-DB_TYPE=mysql
-DB_HOST=localhost
-DB_PORT=3306
-DB_USERNAME=root
-DB_PASSWORD=your_password
-DB_DATABASE=vben_admin
+# Database Configuration (SQLite)
+DATABASE_URL="file:./dev.db"
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key
@@ -139,17 +132,24 @@ JWT_SECRET=your-super-secret-jwt-key
 
 ### 4. 数据库设置
 
-创建数据库：
+初始化 Prisma 数据库：
 
-```sql
-CREATE DATABASE vben_admin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```bash
+# 生成 Prisma 客户端
+npx prisma generate
+
+# 运行数据库迁移
+npx prisma db push
+
+# (可选) 查看数据库
+npx prisma studio
 ```
 
 ### 5. 启动应用
 
 ```bash
 # 开发模式
-pnpm start:dev
+pnpm dev
 
 # 生产模式
 pnpm build
@@ -157,6 +157,14 @@ pnpm start:prod
 ```
 
 应用将在 `http://localhost:3333/api` 启动。
+
+### 6. 访问 API 文档
+
+启动应用后，可以通过以下地址访问 Swagger API 文档：
+
+```
+http://localhost:3333/docs
+```
 
 ## API 文档
 
@@ -247,17 +255,23 @@ GET /api/health
 2. 创建实体、DTO、服务、控制器和模块文件
 3. 在 `app.module.ts` 中导入新模块
 
-### 数据库迁移
+### 数据库操作
 
 ```bash
-# 生成迁移文件
-pnpm typeorm migration:generate -n MigrationName
+# 生成 Prisma 客户端
+npx prisma generate
 
-# 运行迁移
-pnpm typeorm migration:run
+# 推送数据库模式更改
+npx prisma db push
 
-# 回滚迁移
-pnpm typeorm migration:revert
+# 创建迁移文件
+npx prisma migrate dev --name migration_name
+
+# 重置数据库
+npx prisma migrate reset
+
+# 查看数据库内容
+npx prisma studio
 ```
 
 ### 测试
@@ -277,30 +291,82 @@ pnpm test:cov
 
 ### Docker 部署
 
+1. 构建镜像：
+
+```bash
+docker build -t vben-admin-backend .
+```
+
+2. 运行容器：
+
+```bash
+docker run -d \
+  --name vben-admin-backend \
+  -p 3333:3333 \
+  -e NODE_ENV=production \
+  -e DATABASE_URL="file:./prod.db" \
+  -e JWT_SECRET=your_jwt_secret \
+  -v $(pwd)/data:/app/data \
+  vben-admin-backend
+```
+
+### Dockerfile 示例
+
 ```dockerfile
 FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN pnpm install --only=production
+# 安装 pnpm
+RUN npm install -g pnpm
 
+# 复制依赖文件
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+# 安装依赖
+RUN pnpm install --frozen-lockfile
+
+# 复制源代码
 COPY . .
+
+# 生成 Prisma 客户端
+RUN npx prisma generate
+
+# 构建应用
 RUN pnpm build
 
+# 暴露端口
 EXPOSE 3333
 
+# 启动应用
 CMD ["pnpm", "start:prod"]
 ```
 
 ### 环境变量
 
-生产环境需要设置以下环境变量：
+生产环境需要配置的环境变量：
 
-- `NODE_ENV=production`
-- `JWT_SECRET`: 强密码的 JWT 密钥
-- `DB_*`: 数据库连接信息
-- `PORT`: 服务端口
+- `NODE_ENV`: 运行环境 (production)
+- `PORT`: 服务端口 (默认 3333)
+- `API_PREFIX`: API 前缀 (默认 api)
+- `CORS_ORIGIN`: CORS 允许的源
+- `DATABASE_URL`: 数据库连接字符串 (SQLite 文件路径)
+- `JWT_SECRET`: JWT 密钥
+
+### 生产环境数据库
+
+对于生产环境，建议：
+
+1. 使用持久化存储挂载 SQLite 数据库文件
+2. 或者修改 `schema.prisma` 使用 PostgreSQL/MySQL：
+
+```prisma
+datasource db {
+  provider = "postgresql"  // 或 "mysql"
+  url      = env("DATABASE_URL")
+}
+```
 
 ## 贡献指南
 
