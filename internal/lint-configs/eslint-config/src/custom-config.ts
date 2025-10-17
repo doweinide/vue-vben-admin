@@ -153,6 +153,8 @@ const customConfig: Linter.Config[] = [
       'unicorn/no-process-exit': 'off',
       'unicorn/prefer-module': 'off',
       'unicorn/prefer-single-call': 'off',
+      // 禁用 perfectionist/sort-decorators 规则
+      'perfectionist/sort-decorators': 'off',
     },
   },
   {

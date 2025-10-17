@@ -1,4 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsOptional } from 'class-validator';
 
 import { CreateUserDto } from './create-user.dto';
@@ -20,6 +21,12 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
    *
    * @example true
    */
+  @ApiProperty({
+    description: '用户激活状态，true为激活，false为禁用',
+    example: true,
+    type: Boolean,
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;

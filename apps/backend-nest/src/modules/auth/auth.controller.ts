@@ -1,8 +1,15 @@
 import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { Public } from '../../common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto';
+import { LoginDto, LoginResponseDto, ProfileResponseDto } from './dto';
 
 /**
  * 认证控制器
@@ -12,6 +19,7 @@ import { LoginDto } from './dto';
  *
  * 路由前缀: /auth
  */
+@ApiTags('认证管理')
 @Controller('auth')
 export class AuthController {
   /**
@@ -33,8 +41,29 @@ export class AuthController {
    * GET /auth/profile
    * Authorization: Bearer <jwt_token>
    */
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '获取当前用户信息',
+    description: '获取当前登录用户的详细信息，需要提供有效的 JWT token',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '成功获取用户信息',
+    type: ProfileResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: '未授权，token 无效或已过期',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Request() req): ProfileResponseDto {
     return req.user;
   }
 
@@ -54,6 +83,19 @@ export class AuthController {
    *   "password": "123456"
    * }
    */
+  @ApiBody({
+    type: LoginDto,
+    description: '登录凭据',
+  })
+  @ApiOperation({
+    summary: '用户登录',
+    description: '验证用户凭据并返回访问令牌，用于后续 API 调用的身份验证',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '登录成功',
+    type: LoginResponseDto,
+  })
   @Post('login')
   @Public()
   login(@Body() loginDto: LoginDto) {

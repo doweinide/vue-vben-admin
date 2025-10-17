@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 /**
@@ -7,28 +8,20 @@ import { IsNotEmpty, IsString } from 'class-validator';
  * 包含用户名和密码字段的验证规则
  */
 export class LoginDto {
-  /**
-   * 用户密码
-   *
-   * 验证规则：
-   * - 不能为空
-   * - 必须是字符串类型
-   *
-   * @example "123456"
-   */
+  @ApiProperty({
+    description: '用户密码',
+    example: '123456',
+    type: String,
+  })
   @IsNotEmpty()
   @IsString()
   password: string;
 
-  /**
-   * 用户名
-   *
-   * 验证规则：
-   * - 不能为空
-   * - 必须是字符串类型
-   *
-   * @example "admin"
-   */
+  @ApiProperty({
+    description: '用户名，用于登录认证',
+    example: 'admin',
+    type: String,
+  })
   @IsNotEmpty()
   @IsString()
   username: string;

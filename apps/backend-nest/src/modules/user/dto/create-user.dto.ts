@@ -6,6 +6,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
  * 创建用户 DTO
@@ -21,6 +22,12 @@ export class CreateUserDto {
    *
    * @example "https://example.com/avatar.jpg"
    */
+  @ApiProperty({
+    description: '用户头像URL',
+    example: 'https://example.com/avatar.jpg',
+    type: String,
+    required: false,
+  })
   @IsOptional()
   @IsString()
   avatar?: string;
@@ -33,6 +40,12 @@ export class CreateUserDto {
    *
    * @example "user@example.com"
    */
+  @ApiProperty({
+    description: '用户邮箱地址，必须唯一',
+    example: 'user@example.com',
+    type: String,
+    format: 'email',
+  })
   @IsEmail()
   email: string;
 
@@ -44,6 +57,12 @@ export class CreateUserDto {
    *
    * @example "123456"
    */
+  @ApiProperty({
+    description: '用户密码，最少6位字符',
+    example: '123456',
+    type: String,
+    minLength: 6,
+  })
   @IsNotEmpty()
   @IsString()
   @MinLength(6)
@@ -57,6 +76,12 @@ export class CreateUserDto {
    *
    * @example ["user", "admin"]
    */
+  @ApiProperty({
+    description: '用户角色列表，用于权限控制',
+    example: ['user', 'admin'],
+    type: [String],
+    required: false,
+  })
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
@@ -70,6 +95,11 @@ export class CreateUserDto {
    *
    * @example "admin"
    */
+  @ApiProperty({
+    description: '用户名，必须唯一',
+    example: 'admin',
+    type: String,
+  })
   @IsNotEmpty()
   @IsString()
   username: string;

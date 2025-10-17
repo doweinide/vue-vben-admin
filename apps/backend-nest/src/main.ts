@@ -47,19 +47,63 @@ async function bootstrap() {
     credentials: true, // 允许携带认证信息
   });
 
+  // 启动 HTTP 服务器
+  const port = configService.get<number>('app.port') || 3333;
+
   // Swagger API 文档配置
   // 自动生成 API 文档，便于开发和测试
   const config = new DocumentBuilder()
     .setTitle('Vben Backend API')
-    .setDescription('The Vben Backend API description')
-    .setVersion('1.0')
-    .addBearerAuth() // 添加 Bearer Token 认证
+    .setDescription(
+      '基于 NestJS 构建的现代化后端 API 服务，提供用户管理、认证授权等核心功能',
+    )
+    .setVersion('1.0.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      name: 'JWT',
+      description: '请输入 JWT token',
+      in: 'header',
+    }) // 添加 Bearer Token 认证
+    .addTag('认证管理', '用户登录、注册、token 验证等认证相关接口')
+    .addTag('用户管理', '用户信息的增删改查、权限管理等接口')
+    .addTag('系统管理', '应用程序基础接口，包括健康检查、欢迎信息等')
+    .addServer(`http://localhost:${port}`, '本地开发环境')
+    .addServer(
+      `http://localhost:${port}/${apiPrefix}`,
+      '本地开发环境 (带API前缀)',
+    )
+    .setContact(
+      'Vben Team',
+      'https://github.com/vbenjs/vue-vben-admin',
+      'support@vben.com',
+    )
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document); // 文档访问路径：/docs
 
-  // 启动 HTTP 服务器
-  const port = configService.get<number>('app.port') || 3333;
+  const document = SwaggerModule.createDocument(app, config, {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+    deepScanRoutes: true,
+  });
+
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true, // 保持认证状态
+      tagsSorter: 'alpha', // 按字母顺序排序标签
+      operationsSorter: 'alpha', // 按字母顺序排序操作
+      docExpansion: 'none', // 默认折叠所有操作
+      filter: true, // 启用搜索过滤
+      showRequestDuration: true, // 显示请求耗时
+    },
+    customSiteTitle: 'Vben Backend API 文档',
+    customfavIcon: '/favicon.ico',
+    customCss: `
+      .swagger-ui .topbar { display: none; }
+      .swagger-ui .info .title { color: #1890ff; }
+    `,
+  }); // 文档访问路径：/docs
+
   await app.listen(port);
 
   // 输出服务启动信息（可选）
