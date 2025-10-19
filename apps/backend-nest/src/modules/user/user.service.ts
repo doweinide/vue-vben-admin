@@ -4,11 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { z } from 'zod';
 
-import { PaginationDto, PaginationResponseDto } from '../../common/dto';
+import { PaginationDto } from '../../common/dto';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  CreateUserRequestSchema,
+  UpdateUserRequestSchema,
+} from '../../schemas/user.schema';
 
 /**
  * 用户服务
@@ -38,7 +41,7 @@ export class UserService {
    * @returns 创建的用户信息（不包含密码）
    * @throws ConflictException 当用户名或邮箱已存在时抛出
    */
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: z.infer<typeof CreateUserRequestSchema>) {
     // 检查用户名是否已存在
     const existingUserByUsername = await this.prisma.user.findUnique({
       where: { username: createUserDto.username },
@@ -70,8 +73,13 @@ export class UserService {
     // 返回用户信息（不包含密码）
     const { password: _, ...result } = user;
     return {
-      ...result,
-      roles: JSON.parse(user.roles),
+      code: 200,
+      message: '用户创建成功',
+      data: {
+        ...result,
+        roles: JSON.parse(user.roles),
+        avatar: result.avatar || undefined,
+      },
     };
   }
 
@@ -111,9 +119,24 @@ export class UserService {
     const formattedUsers = users.map((user) => ({
       ...user,
       roles: JSON.parse(user.roles),
+      avatar: user.avatar || undefined,
     }));
 
-    return new PaginationResponseDto(formattedUsers, total, page, limit);
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      code: 200,
+      message: '查询成功',
+      data: {
+        data: formattedUsers,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages,
+        },
+      },
+    };
   }
 
   /**
@@ -170,8 +193,13 @@ export class UserService {
     }
 
     return {
-      ...user,
-      roles: JSON.parse(user.roles),
+      code: 200,
+      message: '查询成功',
+      data: {
+        ...user,
+        roles: JSON.parse(user.roles),
+        avatar: user.avatar || undefined,
+      },
     };
   }
 
@@ -199,7 +227,14 @@ export class UserService {
       where: { id },
     });
 
-    return { message: '用户删除成功' };
+    return {
+      code: 200,
+      message: '用户删除成功',
+      data: {
+        id,
+        message: '用户删除成功',
+      },
+    };
   }
 
   /**
@@ -217,7 +252,10 @@ export class UserService {
    * @throws NotFoundException 当用户不存在时抛出
    * @throws ConflictException 当邮箱已被其他用户使用时抛出
    */
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: number,
+    updateUserDto: z.infer<typeof UpdateUserRequestSchema>,
+  ) {
     // 检查用户是否存在
     const existingUser = await this.prisma.user.findUnique({
       where: { id },
@@ -264,8 +302,13 @@ export class UserService {
     });
 
     return {
-      ...user,
-      roles: JSON.parse(user.roles),
+      code: 200,
+      message: '用户更新成功',
+      data: {
+        ...user,
+        roles: JSON.parse(user.roles),
+        avatar: user.avatar || undefined,
+      },
     };
   }
 }

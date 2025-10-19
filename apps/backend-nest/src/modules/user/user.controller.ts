@@ -1,3 +1,8 @@
+import type {
+  CreateUserRequest,
+  UpdateUserRequest,
+} from '../../schemas/user.schema';
+
 import {
   Body,
   Controller,
@@ -8,28 +13,66 @@ import {
   Patch,
   Post,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiQuery,
-  ApiBody,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { z } from 'zod';
 
-import { PaginationDto, Public } from '../../common';
-import { 
-  CreateUserDto, 
-  UpdateUserDto,
-  UserResponseDto,
-  CreateUserResponseDto,
-  UpdateUserResponseDto,
-  DeleteUserResponseDto,
-  PaginatedUsersResponseDto,
-} from './dto';
+import { Public } from '../../common';
+import {
+  ApiDelete,
+  ApiGet,
+  ApiPatch,
+  ApiPost,
+} from '../../decorators/api.decorator';
+import { ZodValidationPipe } from '../../pipes/zod-validation.pipe';
+import {
+  BaseResponseSchema,
+  PaginationSchema,
+} from '../../schemas/base.schema';
+import {
+  CreateUserRequestSchema,
+  PaginatedUsersResponseSchema,
+  UpdateUserRequestSchema,
+  UserSchema,
+} from '../../schemas/user.schema';
 import { UserService } from './user.service';
+
+// 用户响应 Schema
+const UserResponseSchema = BaseResponseSchema.extend({
+  data: UserSchema,
+});
+
+// 创建用户响应 Schema
+const CreateUserResponseSchema = BaseResponseSchema.extend({
+  data: UserSchema,
+});
+
+// 更新用户响应 Schema
+const UpdateUserResponseSchema = BaseResponseSchema.extend({
+  data: UserSchema,
+});
+
+// 删除用户响应 Schema
+const DeleteUserResponseSchema = BaseResponseSchema.extend({
+  data: z.object({
+    id: z.number(),
+    message: z.string(),
+  }),
+});
+
+// 分页用户响应 Schema
+const PaginatedUsersApiResponseSchema = BaseResponseSchema.extend({
+  data: PaginatedUsersResponseSchema,
+});
+
+// 类型定义
+type UserResponse = z.infer<typeof UserResponseSchema>;
+type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
+type UpdateUserResponse = z.infer<typeof UpdateUserResponseSchema>;
+type DeleteUserResponse = z.infer<typeof DeleteUserResponseSchema>;
+type PaginatedUsersApiResponse = z.infer<
+  typeof PaginatedUsersApiResponseSchema
+>;
 
 /**
  * 用户控制器
@@ -39,7 +82,6 @@ import { UserService } from './user.service';
  *
  * 路由前缀: /users
  */
-@ApiTags('用户管理')
 @Controller('users')
 export class UserController {
   /**
@@ -65,30 +107,20 @@ export class UserController {
    *   "password": "123456"
    * }
    */
-  @ApiOperation({ 
-    summary: '创建用户', 
-    description: '创建新用户账户，公共接口允许用户注册' 
-  })
-  @ApiBody({ 
-    type: CreateUserDto,
-    description: '用户创建信息',
-  })
-  @ApiResponse({ 
-    status: 201, 
-    description: '用户创建成功',
-    type: CreateUserResponseDto,
-  })
-  @ApiResponse({ 
-    status: 400, 
-    description: '请求参数错误' 
-  })
-  @ApiResponse({ 
-    status: 409, 
-    description: '用户名或邮箱已存在' 
-  })
-  @Post()
   @Public()
-  create(@Body() createUserDto: CreateUserDto) {
+  @Post()
+  @ApiPost({
+    path: '/',
+    summary: '创建用户',
+    description: '创建新用户账户，公共接口允许用户注册',
+    tags: ['用户管理'],
+    bodySchema: CreateUserRequestSchema,
+    responseSchema: CreateUserResponseSchema,
+  })
+  @UsePipes(new ZodValidationPipe(CreateUserRequestSchema))
+  create(
+    @Body() createUserDto: CreateUserRequest,
+  ): Promise<CreateUserResponse> {
     return this.userService.create(createUserDto);
   }
 
@@ -104,34 +136,20 @@ export class UserController {
    * @example
    * GET /users?page=1&limit=10
    */
-  @ApiOperation({ 
-    summary: '获取用户列表', 
-    description: '分页查询用户列表，需要认证' 
-  })
-  @ApiQuery({ 
-    name: 'page', 
-    required: false, 
-    type: Number, 
-    description: '页码，默认为1' 
-  })
-  @ApiQuery({ 
-    name: 'limit', 
-    required: false, 
-    type: Number, 
-    description: '每页数量，默认为10' 
-  })
-  @ApiResponse({ 
-    status: 200, 
-    description: '获取用户列表成功',
-    type: PaginatedUsersResponseDto,
-  })
-  @ApiResponse({ 
-    status: 401, 
-    description: '未授权访问' 
-  })
-  @ApiBearerAuth()
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
+  @ApiGet({
+    path: '/',
+    summary: '获取用户列表',
+    description: '分页查询用户列表，需要认证',
+    tags: ['用户管理'],
+    querySchema: PaginationSchema,
+    responseSchema: PaginatedUsersApiResponseSchema,
+    requireAuth: true,
+  })
+  @UsePipes(new ZodValidationPipe(PaginationSchema))
+  findAll(
+    @Query() paginationDto: z.infer<typeof PaginationSchema>,
+  ): Promise<PaginatedUsersApiResponse> {
     return this.userService.findAll(paginationDto);
   }
 
@@ -146,31 +164,16 @@ export class UserController {
    * @example
    * GET /users/1
    */
-  @ApiOperation({ 
-    summary: '获取用户详情', 
-    description: '根据用户ID获取用户详细信息，需要认证' 
-  })
-  @ApiParam({ 
-    name: 'id', 
-    type: Number, 
-    description: '用户ID' 
-  })
-  @ApiResponse({ 
-    status: 200, 
-    description: '获取用户详情成功',
-    type: UserResponseDto,
-  })
-  @ApiResponse({ 
-    status: 401, 
-    description: '未授权访问' 
-  })
-  @ApiResponse({ 
-    status: 404, 
-    description: '用户不存在' 
-  })
-  @ApiBearerAuth()
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  @ApiGet({
+    path: '/:id',
+    summary: '获取用户详情',
+    description: '根据用户ID获取用户详细信息，需要认证',
+    tags: ['用户管理'],
+    responseSchema: UserResponseSchema,
+    requireAuth: true,
+  })
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserResponse> {
     return this.userService.findOne(id);
   }
 
@@ -185,35 +188,16 @@ export class UserController {
    * @example
    * DELETE /users/1
    */
-  @ApiOperation({ 
-    summary: '删除用户', 
-    description: '删除指定用户，需要认证和管理员权限' 
-  })
-  @ApiParam({ 
-    name: 'id', 
-    type: Number, 
-    description: '用户ID' 
-  })
-  @ApiResponse({ 
-    status: 200, 
-    description: '用户删除成功',
-    type: DeleteUserResponseDto,
-  })
-  @ApiResponse({ 
-    status: 401, 
-    description: '未授权访问' 
-  })
-  @ApiResponse({ 
-    status: 403, 
-    description: '权限不足' 
-  })
-  @ApiResponse({ 
-    status: 404, 
-    description: '用户不存在' 
-  })
-  @ApiBearerAuth()
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @ApiDelete({
+    path: '/:id',
+    summary: '删除用户',
+    description: '删除指定用户，需要认证和管理员权限',
+    tags: ['用户管理'],
+    responseSchema: DeleteUserResponseSchema,
+    requireAuth: true,
+  })
+  remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteUserResponse> {
     return this.userService.remove(id);
   }
 
@@ -233,46 +217,21 @@ export class UserController {
    *   "isActive": false
    * }
    */
-  @ApiOperation({ 
-    summary: '更新用户信息', 
-    description: '更新指定用户信息，需要认证' 
-  })
-  @ApiParam({ 
-    name: 'id', 
-    type: Number, 
-    description: '用户ID' 
-  })
-  @ApiBody({ 
-    type: UpdateUserDto,
-    description: '用户更新信息',
-  })
-  @ApiResponse({ 
-    status: 200, 
-    description: '用户信息更新成功',
-    type: UpdateUserResponseDto,
-  })
-  @ApiResponse({ 
-    status: 400, 
-    description: '请求参数错误' 
-  })
-  @ApiResponse({ 
-    status: 401, 
-    description: '未授权访问' 
-  })
-  @ApiResponse({ 
-    status: 403, 
-    description: '权限不足' 
-  })
-  @ApiResponse({ 
-    status: 404, 
-    description: '用户不存在' 
-  })
-  @ApiBearerAuth()
   @Patch(':id')
+  @ApiPatch({
+    path: '/:id',
+    summary: '更新用户信息',
+    description: '更新指定用户信息，需要认证',
+    tags: ['用户管理'],
+    bodySchema: UpdateUserRequestSchema,
+    responseSchema: UpdateUserResponseSchema,
+    requireAuth: true,
+  })
+  @UsePipes(new ZodValidationPipe(UpdateUserRequestSchema))
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+    @Body() updateUserDto: UpdateUserRequest,
+  ): Promise<UpdateUserResponse> {
     return this.userService.update(id, updateUserDto);
   }
 }

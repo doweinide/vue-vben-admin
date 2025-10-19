@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { AppService } from './app.service';
 import { Public } from './common';
+import { ApiGet } from './decorators/api.decorator';
 
 /**
  * 应用程序根控制器
@@ -12,7 +12,6 @@ import { Public } from './common';
  *
  * 所有接口都是公共的，不需要认证
  */
-@ApiTags('系统管理')
 @Controller()
 export class AppController {
   /**
@@ -40,21 +39,11 @@ export class AppController {
    */
   @Get('health')
   @Public()
-  @ApiOperation({
+  @ApiGet({
+    path: '/health',
     summary: '健康检查',
     description: '检查应用程序运行状态，返回服务状态、时间戳和运行时间',
-  })
-  @ApiResponse({
-    status: 200,
-    description: '健康检查成功',
-    schema: {
-      type: 'object',
-      properties: {
-        status: { type: 'string', example: 'ok', description: '服务状态' },
-        timestamp: { type: 'string', example: '2024-01-01T00:00:00.000Z', description: '当前时间戳' },
-        uptime: { type: 'number', example: 3600, description: '服务运行时间（秒）' },
-      },
-    },
+    tags: ['系统管理'],
   })
   getHealth() {
     return {
@@ -78,17 +67,11 @@ export class AppController {
    */
   @Get()
   @Public()
-  @ApiOperation({
+  @ApiGet({
+    path: '/',
     summary: '欢迎信息',
     description: '应用程序根路径接口，返回欢迎信息',
-  })
-  @ApiResponse({
-    status: 200,
-    description: '成功返回欢迎信息',
-    schema: {
-      type: 'string',
-      example: 'Hello World!',
-    },
+    tags: ['系统管理'],
   })
   getHello(): string {
     return this.appService.getHello();

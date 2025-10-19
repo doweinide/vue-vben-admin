@@ -1,9 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { z } from 'zod';
 
+import { LoginRequestSchema } from '../../schemas/auth.schema';
 import { UserService } from '../user/user.service';
-import { LoginDto } from './dto/login.dto';
 
 /**
  * 认证服务
@@ -33,7 +34,7 @@ export class AuthService {
    * @returns 登录结果，包含 access_token 和用户信息
    * @throws UnauthorizedException 当用户名密码错误或用户被禁用时抛出
    */
-  async login(loginDto: LoginDto) {
+  async login(loginDto: z.infer<typeof LoginRequestSchema>) {
     // 根据用户名查找用户
     const user = await this.userService.findByUsername(loginDto.username);
 
@@ -56,15 +57,22 @@ export class AuthService {
 
     // 返回登录结果
     return {
-      // 生成 JWT access token
-      access_token: this.jwtService.sign(payload),
-      // 返回用户基本信息（不包含密码）
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
-        roles: user.roles,
+      code: 200,
+      message: '登录成功',
+      data: {
+        // 生成 JWT access token
+        access_token: this.jwtService.sign(payload),
+        // 返回用户基本信息（不包含密码）
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          avatar: user.avatar,
+          roles: user.roles,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
       },
     };
   }
