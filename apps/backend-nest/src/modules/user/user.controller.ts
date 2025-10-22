@@ -1,3 +1,4 @@
+import type { PaginationQuery } from '../../schemas/base.schema';
 import type {
   CreateUserRequest,
   UpdateUserRequest,
@@ -9,7 +10,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -24,46 +24,21 @@ import {
   ApiPatch,
   ApiPost,
 } from '../../decorators/api.decorator';
-import { ZodValidationPipe } from '../../pipes/zod-validation.pipe';
-import {
-  BaseResponseSchema,
-  PaginationSchema,
-} from '../../schemas/base.schema';
+import { ZodBody, ZodValidationPipe } from '../../pipes/zod-validation.pipe';
+import { IdParamSchema, PaginationSchema } from '../../schemas/base.schema';
 import {
   CreateUserRequestSchema,
+  CreateUserResponseSchema,
+  DeleteUserResponseSchema,
   PaginatedUsersResponseSchema,
   UpdateUserRequestSchema,
-  UserSchema,
+  UpdateUserResponseSchema,
+  UserResponseSchema,
 } from '../../schemas/user.schema';
 import { UserService } from './user.service';
 
-// 用户响应 Schema
-const UserResponseSchema = BaseResponseSchema.extend({
-  data: UserSchema,
-});
-
-// 创建用户响应 Schema
-const CreateUserResponseSchema = BaseResponseSchema.extend({
-  data: UserSchema,
-});
-
-// 更新用户响应 Schema
-const UpdateUserResponseSchema = BaseResponseSchema.extend({
-  data: UserSchema,
-});
-
-// 删除用户响应 Schema
-const DeleteUserResponseSchema = BaseResponseSchema.extend({
-  data: z.object({
-    id: z.number(),
-    message: z.string(),
-  }),
-});
-
-// 分页用户响应 Schema
-const PaginatedUsersApiResponseSchema = BaseResponseSchema.extend({
-  data: PaginatedUsersResponseSchema,
-});
+// 分页用户响应 Schema - 直接使用工厂函数生成的完整响应结构
+const PaginatedUsersApiResponseSchema = PaginatedUsersResponseSchema;
 
 // 类型定义
 type UserResponse = z.infer<typeof UserResponseSchema>;
@@ -98,14 +73,6 @@ export class UserController {
    *
    * @param createUserDto 创建用户数据传输对象
    * @returns 创建的用户信息
-   *
-   * @example
-   * POST /users
-   * {
-   *   "username": "newuser",
-   *   "email": "user@example.com",
-   *   "password": "123456"
-   * }
    */
   @Public()
   @Post()
@@ -127,11 +94,11 @@ export class UserController {
   /**
    * 获取用户列表
    *
-   * 支持分页查询
-   * 需要认证
+   * 支持分页查询，返回用户基本信息（不包含密码）
+   * 角色信息会从 JSON 字符串反序列化为数组
    *
-   * @param paginationDto 分页查询参数
-   * @returns 分页的用户列表
+   * @param paginationQuery 分页查询参数
+   * @returns 分页的用户列表响应
    *
    * @example
    * GET /users?page=1&limit=10
@@ -140,17 +107,15 @@ export class UserController {
   @ApiGet({
     path: '/',
     summary: '获取用户列表',
-    description: '分页查询用户列表，需要认证',
+    description: '支持分页查询，返回用户基本信息（不包含密码）',
     tags: ['用户管理'],
-    querySchema: PaginationSchema,
     responseSchema: PaginatedUsersApiResponseSchema,
+    querySchema: PaginationSchema,
     requireAuth: true,
   })
   @UsePipes(new ZodValidationPipe(PaginationSchema))
-  findAll(
-    @Query() paginationDto: z.infer<typeof PaginationSchema>,
-  ): Promise<PaginatedUsersApiResponse> {
-    return this.userService.findAll(paginationDto);
+  async findAll(@Query() paginationQuery: PaginationQuery) {
+    return this.userService.findAll(paginationQuery);
   }
 
   /**
@@ -170,10 +135,11 @@ export class UserController {
     summary: '获取用户详情',
     description: '根据用户ID获取用户详细信息，需要认证',
     tags: ['用户管理'],
+    paramSchema: IdParamSchema,
     responseSchema: UserResponseSchema,
     requireAuth: true,
   })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserResponse> {
+  findOne(@Param('id') id: number): Promise<UserResponse> {
     return this.userService.findOne(id);
   }
 
@@ -194,10 +160,11 @@ export class UserController {
     summary: '删除用户',
     description: '删除指定用户，需要认证和管理员权限',
     tags: ['用户管理'],
+    paramSchema: IdParamSchema,
     responseSchema: DeleteUserResponseSchema,
     requireAuth: true,
   })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteUserResponse> {
+  remove(@Param('id') id: number): Promise<DeleteUserResponse> {
     return this.userService.remove(id);
   }
 
@@ -221,16 +188,16 @@ export class UserController {
   @ApiPatch({
     path: '/:id',
     summary: '更新用户信息',
-    description: '更新指定用户信息，需要认证',
+    description: '更新指定用户的信息，需要认证',
     tags: ['用户管理'],
+    paramSchema: IdParamSchema,
     bodySchema: UpdateUserRequestSchema,
     responseSchema: UpdateUserResponseSchema,
     requireAuth: true,
   })
-  @UsePipes(new ZodValidationPipe(UpdateUserRequestSchema))
   update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserRequest,
+    @Param('id') id: number,
+    @ZodBody(UpdateUserRequestSchema) updateUserDto: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
     return this.userService.update(id, updateUserDto);
   }

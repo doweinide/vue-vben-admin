@@ -25,7 +25,7 @@ const path = require('node:path');
  */
 const CONFIG = {
   // schemas 目录路径
-  schemasDir: path.join(__dirname, 'schemas'),
+  schemasDir: path.join(__dirname, 'schemas-feature'),
   // 输出文件路径
   outputFile: path.join(__dirname, 'schema.prisma'),
   // 文件编码

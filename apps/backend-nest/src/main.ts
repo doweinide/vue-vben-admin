@@ -1,4 +1,3 @@
-import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
@@ -23,15 +22,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // 全局验证管道配置
-  // 自动验证请求数据，过滤非法字段，转换数据类型
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // 只保留 DTO 中定义的属性
-      forbidNonWhitelisted: true, // 拒绝包含未定义属性的请求
-      transform: true, // 自动转换数据类型
-    }),
-  );
+  // 注释掉全局验证管道配置，改为在 app.module.ts 中配置 ZodValidationPipe
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true, // 只保留 DTO 中定义的属性
+  //     forbidNonWhitelisted: true, // 拒绝包含未定义属性的请求
+  //     transform: true, // 自动转换数据类型
+  //   }),
+  // );
 
   // 设置全局 API 路由前缀
   // 所有路由都会添加此前缀，例如：/api/users

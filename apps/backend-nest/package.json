@@ -18,7 +18,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:merge": "node prisma/merge.js",
     "prisma:generate": "npm run prisma:merge && npx prisma generate",
-    "prisma:migrate": "npm run prisma:merge && npx prisma migrate dev"
+    "prisma:migrate": "npm run prisma:merge && npx prisma migrate dev",
+    "prisma:seed": "ts-node prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.1.0",

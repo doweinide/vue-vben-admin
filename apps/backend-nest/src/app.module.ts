@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
@@ -40,6 +42,13 @@ import { PrismaModule } from './prisma/prisma.module';
     AuthModule, // 认证授权
   ],
   controllers: [AppController], // 根控制器
-  providers: [AppService], // 根服务
+  providers: [
+    AppService, // 根服务
+    // 全局异常过滤器
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

@@ -44,10 +44,22 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
     decorators.push(UsePipes(new ZodValidationPipe(options.bodySchema)));
   }
 
+  // 添加参数验证管道
+  if (options.paramSchema) {
+    decorators.push(UsePipes(new ZodValidationPipe(options.paramSchema)));
+  }
+
+  // 添加查询参数验证管道
+  if (options.querySchema) {
+    decorators.push(UsePipes(new ZodValidationPipe(options.querySchema)));
+  }
+
   // 构建完整的 OpenAPI 路径
   // 注意：这里我们需要在运行时获取控制器路径，但装饰器在编译时执行
   // 所以我们使用一个特殊的格式来标记需要后续处理的路径
-  const fullPath = `{controller}${options.path}`;
+  // 同时将 Express 风格的路径参数 :param 转换为 OpenAPI 风格的 {param}
+  const convertedPath = options.path.replaceAll(/:(\w+)/g, '{$1}');
+  const fullPath = `{controller}${convertedPath}`;
 
   // 注册 OpenAPI 路径
   const pathConfig: any = {

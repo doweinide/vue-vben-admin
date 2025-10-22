@@ -1,3 +1,5 @@
+import type { PaginationQuery } from '../../schemas/base.schema';
+
 import {
   ConflictException,
   Injectable,
@@ -6,8 +8,8 @@ import {
 import * as bcrypt from 'bcryptjs';
 import { z } from 'zod';
 
-import { PaginationDto } from '../../common/dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { ResponseBuilder } from '../../schemas/base.schema';
 import {
   CreateUserRequestSchema,
   UpdateUserRequestSchema,
@@ -89,11 +91,11 @@ export class UserService {
    * 支持分页查询，返回用户基本信息（不包含密码）
    * 角色信息会从 JSON 字符串反序列化为数组
    *
-   * @param paginationDto 分页查询参数
+   * @param paginationQuery 分页查询参数
    * @returns 分页的用户列表响应
    */
-  async findAll(paginationDto: PaginationDto) {
-    const { page = 1, limit = 10 } = paginationDto;
+  async findAll(paginationQuery: PaginationQuery) {
+    const { page = 1, limit = 10 } = paginationQuery;
     const skip = (page - 1) * limit;
 
     // 并行查询用户列表和总数
@@ -124,19 +126,14 @@ export class UserService {
 
     const totalPages = Math.ceil(total / limit);
 
-    return {
-      code: 200,
-      message: '查询成功',
-      data: {
-        data: formattedUsers,
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages,
-        },
-      },
-    };
+    // 使用 ResponseBuilder 创建分页响应
+    return ResponseBuilder.paginated(
+      formattedUsers,
+      total,
+      page,
+      limit,
+      '查询成功',
+    );
   }
 
   /**

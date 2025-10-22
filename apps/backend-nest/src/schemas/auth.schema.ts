@@ -16,12 +16,12 @@ export const UserSchema = z
   .object({
     id: z.number().describe('用户ID'),
     username: z.string().describe('用户名'),
-    email: z.string().email().optional().describe('邮箱'),
+    email: z.email().optional().describe('邮箱'),
     avatar: z.string().nullable().optional().describe('头像URL'),
     roles: z.string().describe('用户角色'),
     isActive: z.boolean().describe('是否激活'),
   })
-  .merge(TimestampSchema);
+  .extend(TimestampSchema.shape);
 
 // 登录响应数据 Schema
 export const LoginResponseDataSchema = z.object({

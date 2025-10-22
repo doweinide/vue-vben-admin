@@ -12,8 +12,8 @@ export const BaseResponseSchema = z.object({
 
 // 分页查询 Schema
 export const PaginationSchema = z.object({
-  page: z.number().min(1).default(1).describe('页码'),
-  limit: z.number().min(1).max(100).default(10).describe('每页数量'),
+  page: z.coerce.number().min(1).default(1).describe('页码'),
+  limit: z.coerce.number().min(1).max(100).default(10).describe('每页数量'),
 });
 
 // 分页响应 Schema 工厂函数
@@ -28,9 +28,23 @@ export const PaginatedResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
     }),
   });
 
-// 通用 ID Schema
+// 通用 ID Schema (用于请求体)
 export const IdSchema = z.object({
-  id: z.number().positive().describe('ID'),
+  id: z.coerce.number().positive().describe('ID'),
+});
+
+// 路径参数 ID Schema (用于路径参数验证)
+export const IdParamSchema = z.object({
+  id: z
+    .string()
+    .transform((val) => {
+      const num = Number.parseInt(val, 10);
+      if (Number.isNaN(num) || num <= 0) {
+        throw new Error('Invalid ID: must be a positive number');
+      }
+      return num;
+    })
+    .describe('路径参数 ID'),
 });
 
 // 时间戳 Schema

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import { ResponseDto } from '../dto';
+import { ResponseBuilder } from '../../schemas/base.schema';
 
 /**
  * HTTP 异常过滤器
@@ -37,6 +37,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // 默认错误状态和消息
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal server error';
+    let errorData: any;
 
     // 处理 HttpException 类型的异常
     if (exception instanceof HttpException) {
@@ -50,8 +51,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         typeof exceptionResponse === 'object' &&
         exceptionResponse !== null
       ) {
-        // 处理复杂的异常响应对象
-        message = (exceptionResponse as any).message || exception.message;
+        const responseObj = exceptionResponse as any;
+
+        // 处理 Zod 验证错误（包含 data.errors 的复杂异常响应）
+        if (responseObj.data && responseObj.data.errors) {
+          message = responseObj.message || '请求参数验证失败';
+          errorData = responseObj.data;
+        } else {
+          // 处理其他复杂的异常响应对象
+          message = responseObj.message || exception.message;
+          // 如果有其他数据，也保留
+          if (responseObj.data) {
+            errorData = responseObj.data;
+          }
+        }
       }
     } else if (exception instanceof Error) {
       // 处理普通 Error 类型的异常
@@ -59,7 +72,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     // 创建统一格式的错误响应
-    const errorResponse = ResponseDto.error(status, message);
+    const errorResponse = errorData
+      ? { code: status, message, data: errorData }
+      : ResponseBuilder.error(status, message);
 
     // 返回错误响应
     response.status(status).json(errorResponse);

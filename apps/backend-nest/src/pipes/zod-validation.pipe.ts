@@ -1,8 +1,11 @@
 import {
   ArgumentMetadata,
   BadRequestException,
+  Body,
   Injectable,
+  Param,
   PipeTransform,
+  Query,
 } from '@nestjs/common';
 import { z } from 'zod';
 
@@ -12,6 +15,26 @@ export class ZodValidationPipe implements PipeTransform {
 
   transform(value: any, metadata: ArgumentMetadata) {
     try {
+      // 对于路径参数，需要特殊处理
+      if (metadata.type === 'param') {
+        // 如果是路径参数，将单个值包装成对象进行验证
+        const paramName = metadata.data as string; // 参数名，如 'id'
+
+        // 调试：打印路径参数的实际值和类型
+        console.log(`[ZodValidationPipe] Param ${paramName}:`, {
+          value,
+          type: typeof value,
+          isString: typeof value === 'string',
+          isUndefined: value === undefined,
+          isNull: value === null,
+        });
+
+        const paramObject = { [paramName]: value };
+        const parsedValue = this.schema.parse(paramObject) as any;
+        // 返回解析后的单个值
+        return parsedValue[paramName];
+      }
+
       const parsedValue = this.schema.parse(value);
       return parsedValue;
     } catch (error) {
@@ -35,62 +58,30 @@ export class ZodValidationPipe implements PipeTransform {
   }
 }
 
-// 装饰器工厂 - 用于 Body 验证
-export const ZodBody = (schema: z.ZodSchema) => {
-  return (target: any, propertyKey: string, parameterIndex: number) => {
-    // 存储 schema 元数据，用于 OpenAPI 文档生成
-    Reflect.defineMetadata('zod:body-schema', schema, target, propertyKey);
-  };
-};
+export const ZodBody = (schema: z.ZodSchema) =>
+  Body(new ZodValidationPipe(schema));
 
-// 装饰器工厂 - 用于 Query 验证
-export const ZodQuery = (schema: z.ZodSchema) => {
-  return (target: any, propertyKey: string, parameterIndex: number) => {
-    // 存储 schema 元数据，用于 OpenAPI 文档生成
-    Reflect.defineMetadata('zod:query-schema', schema, target, propertyKey);
-  };
-};
+export const ZodQuery = (schema: z.ZodSchema) =>
+  Query(new ZodValidationPipe(schema));
 
-// 装饰器工厂 - 用于 Param 验证
 export const ZodParam = (schema: z.ZodSchema) => {
-  return (target: any, propertyKey: string, parameterIndex: number) => {
-    // 存储 schema 元数据，用于 OpenAPI 文档生成
-    Reflect.defineMetadata('zod:param-schema', schema, target, propertyKey);
+  return (
+    target: any,
+    propertyKey: string | symbol | undefined,
+    parameterIndex: number,
+  ) => {
+    // 调试：打印原生参数数据
+    console.log('[ZodParam] Decorator called:', {
+      target: target.constructor.name,
+      propertyKey,
+      parameterIndex,
+      schema: schema._def,
+    });
+
+    return Param(new ZodValidationPipe(schema))(
+      target,
+      propertyKey,
+      parameterIndex,
+    );
   };
 };
-
-// 方法装饰器 - 用于验证请求体
-export function ValidateBody(schema: z.ZodSchema) {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    // 存储 schema 元数据用于文档生成
-    Reflect.defineMetadata('zod:body-schema', schema, target, propertyKey);
-  };
-}
-
-// 方法装饰器 - 用于验证查询参数
-export function ValidateQuery(schema: z.ZodSchema) {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    // 存储 schema 元数据用于文档生成
-    Reflect.defineMetadata('zod:query-schema', schema, target, propertyKey);
-  };
-}
-
-// 方法装饰器 - 用于验证路径参数
-export function ValidateParam(schema: z.ZodSchema) {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    // 存储 schema 元数据用于文档生成
-    Reflect.defineMetadata('zod:param-schema', schema, target, propertyKey);
-  };
-}
