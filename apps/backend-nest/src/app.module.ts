@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,7 +9,9 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { ZodValidationPipe } from './pipes/zod-validation.pipe';
 import { PrismaModule } from './prisma/prisma.module';
+import { TestValidationController } from './test-validation.controller';
 
 /**
  * 应用程序根模块
@@ -41,13 +43,18 @@ import { PrismaModule } from './prisma/prisma.module';
     UserModule, // 用户管理
     AuthModule, // 认证授权
   ],
-  controllers: [AppController], // 根控制器
+  controllers: [AppController, TestValidationController], // 根控制器
   providers: [
     AppService, // 根服务
     // 全局异常过滤器
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    // 全局 Zod 验证管道
+    {
+      provide: APP_PIPE,
+      useClass: ZodValidationPipe,
     },
   ],
 })

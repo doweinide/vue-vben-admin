@@ -1,8 +1,7 @@
-import { applyDecorators, UsePipes } from '@nestjs/common';
+import { applyDecorators, SetMetadata } from '@nestjs/common';
 import { z } from 'zod';
 
 import { openAPIConfig } from '../config/openapi.config';
-import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
 
 /**
  * API 端点装饰器选项
@@ -39,19 +38,21 @@ export interface ApiEndpointOptions {
 export function ApiEndpoint(options: ApiEndpointOptions) {
   const decorators: any[] = [];
 
-  // 添加验证管道
+  // 存储 schema 信息到元数据，供拦截器使用
+  const schemas: any = {};
   if (options.bodySchema) {
-    decorators.push(UsePipes(new ZodValidationPipe(options.bodySchema)));
+    schemas.bodySchema = options.bodySchema;
   }
-
-  // 添加参数验证管道
   if (options.paramSchema) {
-    decorators.push(UsePipes(new ZodValidationPipe(options.paramSchema)));
+    schemas.paramSchema = options.paramSchema;
+  }
+  if (options.querySchema) {
+    schemas.querySchema = options.querySchema;
   }
 
-  // 添加查询参数验证管道
-  if (options.querySchema) {
-    decorators.push(UsePipes(new ZodValidationPipe(options.querySchema)));
+  // 如果有任何 schema，添加元数据
+  if (Object.keys(schemas).length > 0) {
+    decorators.push(SetMetadata('api:zodSchemas', schemas));
   }
 
   // 构建完整的 OpenAPI 路径

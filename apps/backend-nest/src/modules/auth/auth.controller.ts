@@ -1,11 +1,10 @@
 import type { LoginRequest, LoginResponse } from '../../schemas/auth.schema';
 
-import { Controller, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request } from '@nestjs/common';
 import { z } from 'zod';
 
 import { Public } from '../../common';
 import { ApiGet, ApiPost } from '../../decorators/api.decorator';
-import { ZodBody } from '../../pipes/zod-validation.pipe';
 import {
   LoginRequestSchema,
   LoginResponseSchema,
@@ -93,9 +92,7 @@ export class AuthController {
     bodySchema: LoginRequestSchema,
     responseSchema: LoginResponseSchema,
   })
-  async login(
-    @ZodBody(LoginRequestSchema) loginDto: LoginRequest,
-  ): Promise<LoginResponse> {
+  async login(@Body() loginDto: LoginRequest): Promise<LoginResponse> {
     return this.authService.login(loginDto);
   }
 }

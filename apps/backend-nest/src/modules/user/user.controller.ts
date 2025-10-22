@@ -13,7 +13,6 @@ import {
   Patch,
   Post,
   Query,
-  UsePipes,
 } from '@nestjs/common';
 import { z } from 'zod';
 
@@ -24,7 +23,6 @@ import {
   ApiPatch,
   ApiPost,
 } from '../../decorators/api.decorator';
-import { ZodBody, ZodValidationPipe } from '../../pipes/zod-validation.pipe';
 import { IdParamSchema, PaginationSchema } from '../../schemas/base.schema';
 import {
   CreateUserRequestSchema,
@@ -84,7 +82,6 @@ export class UserController {
     bodySchema: CreateUserRequestSchema,
     responseSchema: CreateUserResponseSchema,
   })
-  @UsePipes(new ZodValidationPipe(CreateUserRequestSchema))
   create(
     @Body() createUserDto: CreateUserRequest,
   ): Promise<CreateUserResponse> {
@@ -113,7 +110,6 @@ export class UserController {
     querySchema: PaginationSchema,
     requireAuth: true,
   })
-  @UsePipes(new ZodValidationPipe(PaginationSchema))
   async findAll(@Query() paginationQuery: PaginationQuery) {
     return this.userService.findAll(paginationQuery);
   }
@@ -197,7 +193,7 @@ export class UserController {
   })
   update(
     @Param('id') id: number,
-    @ZodBody(UpdateUserRequestSchema) updateUserDto: UpdateUserRequest,
+    @Body() updateUserDto: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
     return this.userService.update(id, updateUserDto);
   }
