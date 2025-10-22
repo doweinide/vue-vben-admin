@@ -1,7 +1,14 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client/edge';
+import { withAccelerate } from '@prisma/extension-accelerate';
 import * as bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient();
+// 手动设置环境变量（如果需要的话）
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL =
+    'prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19wRjZTcVViQ1FjczV0aXJwZWtKWVIiLCJhcGlfa2V5IjoiMDFLODVLWjNNRkY1SlZKMjBHNEI4NkRYRzEiLCJ0ZW5hbnRfaWQiOiJkNzI4ZGEzZWZmZGFkMWZmMjVkNjVlNjlkYjJmZWNhYzg5ZDU2MzE5NjQ2MzJjNmJiNmFkZmFhM2QyNjBlMDIxIiwiaW50ZXJuYWxfc2VjcmV0IjoiNjk0YWRiMWQtMTQ5Ny00N2I3LThlMmItOGViZDFhODI0NjYxIn0.P3xIrurWdXJT93jQZGzOBglyXeCItgIPLRUKiTDlI-Q';
+}
+
+const prisma = new PrismaClient().$extends(withAccelerate());
 
 async function main() {
   console.log('开始种子数据...');
