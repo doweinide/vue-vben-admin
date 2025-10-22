@@ -21,11 +21,11 @@ generator client {
 /**
  * 数据源配置
  *
- * 使用 SQLite 作为数据库提供者
+ * 使用 PostgreSQL 作为数据库提供者，支持 Prisma Accelerate
  * 数据库连接 URL 从环境变量 DATABASE_URL 中读取
- * SQLite 适合开发和小型应用，数据存储在本地文件中
+ * 支持远端数据库连接和连接池优化
  */
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
