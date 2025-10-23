@@ -6,16 +6,16 @@ import { z } from 'zod';
 import { Public } from '../../common';
 import { ApiGet, ApiPost } from '../../decorators/api.decorator';
 import {
+  AuthUserSchema,
   LoginRequestSchema,
   LoginResponseSchema,
-  UserSchema,
 } from '../../schemas/auth.schema';
 import { BaseResponseSchema } from '../../schemas/base.schema';
 import { AuthService } from './auth.service';
 
 // 用户资料响应 Schema
 const ProfileResponseSchema = BaseResponseSchema.extend({
-  data: UserSchema,
+  data: AuthUserSchema,
 });
 
 type ProfileResponse = z.infer<typeof ProfileResponseSchema>;

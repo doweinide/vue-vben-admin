@@ -44,7 +44,7 @@ export class AuthService {
     }
 
     // 检查用户账户状态
-    if (!user.isActive) {
+    if (user.status !== 1) {
       throw new UnauthorizedException('用户已被禁用');
     }
 
@@ -52,7 +52,7 @@ export class AuthService {
     const payload = {
       sub: user.id, // 用户 ID（标准 JWT 字段）
       username: user.username,
-      roles: user.roles, // 用户角色信息
+      userRoles: user.userRoles, // 用户角色信息
     };
 
     // 返回登录结果
@@ -67,11 +67,13 @@ export class AuthService {
           id: user.id,
           username: user.username,
           email: user.email,
+          name: user.name,
           avatar: user.avatar,
-          roles: user.roles,
-          isActive: user.isActive,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
+          deptId: user.deptId,
+          status: user.status,
+          userRoles: user.userRoles,
+          createTime: user.createdAt,
+          updateTime: user.updatedAt,
         },
       },
     };
@@ -86,7 +88,7 @@ export class AuthService {
    * @param userId 用户 ID
    * @returns 用户信息或 null
    */
-  async validateUser(userId: number) {
+  async validateUser(userId: string) {
     return this.userService.findOne(userId);
   }
 }

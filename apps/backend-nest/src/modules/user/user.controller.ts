@@ -135,7 +135,7 @@ export class UserController {
     responseSchema: UserResponseSchema,
     requireAuth: true,
   })
-  findOne(@Param('id') id: number): Promise<UserResponse> {
+  findOne(@Param('id') id: string): Promise<UserResponse> {
     return this.userService.findOne(id);
   }
 
@@ -160,7 +160,7 @@ export class UserController {
     responseSchema: DeleteUserResponseSchema,
     requireAuth: true,
   })
-  remove(@Param('id') id: number): Promise<DeleteUserResponse> {
+  remove(@Param('id') id: string): Promise<DeleteUserResponse> {
     return this.userService.remove(id);
   }
 
@@ -192,7 +192,7 @@ export class UserController {
     requireAuth: true,
   })
   update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
     return this.userService.update(id, updateUserDto);

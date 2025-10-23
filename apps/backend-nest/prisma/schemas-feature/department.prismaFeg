@@ -1,0 +1,48 @@
+/**
+ * 部门管理模块数据模型
+ *
+ * 支持树形结构的部门管理，包含：
+ * - 部门基础信息
+ * - 父子级关系
+ * - 状态管理
+ * - 时间戳记录
+ */
+
+model Department {
+  /// 部门唯一标识
+  id String @id @default(cuid())
+  
+  /// 部门名称
+  name String @db.VarChar(100)
+  
+  /// 父级部门ID，支持树形结构
+  pid String?
+  
+  /// 部门状态：0-禁用，1-启用
+  status Int @default(1) @db.SmallInt
+  
+  /// 备注信息
+  remark String? @db.Text
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  /// 更新时间
+  updateTime DateTime @updatedAt @map("update_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 父级部门
+  parent Department? @relation("DepartmentHierarchy", fields: [pid], references: [id], onDelete: Cascade)
+  
+  /// 子级部门列表
+  children Department[] @relation("DepartmentHierarchy")
+  
+  /// 部门下的用户
+  users User[]
+  
+  // 索引定义
+  @@index([pid], map: "idx_departments_pid")
+  @@index([status], map: "idx_departments_status")
+  @@index([createTime(sort: Desc)], map: "idx_departments_create_time")
+  @@map("departments")
+}

@@ -36,9 +36,29 @@ export class PrismaService implements OnModuleInit {
     return this.client.$transaction;
   }
 
+  get department() {
+    return this.client.department;
+  }
+
+  get menu() {
+    return this.client.menu;
+  }
+
+  get role() {
+    return this.client.role;
+  }
+
+  get rolePermission() {
+    return this.client.rolePermission;
+  }
+
   // 代理方法，让服务可以直接调用 Prisma 客户端的方法
   get user() {
     return this.client.user;
+  }
+
+  get userRole() {
+    return this.client.userRole;
   }
 
   constructor() {

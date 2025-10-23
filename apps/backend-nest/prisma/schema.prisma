@@ -4,7 +4,7 @@
  * 此文件由 merge.js 脚本自动生成，请勿手动编辑
  * 如需修改，请编辑 prisma/schemas 目录下的对应文件
  * 
- * 生成时间: 2025/10/22 17:49:11
+ * 生成时间: 2025/10/23 14:25:27
  * 
  * 更多信息请参考: https://pris.ly/d/prisma-schema
  */
@@ -26,38 +26,243 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Department {
+  /// 部门唯一标识
+  id String @id @default(cuid())
+  
+  /// 部门名称
+  name String @db.VarChar(100)
+  
+  /// 父级部门ID，支持树形结构
+  pid String?
+  
+  /// 部门状态：0-禁用，1-启用
+  status Int @default(1) @db.SmallInt
+  
+  /// 备注信息
+  remark String? @db.Text
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  /// 更新时间
+  updateTime DateTime @updatedAt @map("update_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 父级部门
+  parent Department? @relation("DepartmentHierarchy", fields: [pid], references: [id], onDelete: Cascade)
+  
+  /// 子级部门列表
+  children Department[] @relation("DepartmentHierarchy")
+  
+  /// 部门下的用户
+  users User[]
+  
+  // 索引定义
+  @@index([pid], map: "idx_departments_pid")
+  @@index([status], map: "idx_departments_status")
+  @@index([createTime(sort: Desc)], map: "idx_departments_create_time")
+  @@map("departments")
+}
+
+model Menu {
+  /// 菜单唯一标识
+  id String @id @default(cuid())
+  
+  /// 菜单名称（唯一）
+  name String @unique @db.VarChar(100)
+  
+  /// 路由路径（唯一，可为空）
+  path String? @unique @db.VarChar(200)
+  
+  /// 组件路径
+  component String? @db.VarChar(200)
+  
+  /// 菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链
+  type String @db.VarChar(20)
+  
+  /// 权限标识码
+  authCode String? @map("auth_code") @db.VarChar(100)
+  
+  /// 父级菜单ID，支持树形结构
+  pid String?
+  
+  /// 菜单状态：0-禁用，1-启用
+  status Int @default(1) @db.SmallInt
+  
+  /// 菜单元数据（JSON格式存储图标、标题等信息）
+  meta Json? @db.JsonB
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  /// 更新时间
+  updateTime DateTime @updatedAt @map("update_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 父级菜单
+  parent Menu? @relation("MenuHierarchy", fields: [pid], references: [id], onDelete: Cascade)
+  
+  /// 子级菜单列表
+  children Menu[] @relation("MenuHierarchy")
+  
+  /// 角色权限关联
+  rolePermissions RolePermission[]
+  
+  // 索引定义
+  @@index([pid], map: "idx_menus_pid")
+  @@index([type], map: "idx_menus_type")
+  @@index([status], map: "idx_menus_status")
+  @@index([authCode], map: "idx_menus_auth_code")
+  @@index([createTime(sort: Desc)], map: "idx_menus_create_time")
+  @@map("menus")
+}
+
+model Role {
+  /// 角色唯一标识
+  id String @id @default(cuid())
+  
+  /// 角色名称（唯一）
+  name String @unique @db.VarChar(100)
+  
+  /// 角色状态：0-禁用，1-启用
+  status Int @default(1) @db.SmallInt
+  
+  /// 备注信息
+  remark String? @db.Text
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  /// 更新时间
+  updateTime DateTime @updatedAt @map("update_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 角色下的用户（多对多关联）
+  userRoles UserRole[]
+  
+  /// 角色权限关联
+  rolePermissions RolePermission[]
+  
+  // 索引定义
+  @@index([status], map: "idx_roles_status")
+  @@index([createTime(sort: Desc)], map: "idx_roles_create_time")
+  @@map("roles")
+}
+
+
+/**
+ * 角色权限关联表
+ *
+ * 多对多关系：角色 <-> 菜单权限
+ */
+model RolePermission {
+  /// 关联记录唯一标识
+  id String @id @default(cuid())
+  
+  /// 角色ID
+  roleId String @map("role_id")
+  
+  /// 菜单ID
+  menuId String @map("menu_id")
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 关联的角色
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  /// 关联的菜单
+  menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  
+  // 复合唯一约束：同一角色不能重复分配同一菜单权限
+  @@unique([roleId, menuId], map: "uk_role_menu")
+  @@index([roleId], map: "idx_role_permissions_role_id")
+  @@index([menuId], map: "idx_role_permissions_menu_id")
+  @@map("role_permissions")
+}
+
 model User {
-  /// 用户唯一标识符，自动递增的主键
-  id        Int      @id @default(autoincrement())
+  /// 用户唯一标识符，使用 CUID 作为主键
+  id        String   @id @default(cuid())
   
   /// 用户名，必须唯一，用于登录认证
-  username  String   @unique
+  username  String   @unique @db.VarChar(50)
   
   /// 用户邮箱地址，必须唯一，可用于找回密码等功能
-  email     String   @unique
+  email     String   @unique @db.VarChar(100)
   
   /// 用户密码，存储加密后的密码哈希值
-  password  String
+  password  String   @db.VarChar(255)
+  
+  /// 用户真实姓名
+  name      String?  @db.VarChar(50)
   
   /// 用户头像 URL，可选字段，用于显示用户头像
-  avatar    String?
+  avatar    String?  @db.VarChar(500)
   
-  /// 用户账户状态，默认为激活状态
-  /// true: 账户激活，可正常使用
-  /// false: 账户禁用，无法登录
-  isActive  Boolean  @default(true)
+  /// 所属部门ID
+  deptId    String?  @map("dept_id")
   
-  /// 用户角色信息，以 JSON 字符串形式存储角色数组
-  /// 例如: "user", "admin", "moderator" 等
-  /// 默认为普通用户角色
-  roles     String   @default("user")
+  /// 用户账户状态：0-禁用，1-启用
+  status    Int      @default(1) @db.SmallInt
   
   /// 用户创建时间，自动设置为当前时间
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   
   /// 用户信息最后更新时间，每次更新时自动更新
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  // 关系定义
+  /// 所属部门
+  department Department? @relation(fields: [deptId], references: [id], onDelete: SetNull)
+  
+  /// 用户角色关联（多对多）
+  userRoles  UserRole[]
+
+  // 索引定义
+  @@index([deptId], map: "idx_users_dept_id")
+  @@index([status], map: "idx_users_status")
+  @@index([createdAt(sort: Desc)], map: "idx_users_created_at")
   /// 映射到数据库表名 "users"
   @@map("users")
+}
+
+
+/**
+ * 用户角色关联表
+ *
+ * 多对多关系：用户 <-> 角色
+ * 支持一个用户拥有多个角色，一个角色可以分配给多个用户
+ */
+model UserRole {
+  /// 关联记录唯一标识
+  id String @id @default(cuid())
+  
+  /// 用户ID
+  userId String @map("user_id")
+  
+  /// 角色ID
+  roleId String @map("role_id")
+  
+  /// 分配时间
+  assignedAt DateTime @default(now()) @map("assigned_at") @db.Timestamptz(6)
+  
+  /// 分配者ID（可选，记录是谁分配的角色）
+  assignedBy String? @map("assigned_by")
+  
+  // 关系定义
+  /// 关联的用户
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  /// 关联的角色
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  // 复合唯一约束：同一用户不能重复分配同一角色
+  @@unique([userId, roleId], map: "uk_user_role")
+  @@index([userId], map: "idx_user_roles_user_id")
+  @@index([roleId], map: "idx_user_roles_role_id")
+  @@index([assignedAt(sort: Desc)], map: "idx_user_roles_assigned_at")
+  @@map("user_roles")
 }

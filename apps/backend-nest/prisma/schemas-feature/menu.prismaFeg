@@ -1,0 +1,62 @@
+/**
+ * 菜单管理模块数据模型
+ *
+ * 支持树形结构的菜单权限管理，包含：
+ * - 菜单基础信息
+ * - 路由配置
+ * - 权限控制
+ * - 元数据配置
+ */
+
+model Menu {
+  /// 菜单唯一标识
+  id String @id @default(cuid())
+  
+  /// 菜单名称（唯一）
+  name String @unique @db.VarChar(100)
+  
+  /// 路由路径（唯一，可为空）
+  path String? @unique @db.VarChar(200)
+  
+  /// 组件路径
+  component String? @db.VarChar(200)
+  
+  /// 菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链
+  type String @db.VarChar(20)
+  
+  /// 权限标识码
+  authCode String? @map("auth_code") @db.VarChar(100)
+  
+  /// 父级菜单ID，支持树形结构
+  pid String?
+  
+  /// 菜单状态：0-禁用，1-启用
+  status Int @default(1) @db.SmallInt
+  
+  /// 菜单元数据（JSON格式存储图标、标题等信息）
+  meta Json? @db.JsonB
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  /// 更新时间
+  updateTime DateTime @updatedAt @map("update_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 父级菜单
+  parent Menu? @relation("MenuHierarchy", fields: [pid], references: [id], onDelete: Cascade)
+  
+  /// 子级菜单列表
+  children Menu[] @relation("MenuHierarchy")
+  
+  /// 角色权限关联
+  rolePermissions RolePermission[]
+  
+  // 索引定义
+  @@index([pid], map: "idx_menus_pid")
+  @@index([type], map: "idx_menus_type")
+  @@index([status], map: "idx_menus_status")
+  @@index([authCode], map: "idx_menus_auth_code")
+  @@index([createTime(sort: Desc)], map: "idx_menus_create_time")
+  @@map("menus")
+}

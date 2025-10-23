@@ -37,7 +37,7 @@ export class UserService {
    *
    * 创建新用户前会检查用户名和邮箱的唯一性
    * 密码会使用 bcrypt 进行加密存储
-   * 角色信息会序列化为 JSON 字符串存储
+   * 支持部门和角色关联
    *
    * @param createUserDto 创建用户的数据传输对象
    * @returns 创建的用户信息（不包含密码）
@@ -60,28 +60,60 @@ export class UserService {
       throw new ConflictException('邮箱已存在');
     }
 
+    // 验证部门是否存在
+    if (createUserDto.deptId) {
+      const department = await this.prisma.department.findUnique({
+        where: { id: createUserDto.deptId },
+      });
+      if (!department) {
+        throw new NotFoundException('指定的部门不存在');
+      }
+    }
+
     // 加密密码
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
+    // 准备创建数据
+    const createData: any = {
+      username: createUserDto.username,
+      name: createUserDto.name,
+      email: createUserDto.email,
+      password: hashedPassword,
+      avatar: createUserDto.avatar,
+      status: createUserDto.status ?? 1,
+      deptId: createUserDto.deptId,
+    };
+
     // 创建用户
     const user = await this.prisma.user.create({
-      data: {
-        ...createUserDto,
-        password: hashedPassword,
-        roles: JSON.stringify(createUserDto.roles || ['user']),
+      data: createData,
+      include: {
+        department: {
+          select: {
+            id: true,
+            name: true,
+            pid: true,
+          },
+        },
+        userRoles: {
+          include: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+                status: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    // 返回用户信息（不包含密码）
-    const { password: _, ...result } = user;
+    // 返回用户信息（包含密码，用于创建响应）
     return {
       code: 200,
       message: '用户创建成功',
-      data: {
-        ...result,
-        roles: JSON.parse(user.roles),
-        avatar: result.avatar || undefined,
-      },
+      data: user,
     };
   }
 
@@ -89,7 +121,7 @@ export class UserService {
    * 获取用户列表
    *
    * 支持分页查询，返回用户基本信息（不包含密码）
-   * 角色信息会从 JSON 字符串反序列化为数组
+   * 包含部门和角色关联信息
    *
    * @param paginationQuery 分页查询参数
    * @returns 分页的用户列表响应
@@ -106,23 +138,41 @@ export class UserService {
         select: {
           id: true,
           username: true,
+          name: true,
           email: true,
           avatar: true,
-          isActive: true,
-          roles: true,
+          status: true,
+          deptId: true,
           createdAt: true,
           updatedAt: true,
+          department: {
+            select: {
+              id: true,
+              name: true,
+              pid: true,
+            },
+          },
+          userRoles: {
+            include: {
+              role: {
+                select: {
+                  id: true,
+                  name: true,
+                  status: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
         },
       }),
       this.prisma.user.count(),
     ]);
 
-    // 格式化用户数据，反序列化角色信息
-    const formattedUsers = users.map((user) => ({
-      ...user,
-      roles: JSON.parse(user.roles),
-      avatar: user.avatar || undefined,
-    }));
+    // 格式化用户数据
+    const formattedUsers = users;
 
     const totalPages = Math.ceil(total / limit);
 
@@ -148,14 +198,23 @@ export class UserService {
   async findByUsername(username: string) {
     const user = await this.prisma.user.findUnique({
       where: { username },
+      include: {
+        userRoles: {
+          include: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+                status: true,
+                remark: true,
+                createTime: true,
+                updateTime: true,
+              },
+            },
+          },
+        },
+      },
     });
-
-    if (user) {
-      return {
-        ...user,
-        roles: JSON.parse(user.roles),
-      };
-    }
 
     return user;
   }
@@ -164,24 +223,41 @@ export class UserService {
    * 根据 ID 查找用户
    *
    * 返回用户详细信息（不包含密码）
-   * 角色信息会从 JSON 字符串反序列化为数组
+   * 包含部门和角色关联信息
    *
    * @param id 用户 ID
    * @returns 用户详细信息
    * @throws NotFoundException 当用户不存在时抛出
    */
-  async findOne(id: number) {
+  async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        avatar: true,
-        isActive: true,
-        roles: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
+        department: {
+          select: {
+            id: true,
+            name: true,
+            pid: true,
+            status: true,
+            remark: true,
+            createTime: true,
+            updateTime: true,
+          },
+        },
+        userRoles: {
+          include: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+                status: true,
+                remark: true,
+                createTime: true,
+                updateTime: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -192,11 +268,7 @@ export class UserService {
     return {
       code: 200,
       message: '查询成功',
-      data: {
-        ...user,
-        roles: JSON.parse(user.roles),
-        avatar: user.avatar || undefined,
-      },
+      data: user,
     };
   }
 
@@ -210,7 +282,7 @@ export class UserService {
    * @returns 删除成功的消息
    * @throws NotFoundException 当用户不存在时抛出
    */
-  async remove(id: number) {
+  async remove(id: string) {
     // 检查用户是否存在
     const existingUser = await this.prisma.user.findUnique({
       where: { id },
@@ -241,7 +313,7 @@ export class UserService {
    * 更新前会检查用户是否存在
    * 如果更新邮箱，会检查邮箱唯一性
    * 如果更新密码，会使用 bcrypt 加密
-   * 如果更新角色，会序列化为 JSON 字符串
+   * 支持更新部门和角色关联
    *
    * @param id 用户 ID
    * @param updateUserDto 更新用户的数据传输对象
@@ -250,7 +322,7 @@ export class UserService {
    * @throws ConflictException 当邮箱已被其他用户使用时抛出
    */
   async update(
-    id: number,
+    id: string,
     updateUserDto: z.infer<typeof UpdateUserRequestSchema>,
   ) {
     // 检查用户是否存在
@@ -271,41 +343,66 @@ export class UserService {
       }
     }
 
-    // 如果更新密码，需要加密
-    const updateData: any = { ...updateUserDto };
-    if (updateUserDto.password) {
-      updateData.password = await bcrypt.hash(updateUserDto.password, 10);
+    // 验证部门是否存在
+    if (updateUserDto.deptId) {
+      const department = await this.prisma.department.findUnique({
+        where: { id: updateUserDto.deptId },
+      });
+      if (!department) {
+        throw new NotFoundException('指定的部门不存在');
+      }
     }
 
-    // 如果更新角色，需要序列化
-    if (updateUserDto.roles) {
-      updateData.roles = JSON.stringify(updateUserDto.roles);
+    // 准备更新数据
+    const updateData: any = {};
+
+    if (updateUserDto.username !== undefined)
+      updateData.username = updateUserDto.username;
+    if (updateUserDto.name !== undefined) updateData.name = updateUserDto.name;
+    if (updateUserDto.email !== undefined)
+      updateData.email = updateUserDto.email;
+    if (updateUserDto.avatar !== undefined)
+      updateData.avatar = updateUserDto.avatar;
+    if (updateUserDto.status !== undefined)
+      updateData.status = updateUserDto.status;
+    if (updateUserDto.deptId !== undefined)
+      updateData.deptId = updateUserDto.deptId;
+
+    // 如果更新密码，需要加密
+    if (updateUserDto.password) {
+      updateData.password = await bcrypt.hash(updateUserDto.password, 10);
     }
 
     // 更新用户
     const user = await this.prisma.user.update({
       where: { id },
       data: updateData,
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        avatar: true,
-        isActive: true,
-        roles: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
+        department: {
+          select: {
+            id: true,
+            name: true,
+            pid: true,
+          },
+        },
+        userRoles: {
+          include: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+                status: true,
+              },
+            },
+          },
+        },
       },
     });
 
     return {
       code: 200,
       message: '用户更新成功',
-      data: {
-        ...user,
-        roles: JSON.parse(user.roles),
-        avatar: user.avatar || undefined,
-      },
+      data: user,
     };
   }
 }

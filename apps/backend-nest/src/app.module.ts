@@ -8,6 +8,9 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
+import { DepartmentModule } from './modules/department/department.module';
+import { MenuModule } from './modules/menu/menu.module';
+import { RoleModule } from './modules/role/role.module';
 import { UserModule } from './modules/user/user.module';
 import { ZodValidationPipe } from './pipes/zod-validation.pipe';
 import { PrismaModule } from './prisma/prisma.module';
@@ -24,6 +27,9 @@ import { TestValidationController } from './test-validation.controller';
  * - PrismaModule: 数据库访问服务
  * - UserModule: 用户管理模块
  * - AuthModule: 认证授权模块
+ * - DepartmentModule: 部门管理模块
+ * - MenuModule: 菜单管理模块
+ * - RoleModule: 角色管理模块
  * - AppController: 根控制器
  * - AppService: 根服务
  */
@@ -42,6 +48,9 @@ import { TestValidationController } from './test-validation.controller';
     // 业务功能模块
     UserModule, // 用户管理
     AuthModule, // 认证授权
+    DepartmentModule, // 部门管理
+    MenuModule, // 菜单管理
+    RoleModule, // 角色管理
   ],
   controllers: [AppController, TestValidationController], // 根控制器
   providers: [

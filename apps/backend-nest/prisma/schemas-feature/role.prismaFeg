@@ -1,0 +1,72 @@
+/**
+ * 角色权限管理模块数据模型
+ *
+ * 包含角色管理和权限分配功能：
+ * - 角色基础信息
+ * - 权限关联关系
+ * - 状态管理
+ */
+
+model Role {
+  /// 角色唯一标识
+  id String @id @default(cuid())
+  
+  /// 角色名称（唯一）
+  name String @unique @db.VarChar(100)
+  
+  /// 角色状态：0-禁用，1-启用
+  status Int @default(1) @db.SmallInt
+  
+  /// 备注信息
+  remark String? @db.Text
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  /// 更新时间
+  updateTime DateTime @updatedAt @map("update_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 角色下的用户（多对多关联）
+  userRoles UserRole[]
+  
+  /// 角色权限关联
+  rolePermissions RolePermission[]
+  
+  // 索引定义
+  @@index([status], map: "idx_roles_status")
+  @@index([createTime(sort: Desc)], map: "idx_roles_create_time")
+  @@map("roles")
+}
+
+/**
+ * 角色权限关联表
+ *
+ * 多对多关系：角色 <-> 菜单权限
+ */
+model RolePermission {
+  /// 关联记录唯一标识
+  id String @id @default(cuid())
+  
+  /// 角色ID
+  roleId String @map("role_id")
+  
+  /// 菜单ID
+  menuId String @map("menu_id")
+  
+  /// 创建时间
+  createTime DateTime @default(now()) @map("create_time") @db.Timestamptz(6)
+  
+  // 关系定义
+  /// 关联的角色
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  /// 关联的菜单
+  menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  
+  // 复合唯一约束：同一角色不能重复分配同一菜单权限
+  @@unique([roleId, menuId], map: "uk_role_menu")
+  @@index([roleId], map: "idx_role_permissions_role_id")
+  @@index([menuId], map: "idx_role_permissions_menu_id")
+  @@map("role_permissions")
+}
