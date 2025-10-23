@@ -50,3 +50,10 @@ vite.config.ts.*
 *.sw?
 .history
 .cursor
+
+# next.js
+/.next/
+/out/
+# typescript
+*.tsbuildinfo
+next-env.d.ts
