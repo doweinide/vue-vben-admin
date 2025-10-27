@@ -111,7 +111,7 @@ export class MenuController {
   @ApiPatch({
     path: ':id',
     summary: '更新菜单',
-    description: '更新指定ID的菜单信息',
+    description: '根据ID更新菜单信息',
     tags: ['菜单管理'],
     paramSchema: IdParamSchema,
     bodySchema: UpdateMenuSchema,

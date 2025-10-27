@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE, DiscoveryModule } from '@nestjs/core';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
+import { PathCollector } from './config/path-collector';
 import { AuthModule } from './modules/auth/auth.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { MenuModule } from './modules/menu/menu.module';
@@ -42,6 +43,9 @@ import { TestValidationController } from './test-validation.controller';
       load: [appConfig, databaseConfig], // 加载配置文件
     }),
 
+    // 发现模块，用于路径收集器
+    DiscoveryModule,
+
     // 数据库访问模块（全局）
     PrismaModule,
 
@@ -55,12 +59,13 @@ import { TestValidationController } from './test-validation.controller';
   controllers: [AppController, TestValidationController], // 根控制器
   providers: [
     AppService, // 根服务
+    PathCollector, // 路径收集器
     // 全局异常过滤器
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    // 全局 Zod 验证管道
+    // 全局验证管道
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,

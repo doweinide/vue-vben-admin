@@ -57,7 +57,12 @@ async function bootstrap() {
     const { SwaggerIntegration } = await import(
       './config/swagger-integration.js'
     );
-    SwaggerIntegration.setupSwagger(app); // 文档访问路径：/docs
+    const { PathCollector } = await import('./config/path-collector.js');
+
+    // 创建路径收集器实例
+    const pathCollector = app.get(PathCollector);
+
+    SwaggerIntegration.setupSwagger(app, pathCollector); // 文档访问路径：/docs
 
     console.log('[Bootstrap] Swagger documentation setup completed');
 

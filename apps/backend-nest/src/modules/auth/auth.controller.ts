@@ -1,6 +1,6 @@
 import type { LoginRequest, LoginResponse } from '../../schemas/auth.schema';
 
-import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Request } from '@nestjs/common';
 import { z } from 'zod';
 
 import { Public } from '../../common';
@@ -49,9 +49,8 @@ export class AuthController {
    * GET /auth/profile
    * Authorization: Bearer <jwt_token>
    */
-  @Get('profile')
   @ApiGet({
-    path: '/profile',
+    path: 'profile',
     summary: '获取当前用户信息',
     description: '获取当前登录用户的详细信息，需要提供有效的 JWT token',
     tags: ['认证管理'],
@@ -83,14 +82,14 @@ export class AuthController {
    * }
    */
   @Public()
-  @Post('login')
   @ApiPost({
-    path: '/login',
+    path: 'login',
     summary: '用户登录',
-    description: '用户登录接口，返回访问令牌',
+    description: '用户通过用户名和密码进行登录认证，成功后返回 JWT token',
     tags: ['认证管理'],
     bodySchema: LoginRequestSchema,
     responseSchema: LoginResponseSchema,
+    requireAuth: false,
   })
   async login(@Body() loginDto: LoginRequest): Promise<LoginResponse> {
     return this.authService.login(loginDto);

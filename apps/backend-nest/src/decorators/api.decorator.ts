@@ -1,4 +1,12 @@
-import { applyDecorators, SetMetadata } from '@nestjs/common';
+import {
+  applyDecorators,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Put,
+  SetMetadata,
+} from '@nestjs/common';
 import { z } from 'zod';
 
 import { openAPIConfig } from '../config/openapi.config';
@@ -33,7 +41,7 @@ export interface ApiEndpointOptions {
  * API 端点装饰器
  *
  * 统一的 API 装饰器，集成了验证、文档生成等功能
- * 自动处理路径前缀和 OpenAPI 文档注册
+ * 在装饰器阶段只收集配置信息，路径拼接延迟到文档生成阶段
  */
 export function ApiEndpoint(options: ApiEndpointOptions) {
   const decorators: any[] = [];
@@ -55,17 +63,14 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
     decorators.push(SetMetadata('api:zodSchemas', schemas));
   }
 
-  // 构建完整的 OpenAPI 路径
-  // 注意：这里我们需要在运行时获取控制器路径，但装饰器在编译时执行
-  // 所以我们使用一个特殊的格式来标记需要后续处理的路径
-  // 同时将 Express 风格的路径参数 :param 转换为 OpenAPI 风格的 {param}
+  // 将 Express 风格的路径参数 :param 转换为 OpenAPI 风格的 {param}
   const convertedPath = options.path.replaceAll(/:(\w+)/g, '{$1}');
-  const fullPath = `{controller}${convertedPath}`;
 
-  // 注册 OpenAPI 路径
-  const pathConfig: any = {
+  // 存储原始的 API 配置信息到元数据，不进行路径拼接
+  // 路径拼接将在文档生成阶段通过反射获取控制器信息后统一处理
+  const apiConfig: any = {
     method: options.method,
-    path: fullPath, // 使用标记格式，后续会被替换
+    path: convertedPath, // 存储转换后的相对路径，不包含控制器前缀
     summary: options.summary,
     description: options.description,
     tags: options.tags || [],
@@ -73,7 +78,7 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
 
   // 添加请求配置
   if (options.bodySchema) {
-    pathConfig.request = {
+    apiConfig.request = {
       body: {
         content: {
           'application/json': {
@@ -85,21 +90,21 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
   }
 
   if (options.querySchema) {
-    pathConfig.request = {
-      ...pathConfig.request,
+    apiConfig.request = {
+      ...apiConfig.request,
       query: options.querySchema,
     };
   }
 
   if (options.paramSchema) {
-    pathConfig.request = {
-      ...pathConfig.request,
+    apiConfig.request = {
+      ...apiConfig.request,
       params: options.paramSchema,
     };
   }
 
   // 添加响应配置
-  pathConfig.responses = {
+  apiConfig.responses = {
     200: {
       description: '成功',
       content: {
@@ -149,10 +154,10 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
 
   // 添加认证要求
   if (options.requireAuth) {
-    pathConfig.security = [{ bearerAuth: [] }];
+    apiConfig.security = [{ bearerAuth: [] }];
 
     // 添加 401 响应
-    pathConfig.responses[401] = {
+    apiConfig.responses[401] = {
       description: '未授权',
       content: {
         'application/json': {
@@ -168,8 +173,18 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
     };
   }
 
-  // 注册到 OpenAPI 配置
-  openAPIConfig.registerPath(pathConfig);
+  // 将 API 配置存储到方法的元数据中，供后续收集器使用
+  decorators.push(SetMetadata('api:config', apiConfig));
+
+  // 同时收集到 OpenAPI 配置中，确保 schema 信息被正确注册
+  // 注意：这里需要传递完整的路径信息，包括控制器前缀
+  // 但在装饰器阶段我们无法获取控制器信息，所以先存储相对路径
+  // 在应用启动后通过反射获取完整路径信息
+  openAPIConfig.collectPath({
+    ...apiConfig,
+    // 添加一个标记，表示这是相对路径，需要后续处理
+    isRelativePath: true,
+  });
 
   return applyDecorators(...decorators);
 }
@@ -178,33 +193,48 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
  * 快捷装饰器 - GET 请求
  */
 export function ApiGet(options: Omit<ApiEndpointOptions, 'method'>) {
-  return ApiEndpoint({ ...options, method: 'get' });
+  return applyDecorators(
+    Get(options.path),
+    ApiEndpoint({ ...options, method: 'get' }),
+  );
 }
 
 /**
  * 快捷装饰器 - POST 请求
  */
 export function ApiPost(options: Omit<ApiEndpointOptions, 'method'>) {
-  return ApiEndpoint({ ...options, method: 'post' });
+  return applyDecorators(
+    Post(options.path),
+    ApiEndpoint({ ...options, method: 'post' }),
+  );
 }
 
 /**
  * 快捷装饰器 - PUT 请求
  */
 export function ApiPut(options: Omit<ApiEndpointOptions, 'method'>) {
-  return ApiEndpoint({ ...options, method: 'put' });
+  return applyDecorators(
+    Put(options.path),
+    ApiEndpoint({ ...options, method: 'put' }),
+  );
 }
 
 /**
  * 快捷装饰器 - DELETE 请求
  */
 export function ApiDelete(options: Omit<ApiEndpointOptions, 'method'>) {
-  return ApiEndpoint({ ...options, method: 'delete' });
+  return applyDecorators(
+    Delete(options.path),
+    ApiEndpoint({ ...options, method: 'delete' }),
+  );
 }
 
 /**
  * 快捷装饰器 - PATCH 请求
  */
 export function ApiPatch(options: Omit<ApiEndpointOptions, 'method'>) {
-  return ApiEndpoint({ ...options, method: 'patch' });
+  return applyDecorators(
+    Patch(options.path),
+    ApiEndpoint({ ...options, method: 'patch' }),
+  );
 }

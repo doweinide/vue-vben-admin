@@ -4,16 +4,7 @@ import type {
   UpdateUserRequest,
 } from '../../schemas/user.schema';
 
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Param, Query } from '@nestjs/common';
 import { z } from 'zod';
 
 import { Public } from '../../common';
@@ -73,9 +64,8 @@ export class UserController {
    * @returns 创建的用户信息
    */
   @Public()
-  @Post()
   @ApiPost({
-    path: '/',
+    path: '',
     summary: '创建用户',
     description: '创建新用户账户，公共接口允许用户注册',
     tags: ['用户管理'],
@@ -100,9 +90,8 @@ export class UserController {
    * @example
    * GET /users?page=1&limit=10
    */
-  @Get()
   @ApiGet({
-    path: '/',
+    path: '',
     summary: '获取用户列表',
     description: '支持分页查询，返回用户基本信息（不包含密码）',
     tags: ['用户管理'],
@@ -125,9 +114,8 @@ export class UserController {
    * @example
    * GET /users/1
    */
-  @Get(':id')
   @ApiGet({
-    path: '/:id',
+    path: ':id',
     summary: '获取用户详情',
     description: '根据用户ID获取用户详细信息，需要认证',
     tags: ['用户管理'],
@@ -150,9 +138,8 @@ export class UserController {
    * @example
    * DELETE /users/1
    */
-  @Delete(':id')
   @ApiDelete({
-    path: '/:id',
+    path: ':id',
     summary: '删除用户',
     description: '删除指定用户，需要认证和管理员权限',
     tags: ['用户管理'],
@@ -180,9 +167,8 @@ export class UserController {
    *   "isActive": false
    * }
    */
-  @Patch(':id')
   @ApiPatch({
-    path: '/:id',
+    path: ':id',
     summary: '更新用户信息',
     description: '更新指定用户的信息，需要认证',
     tags: ['用户管理'],

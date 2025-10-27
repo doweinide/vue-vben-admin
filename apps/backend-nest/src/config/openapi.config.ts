@@ -8,6 +8,7 @@ import {
 import { z } from 'zod';
 
 import { BaseResponseSchema, PaginationSchema } from '../schemas/base.schema';
+import { PathCollector } from './path-collector';
 
 extendZodWithOpenApi(z);
 
@@ -18,7 +19,32 @@ extendZodWithOpenApi(z);
  * 提供统一的 API 文档生成接口
  */
 export class OpenAPIConfig {
+  private pathCollector?: PathCollector;
+  private pendingPaths: any[] = []; // 存储待处理的路径配置
   private registry = new OpenAPIRegistry();
+
+  /**
+   * 清空待处理的路径配置
+   */
+  clearPendingPaths() {
+    this.pendingPaths = [];
+  }
+
+  /**
+   * 收集 API 路径配置
+   * 在装饰器阶段只收集配置，不进行路径处理
+   *
+   * @param pathConfig 路径配置
+   */
+  collectPath(pathConfig: any) {
+    console.log('收集路径配置:', {
+      method: pathConfig.method,
+      path: pathConfig.path,
+      tags: pathConfig.tags,
+      summary: pathConfig.summary,
+    });
+    this.pendingPaths.push(pathConfig);
+  }
 
   /**
    * 生成 OpenAPI 文档
@@ -26,6 +52,29 @@ export class OpenAPIConfig {
    * @returns OpenAPI 3.0 文档对象
    */
   generateDocument(): OpenAPIObject {
+    // 设置基础 schemas
+    this.setupBaseSchemas();
+
+    // 使用 PathCollector 收集完整的路径配置
+    if (this.pathCollector) {
+      const allPaths = this.pathCollector.collectAllPaths();
+      console.log('PathCollector 收集到的路径数量:', allPaths.length);
+
+      // 注册所有路径
+      for (const pathConfig of allPaths) {
+        console.log('注册完整路径:', {
+          method: pathConfig.method,
+          path: pathConfig.path,
+          tags: pathConfig.tags,
+          operationId: pathConfig.operationId,
+        });
+        this.registry.registerPath(pathConfig);
+      }
+    } else {
+      // 回退到原有的处理方式
+      this.processPendingPaths();
+    }
+
     const generator = new OpenApiGeneratorV3(this.registry.definitions);
 
     const document = generator.generateDocument({
@@ -69,8 +118,24 @@ export class OpenAPIConfig {
           description: '用户信息管理接口，包括用户信息查询、更新、删除等',
         },
         {
+          name: '菜单管理',
+          description: '系统菜单管理接口，包括菜单的增删改查、权限配置等',
+        },
+        {
+          name: '角色管理',
+          description: '用户角色管理接口，包括角色的增删改查、权限分配等',
+        },
+        {
+          name: '部门管理',
+          description: '组织部门管理接口，包括部门的增删改查、层级管理等',
+        },
+        {
           name: '系统管理',
           description: '系统基础接口，包括健康检查、系统信息等',
+        },
+        {
+          name: '测试',
+          description: '测试相关接口，用于验证系统功能和性能',
         },
       ],
     });
@@ -89,7 +154,22 @@ export class OpenAPIConfig {
       },
     };
 
+    console.log(
+      '生成的文档路径数量:',
+      Object.keys(document.paths || {}).length,
+    );
+    console.log('生成的文档路径:', Object.keys(document.paths || {}));
+
     return document;
+  }
+
+  /**
+   * 获取待处理的路径配置
+   *
+   * @returns 待处理的路径配置数组
+   */
+  getPendingPaths() {
+    return this.pendingPaths;
   }
 
   /**
@@ -102,19 +182,24 @@ export class OpenAPIConfig {
   }
 
   /**
-   * 注册 API 路径
-   *
-   * @param path 路径配置
+   * 处理待处理的路径配置
+   * 将收集到的路径配置注册到 OpenAPI 注册表
    */
-  registerPath(path: any) {
-    // 处理控制器路径前缀
-    if (path.path && path.path.includes('{controller}')) {
-      // 从调用栈中获取控制器信息
-      const controllerPath = this.getControllerPath();
-      path.path = path.path.replace('{controller}', controllerPath);
+  processPendingPaths() {
+    console.log('开始处理路径配置，总数:', this.pendingPaths.length);
+    for (const pathConfig of this.pendingPaths) {
+      console.log('注册路径:', {
+        method: pathConfig.method,
+        path: pathConfig.path,
+        tags: pathConfig.tags,
+      });
+      // 直接注册路径配置，让 zod-to-openapi 自动处理 schema
+      this.registry.registerPath(pathConfig);
     }
 
-    this.registry.registerPath(path);
+    // 清空已处理的配置
+    this.clearPendingPaths();
+    console.log('路径配置处理完成');
   }
 
   /**
@@ -128,49 +213,16 @@ export class OpenAPIConfig {
   }
 
   /**
-   * 获取控制器路径
-   * 通过分析调用栈来确定当前控制器的路径
-   * 注意：返回带有 /api 前缀的完整路径，因为 Swagger 需要显示完整的 API 路径
+   * 设置路径收集器
    */
-  private getControllerPath(): string {
-    // 获取调用栈
-    const stack = new Error('Getting controller path from stack trace').stack;
-    if (!stack) return '';
-
-    // 分析调用栈，查找控制器文件
-    const lines = stack.split('\n');
-    for (const line of lines) {
-      if (line.includes('.controller.')) {
-        // 提取控制器名称
-        const match = line.match(/(\w+)\.controller\./);
-        if (match) {
-          const controllerName = match[1];
-          // 根据控制器名称返回对应的路径，包含/api前缀
-          switch (controllerName.toLowerCase()) {
-            case 'app': {
-              return '/api';
-            } // app controller 返回/api路径
-            case 'auth': {
-              return '/api/auth';
-            }
-            case 'user': {
-              return '/api/users';
-            }
-            default: {
-              return `/api/${controllerName.toLowerCase()}`;
-            }
-          }
-        }
-      }
-    }
-
-    return '';
+  setPathCollector(pathCollector: PathCollector) {
+    this.pathCollector = pathCollector;
   }
 
   /**
    * 注册基础 Schema
    */
-  private setupBaseSchemas() {
+  setupBaseSchemas() {
     // 注册基础响应 Schema
     this.registry.register('BaseResponse', BaseResponseSchema);
 

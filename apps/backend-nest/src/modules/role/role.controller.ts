@@ -6,16 +6,7 @@ import type {
   UpdateRoleDto,
 } from '../../schemas/role.schema';
 
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Param, Query } from '@nestjs/common';
 
 import {
   ApiDelete,
@@ -46,9 +37,8 @@ import { RoleService } from './role.service';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Post(':id/permissions')
   @ApiPost({
-    path: '/:id/permissions',
+    path: ':id/permissions',
     summary: '分配角色权限',
     description: '为角色分配菜单权限',
     tags: ['角色管理'],
@@ -63,9 +53,8 @@ export class RoleController {
     return { message: '权限分配成功' };
   }
 
-  @Post('check-name')
   @ApiPost({
-    path: '/check-name',
+    path: 'check-name',
     summary: '检查角色名称是否存在',
     description: '检查指定的角色名称是否已存在',
     tags: ['角色管理'],
@@ -75,7 +64,6 @@ export class RoleController {
     return { exists: false };
   }
 
-  @Post()
   @ApiPost({
     path: '',
     summary: '创建角色',
@@ -88,7 +76,6 @@ export class RoleController {
     return this.roleService.create(createRoleDto);
   }
 
-  @Get()
   @ApiGet({
     path: '',
     summary: '获取角色列表',
@@ -101,9 +88,8 @@ export class RoleController {
     return this.roleService.findAll(query);
   }
 
-  @Get(':id')
   @ApiGet({
-    path: '/:id',
+    path: ':id',
     summary: '获取角色详情',
     description: '根据ID获取角色详情',
     tags: ['角色管理'],
@@ -114,9 +100,8 @@ export class RoleController {
     return this.roleService.findOne(id);
   }
 
-  @Get(':id/permissions')
   @ApiGet({
-    path: '/:id/permissions',
+    path: ':id/permissions',
     summary: '获取角色权限',
     description: '获取角色的菜单权限列表',
     tags: ['角色管理'],
@@ -126,9 +111,8 @@ export class RoleController {
     return this.roleService.getRolePermissions(id);
   }
 
-  @Delete(':id')
   @ApiDelete({
-    path: '/:id',
+    path: ':id',
     summary: '删除角色',
     description: '根据ID删除角色',
     tags: ['角色管理'],
@@ -138,9 +122,8 @@ export class RoleController {
     return this.roleService.remove(id);
   }
 
-  @Patch(':id')
   @ApiPatch({
-    path: '/:id',
+    path: ':id',
     summary: '更新角色',
     description: '根据ID更新角色信息',
     tags: ['角色管理'],
