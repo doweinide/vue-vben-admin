@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_PIPE, DiscoveryModule } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, DiscoveryModule } from '@nestjs/core';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,12 +8,12 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { PathCollector } from './config/path-collector';
+import { ZodValidationInterceptor } from './interceptors/zod-validation.interceptor';
 import { AuthModule } from './modules/auth/auth.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { RoleModule } from './modules/role/role.module';
 import { UserModule } from './modules/user/user.module';
-import { ZodValidationPipe } from './pipes/zod-validation.pipe';
 import { PrismaModule } from './prisma/prisma.module';
 import { TestValidationController } from './test-validation.controller';
 
@@ -65,10 +65,10 @@ import { TestValidationController } from './test-validation.controller';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    // 全局验证管道
+    // 全局 Zod 验证拦截器
     {
-      provide: APP_PIPE,
-      useClass: ZodValidationPipe,
+      provide: APP_INTERCEPTOR,
+      useClass: ZodValidationInterceptor,
     },
   ],
 })

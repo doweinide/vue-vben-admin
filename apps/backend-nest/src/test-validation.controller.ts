@@ -27,7 +27,7 @@ const QueryTestSchema = z.object({
 
 /**
  * 测试验证控制器
- * 用于测试全局 ZodValidationPipe 的自动验证功能
+ * 用于测试拦截器的自动验证功能
  */
 @Controller('test-validation')
 export class TestValidationController {
@@ -80,11 +80,11 @@ export class TestValidationController {
     tags: ['测试'],
     paramSchema: IdParamSchema,
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param() params: { id: string }) {
     return {
       code: 200,
       message: '获取成功',
-      data: { id },
+      data: { id: params.id },
     };
   }
 
@@ -101,13 +101,13 @@ export class TestValidationController {
     paramSchema: IdParamSchema,
   })
   update(
-    @Param('id') id: string,
+    @Param() params: { id: string },
     @Body() updateDto: z.infer<typeof UpdateTestSchema>,
   ) {
     return {
       code: 200,
       message: '更新成功',
-      data: { id, ...updateDto },
+      data: { id: params.id, ...updateDto },
     };
   }
 }
