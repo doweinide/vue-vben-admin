@@ -12,6 +12,7 @@ import { ZodValidationInterceptor } from './interceptors/zod-validation.intercep
 import { AuthModule } from './modules/auth/auth.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { OpenApiGeneratorModule } from './modules/openapi-generator/openapi-generator.module';
 import { RoleModule } from './modules/role/role.module';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -49,12 +50,13 @@ import { TestValidationController } from './test-validation.controller';
     // 数据库访问模块（全局）
     PrismaModule,
 
-    // 业务功能模块
+    // 业务模块
     UserModule, // 用户管理
     AuthModule, // 认证授权
     DepartmentModule, // 部门管理
     MenuModule, // 菜单管理
     RoleModule, // 角色管理
+    OpenApiGeneratorModule, // OpenAPI 类型生成器
   ],
   controllers: [AppController, TestValidationController], // 根控制器
   providers: [

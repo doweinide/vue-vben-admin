@@ -160,6 +160,9 @@ export class OpenAPIConfig {
     );
     console.log('生成的文档路径:', Object.keys(document.paths || {}));
 
+    // 保存 openapi.json 文件到项目根目录
+    this.saveOpenApiJson(document);
+
     return document;
   }
 
@@ -228,6 +231,25 @@ export class OpenAPIConfig {
 
     // 注册分页查询 Schema
     this.registry.register('PaginationQuery', PaginationSchema);
+  }
+
+  /**
+   * 保存 OpenAPI JSON 文件
+   * @param document OpenAPI 文档对象
+   */
+  private saveOpenApiJson(document: OpenAPIObject) {
+    try {
+      const fs = require('node:fs');
+      const path = require('node:path');
+
+      // 保存到项目根目录
+      const filePath = path.join(process.cwd(), 'openapi.json');
+      fs.writeFileSync(filePath, JSON.stringify(document, null, 2), 'utf8');
+
+      console.log(`OpenAPI JSON 文件已保存到: ${filePath}`);
+    } catch (error) {
+      console.error('保存 OpenAPI JSON 文件失败:', error);
+    }
   }
 }
 
