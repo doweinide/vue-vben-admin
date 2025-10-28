@@ -26,11 +26,13 @@ export function generateCode(options: GenerateOptions): GenerateResult {
  * 生成 TypeScript 代码
  * @param openApiDoc OpenAPI 文档
  * @param config 生成配置
+ * @param apiPrefix 全局 API 前缀，用于从函数名中移除
  * @returns 生成结果
  */
 export function generateTypeScriptCode(
   openApiDoc: OpenAPIDocument,
   config?: Partial<GeneratorConfig>,
+  apiPrefix?: string,
 ): GenerateResult {
   const mergedConfig: GeneratorConfig = {
     functionNaming: 'camelCase',
@@ -53,7 +55,11 @@ export function generateTypeScriptCode(
       : openApiDoc;
 
   const files: GeneratedFile[] = [];
-  const generator = new TypeScriptGenerator(filteredDoc, mergedConfig);
+  const generator = new TypeScriptGenerator(
+    filteredDoc,
+    mergedConfig,
+    apiPrefix,
+  );
 
   // 生成类型文件
   if (mergedConfig.separateTypes) {
@@ -84,12 +90,18 @@ export function generateTypeScriptCode(
  * TypeScript 代码生成器类
  */
 class TypeScriptGenerator {
+  private apiPrefix: string;
   private config: GeneratorConfig;
   private doc: OpenAPIDocument;
 
-  constructor(doc: OpenAPIDocument, config: GeneratorConfig) {
+  constructor(
+    doc: OpenAPIDocument,
+    config: GeneratorConfig,
+    apiPrefix?: string,
+  ) {
     this.doc = doc;
     this.config = config;
+    this.apiPrefix = apiPrefix || 'api';
   }
 
   /**
@@ -466,7 +478,17 @@ class TypeScriptGenerator {
    * 基于完整路径生成函数名
    */
   private generateFunctionNameFromPath(path: string, method: string): string {
-    const pathParts = path
+    // 动态移除路径开头的全局 API 前缀
+    let cleanPath = path;
+    const prefixToRemove = `/${this.apiPrefix}`;
+
+    if (cleanPath.startsWith(`${prefixToRemove}/`)) {
+      cleanPath = cleanPath.slice(prefixToRemove.length); // 移除前缀
+    } else if (cleanPath === prefixToRemove) {
+      cleanPath = '/'; // 如果路径就是前缀本身，则设为根路径
+    }
+
+    const pathParts = cleanPath
       .replace(/^\//, '')
       .split('/')
       .filter(Boolean)

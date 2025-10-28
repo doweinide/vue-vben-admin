@@ -29,6 +29,10 @@ export class OpenApiGeneratorService {
       // 确保输出目录存在
       await this.ensureDirectoryExists(outputPath);
 
+      // 获取全局 API 前缀配置
+      const apiPrefix =
+        this.configService.get<string>('app.apiPrefix') || 'api';
+
       // 配置生成器
       const config: Partial<GeneratorConfig> = {
         separateTypes: true,
@@ -38,13 +42,16 @@ export class OpenApiGeneratorService {
         functionNaming: 'snake_case',
         typeNaming: 'snake_case',
         createByTags: createByTags ?? false,
-        importTemplate:
-          "import { requestClient as request } from '#/api/request';",
+        importTemplate: "import { request } from '#/api/request';",
       };
 
       // 生成 TypeScript 代码
       this.logger.log('开始生成 TypeScript 代码...');
-      const result = await generateTypeScriptCode(openApiJson, config);
+      const result = await generateTypeScriptCode(
+        openApiJson,
+        config,
+        apiPrefix,
+      );
 
       // 写入生成的文件
       const generatedFiles: string[] = [];
