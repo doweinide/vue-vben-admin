@@ -119,7 +119,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 export const requestClient = createRequestClient(apiURL, {
   responseReturn: 'data',
 });
-
+// requestClient通用请求
+export const request = requestClient.request;
 export const baseRequestClient = new RequestClient({ baseURL: apiURL });
 
 export interface PageFetchParams {

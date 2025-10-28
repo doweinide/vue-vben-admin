@@ -143,17 +143,16 @@ class RequestClient {
    * 通用的请求方法
    */
   public async request<T>(
-    url: string,
-    config: RequestClientConfig,
+    urlOrConfig: RequestClientConfig | string,
+    maybeConfig?: RequestClientConfig,
   ): Promise<T> {
     try {
-      const response: AxiosResponse<T> = await this.instance({
-        url,
-        ...config,
-        ...(config.paramsSerializer
-          ? { paramsSerializer: getParamsSerializer(config.paramsSerializer) }
-          : {}),
-      });
+      const config =
+        typeof urlOrConfig === 'string'
+          ? { url: urlOrConfig, ...maybeConfig }
+          : urlOrConfig;
+
+      const response: AxiosResponse<T> = await this.instance(config);
       return response as T;
     } catch (error: any) {
       throw error.response ? error.response.data : error;
