@@ -1,4 +1,4 @@
-import type { PaginationQuery } from '../../schemas/base.schema';
+import type { PaginationQuery } from '../../schemas';
 
 import {
   ConflictException,
@@ -6,14 +6,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import { z } from 'zod';
 
 import { PrismaService } from '../../prisma/prisma.service';
-import { ResponseBuilder } from '../../schemas/base.schema';
 import {
   CreateUserRequestSchema,
+  ResponseBuilder,
   UpdateUserRequestSchema,
-} from '../../schemas/user.schema';
+} from '../../schemas';
 
 /**
  * 用户服务
@@ -43,7 +42,7 @@ export class UserService {
    * @returns 创建的用户信息（不包含密码）
    * @throws ConflictException 当用户名或邮箱已存在时抛出
    */
-  async create(createUserDto: z.infer<typeof CreateUserRequestSchema>) {
+  async create(createUserDto: typeof CreateUserRequestSchema.Type) {
     // 检查用户名是否已存在
     const existingUserByUsername = await this.prisma.user.findUnique({
       where: { username: createUserDto.username },
@@ -321,10 +320,7 @@ export class UserService {
    * @throws NotFoundException 当用户不存在时抛出
    * @throws ConflictException 当邮箱已被其他用户使用时抛出
    */
-  async update(
-    id: string,
-    updateUserDto: z.infer<typeof UpdateUserRequestSchema>,
-  ) {
+  async update(id: string, updateUserDto: typeof UpdateUserRequestSchema.Type) {
     // 检查用户是否存在
     const existingUser = await this.prisma.user.findUnique({
       where: { id },

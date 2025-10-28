@@ -1,24 +1,23 @@
-import type { LoginRequest, LoginResponse } from '../../schemas/auth.schema';
-
 import { Body, Controller, Request } from '@nestjs/common';
-import { z } from 'zod';
 
 import { Public } from '../../common';
 import { ApiGet, ApiPost } from '../../decorators/api.decorator';
 import {
   AuthUserSchema,
+  createResponseSchema,
   LoginRequestSchema,
   LoginResponseSchema,
-} from '../../schemas/auth.schema';
-import { BaseResponseSchema } from '../../schemas/base.schema';
+} from '../../schemas';
 import { AuthService } from './auth.service';
 
 // 用户资料响应 Schema
-const ProfileResponseSchema = BaseResponseSchema.extend({
-  data: AuthUserSchema,
-});
+const ProfileResponseSchema = createResponseSchema(
+  AuthUserSchema,
+  'ProfileResponse',
+  '用户资料响应',
+);
 
-type ProfileResponse = z.infer<typeof ProfileResponseSchema>;
+type ProfileResponse = typeof ProfileResponseSchema.Type;
 
 /**
  * 认证控制器
@@ -91,7 +90,9 @@ export class AuthController {
     responseSchema: LoginResponseSchema,
     requireAuth: false,
   })
-  async login(@Body() loginDto: LoginRequest): Promise<LoginResponse> {
+  async login(
+    @Body() loginDto: typeof LoginRequestSchema.Type,
+  ): Promise<typeof LoginResponseSchema.Type> {
     return this.authService.login(loginDto);
   }
 }

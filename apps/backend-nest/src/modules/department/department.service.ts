@@ -3,14 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Department } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  CreateDepartmentDto,
-  DepartmentQueryDto,
-  UpdateDepartmentDto,
-} from '../../schemas/department.schema';
+  CreateDepartmentSchema,
+  DepartmentQuerySchema,
+  UpdateDepartmentSchema,
+} from '../../schemas';
 
 @Injectable()
 export class DepartmentService {
@@ -19,7 +18,7 @@ export class DepartmentService {
   /**
    * 创建部门
    */
-  async create(createDepartmentDto: CreateDepartmentDto): Promise<Department> {
+  async create(createDepartmentDto: typeof CreateDepartmentSchema.Type) {
     const { name, pid, status = 1, remark } = createDepartmentDto;
 
     // 检查父部门是否存在
@@ -43,7 +42,7 @@ export class DepartmentService {
       throw new BadRequestException('同级部门名称不能重复');
     }
 
-    return this.prisma.department.create({
+    const department = await this.prisma.department.create({
       data: {
         name,
         pid,
@@ -51,12 +50,18 @@ export class DepartmentService {
         remark,
       },
     });
+
+    return {
+      code: 200,
+      message: '创建部门成功',
+      data: department,
+    };
   }
 
   /**
    * 获取部门列表（树形结构）
    */
-  async findAll(query?: DepartmentQueryDto): Promise<Department[]> {
+  async findAll(query?: typeof DepartmentQuerySchema.Type) {
     const where: any = {};
 
     if (query?.name) {
@@ -89,13 +94,19 @@ export class DepartmentService {
     });
 
     // 构建树形结构
-    return this.buildTree(departments);
+    const treeData = this.buildTree(departments);
+
+    return {
+      code: 200,
+      message: '获取部门列表成功',
+      data: treeData,
+    };
   }
 
   /**
    * 根据ID获取部门详情
    */
-  async findOne(id: string): Promise<Department> {
+  async findOne(id: string) {
     const department = await this.prisma.department.findUnique({
       where: { id },
       include: {
@@ -116,7 +127,11 @@ export class DepartmentService {
       throw new NotFoundException('部门不存在');
     }
 
-    return department;
+    return {
+      code: 200,
+      message: '获取部门详情成功',
+      data: department,
+    };
   }
 
   /**
@@ -151,9 +166,10 @@ export class DepartmentService {
    */
   async update(
     id: string,
-    updateDepartmentDto: UpdateDepartmentDto,
-  ): Promise<Department> {
-    const department = await this.findOne(id);
+    updateDepartmentDto: typeof UpdateDepartmentSchema.Type,
+  ) {
+    const departmentResult = await this.findOne(id);
+    const department = departmentResult.data; // 从三段式响应中获取数据
 
     const { name, pid, status, remark } = updateDepartmentDto;
 
@@ -191,7 +207,7 @@ export class DepartmentService {
       }
     }
 
-    return this.prisma.department.update({
+    const updatedDepartment = await this.prisma.department.update({
       where: { id },
       data: {
         name: name || department.name,
@@ -200,6 +216,12 @@ export class DepartmentService {
         remark: remark === undefined ? department.remark : remark,
       },
     });
+
+    return {
+      code: 200,
+      message: '更新部门成功',
+      data: updatedDepartment,
+    };
   }
 
   /**

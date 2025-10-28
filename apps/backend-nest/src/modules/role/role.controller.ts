@@ -1,11 +1,3 @@
-import type {
-  CreateRoleDto,
-  RoleNameCheckDto,
-  RolePermissionDto,
-  RoleQueryDto,
-  UpdateRoleDto,
-} from '../../schemas/role.schema';
-
 import { Body, Controller, Param, Query } from '@nestjs/common';
 
 import {
@@ -14,15 +6,15 @@ import {
   ApiPatch,
   ApiPost,
 } from '../../decorators/api.decorator';
-import { IdParamSchema } from '../../schemas/base.schema';
 import {
   CreateRoleSchema,
+  IdParamSchema,
   RoleNameCheckSchema,
   RolePermissionSchema,
   RoleQuerySchema,
   RoleResponseSchema,
   UpdateRoleSchema,
-} from '../../schemas/role.schema';
+} from '../../schemas';
 import { RoleService } from './role.service';
 
 /**
@@ -47,7 +39,7 @@ export class RoleController {
   })
   async assignPermissions(
     @Param('id') id: string,
-    @Body() rolePermissionDto: RolePermissionDto,
+    @Body() rolePermissionDto: typeof RolePermissionSchema.Type,
   ) {
     await this.roleService.assignPermissions(id, rolePermissionDto.menuIds);
     return { message: '权限分配成功' };
@@ -60,7 +52,7 @@ export class RoleController {
     tags: ['角色管理'],
     bodySchema: RoleNameCheckSchema,
   })
-  checkNameExists(@Body() roleNameCheckDto: RoleNameCheckDto) {
+  checkNameExists(@Body() roleNameCheckDto: typeof RoleNameCheckSchema.Type) {
     return { exists: false };
   }
 
@@ -72,7 +64,7 @@ export class RoleController {
     bodySchema: CreateRoleSchema,
     responseSchema: RoleResponseSchema,
   })
-  create(@Body() createRoleDto: CreateRoleDto) {
+  create(@Body() createRoleDto: typeof CreateRoleSchema.Type) {
     return this.roleService.create(createRoleDto);
   }
 
@@ -84,7 +76,7 @@ export class RoleController {
     querySchema: RoleQuerySchema,
     responseSchema: RoleResponseSchema,
   })
-  findAll(@Query() query: RoleQueryDto) {
+  findAll(@Query() query: typeof RoleQuerySchema.Type) {
     return this.roleService.findAll(query);
   }
 
@@ -131,7 +123,10 @@ export class RoleController {
     bodySchema: UpdateRoleSchema,
     responseSchema: RoleResponseSchema,
   })
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateRoleDto: typeof UpdateRoleSchema.Type,
+  ) {
     return this.roleService.update(id, updateRoleDto);
   }
 }

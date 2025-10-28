@@ -7,7 +7,7 @@ import {
 } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
-import { BaseResponseSchema, PaginationSchema } from '../schemas/base.schema';
+// 移除对内部 schema 的导入，这些 schema 现在不再对外导出
 import { PathCollector } from './path-collector';
 
 extendZodWithOpenApi(z);
@@ -224,13 +224,11 @@ export class OpenAPIConfig {
 
   /**
    * 注册基础 Schema
+   * 注意：BaseResponseSchema 和 PaginationSchema 现在是内部使用，不再需要注册
    */
   setupBaseSchemas() {
-    // 注册基础响应 Schema
-    this.registry.register('BaseResponse', BaseResponseSchema);
-
-    // 注册分页查询 Schema
-    this.registry.register('PaginationQuery', PaginationSchema);
+    // 基础 Schema 现在通过 createResponseSchema 和 createPaginatedResponseSchema 工具函数自动处理
+    // 不再需要手动注册 BaseResponseSchema 和 PaginationSchema
   }
 
   /**

@@ -1,9 +1,3 @@
-import type {
-  CreateDepartmentDto,
-  DepartmentQueryDto,
-  UpdateDepartmentDto,
-} from '../../schemas/department.schema';
-
 import {
   Body,
   Controller,
@@ -19,13 +13,13 @@ import {
   ApiPatch,
   ApiPost,
 } from '../../decorators/api.decorator';
-import { IdParamSchema } from '../../schemas/base.schema';
 import {
   CreateDepartmentSchema,
   DepartmentQuerySchema,
   DepartmentResponseSchema,
+  IdParamSchema,
   UpdateDepartmentSchema,
-} from '../../schemas/department.schema';
+} from '../../schemas';
 import { DepartmentService } from './department.service';
 
 @Controller('system/dept')
@@ -40,7 +34,9 @@ export class DepartmentController {
     bodySchema: CreateDepartmentSchema,
     responseSchema: DepartmentResponseSchema,
   })
-  async create(@Body() createDepartmentDto: CreateDepartmentDto) {
+  async create(
+    @Body() createDepartmentDto: typeof CreateDepartmentSchema.Type,
+  ) {
     return this.departmentService.create(createDepartmentDto);
   }
 
@@ -52,7 +48,7 @@ export class DepartmentController {
     querySchema: DepartmentQuerySchema,
     responseSchema: DepartmentResponseSchema,
   })
-  async findAll(@Query() query: DepartmentQueryDto) {
+  async findAll(@Query() query: typeof DepartmentQuerySchema.Type) {
     return this.departmentService.findAll(query);
   }
 
@@ -91,7 +87,7 @@ export class DepartmentController {
   })
   async update(
     @Param('id') id: string,
-    @Body() updateDepartmentDto: UpdateDepartmentDto,
+    @Body() updateDepartmentDto: typeof UpdateDepartmentSchema.Type,
   ) {
     return this.departmentService.update(id, updateDepartmentDto);
   }

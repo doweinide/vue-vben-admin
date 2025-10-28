@@ -1,33 +1,33 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
+import { createSchema } from './schema.factory';
+
+// 重新导出 createSchema 函数
+export { createSchema };
+
 extendZodWithOpenApi(z);
 
 /**
- * 基础响应验证模式
- * API 统一响应格式
+ * ✅ 基础响应结构（所有接口通用的最外层格式）
+ * 内部使用，不对外导出
  */
-export const BaseResponseSchema = z
+const BaseResponseSchema = z
   .object({
-    // / 响应状态码，200表示成功，其他表示错误
     code: z.number().describe('响应状态码，200表示成功，其他表示错误'),
-    // / 响应消息，描述操作结果
     message: z.string().describe('响应消息，描述操作结果'),
-    // / 响应数据，具体内容根据接口而定
     data: z.any().optional().describe('响应数据，具体内容根据接口而定'),
   })
   .openapi('BaseResponse')
   .describe('API 统一响应格式');
 
 /**
- * 分页查询参数验证模式
- * 用于分页查询的通用参数
+ * ✅ 分页参数 Schema（通用查询参数）
+ * 内部使用，不对外导出
  */
-export const PaginationSchema = z
+const PaginationSchema = z
   .object({
-    // / 页码，从1开始
     page: z.coerce.number().min(1).default(1).describe('页码，从1开始'),
-    // / 每页数量，最大100条
     limit: z.coerce
       .number()
       .min(1)
@@ -39,8 +39,67 @@ export const PaginationSchema = z
   .describe('分页查询参数');
 
 /**
+ * ✅ 工具函数：创建统一响应 Schema
+ * 自动生成 openapi 名称和描述，支持 .Type 语法糖
+ */
+export const createResponseSchema = <T extends z.ZodTypeAny>(
+  dataSchema: T,
+  name: string,
+  desc?: string,
+) =>
+  createSchema(
+    z.object({
+      code: z.number().describe('响应状态码，200表示成功，其他表示错误'),
+      message: z.string().describe('响应消息，描述操作结果'),
+      data: dataSchema.describe('响应数据'),
+    }),
+    name,
+    desc ?? `${name} 响应格式`,
+  );
+
+/**
+ * ✅ 工具函数：创建分页响应 Schema
+ * 自动附带分页元信息，支持 .Type 语法糖
+ */
+export const createPaginatedResponseSchema = <T extends z.ZodTypeAny>(
+  dataSchema: T,
+  name?: string,
+  desc?: string,
+) => {
+  // 尝试获取子 schema 的 openapi 名称
+  const refName =
+    (dataSchema as any)._def?.openapi?.ref ??
+    dataSchema.description ??
+    'UnknownData';
+
+  return createResponseSchema(
+    z.object({
+      items: z.array(dataSchema).describe('数据列表'),
+      total: z.number().describe('总记录数'),
+      page: z.number().describe('当前页码'),
+      limit: z.number().describe('每页数量'),
+      totalPages: z.number().describe('总页数'),
+    }),
+    name ?? `${refName}PaginatedResponse`,
+    desc ?? `${refName} 分页响应`,
+  );
+};
+
+/**
+ * ✅ 辅助类型：生成 TS 类型（自动推断）
+ */
+export type ApiResponse<T extends z.ZodTypeAny> = z.infer<
+  ReturnType<typeof createResponseSchema<T>>
+>;
+
+export type PaginatedApiResponse<T extends z.ZodTypeAny> = z.infer<
+  ReturnType<typeof createPaginatedResponseSchema<T>>
+>;
+
+/**
  * 分页响应验证模式工厂函数
  * 用于创建分页响应的通用格式
+ * @deprecated 使用 createPaginatedResponseSchema 替代
  */
 export const PaginatedResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
   BaseResponseSchema.extend({
@@ -64,54 +123,62 @@ export const PaginatedResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
  * 通用 ID 验证模式（用于请求体）
  * 使用字符串类型匹配数据库 CUID
  */
-export const IdSchema = z
-  .object({
+export const IdSchema = createSchema(
+  z.object({
     // / 唯一标识符，使用 CUID 格式
     id: z.string().describe('唯一标识符，使用 CUID 格式'),
-  })
-  .describe('通用 ID 参数');
+  }),
+  'IdParam',
+  '通用 ID 参数',
+);
 
 /**
  * 路径参数 ID 验证模式（用于路径参数验证）
  * 使用字符串类型匹配数据库 CUID
  */
-export const IdParamSchema = z
-  .object({
+export const IdParamSchema = createSchema(
+  z.object({
     // / 路径参数 ID，CUID 格式
     id: z.string().min(1, 'ID 不能为空').describe('路径参数 ID，CUID 格式'),
-  })
-  .describe('路径参数 ID 验证');
+  }),
+  'IdPathParam',
+  '路径参数 ID 验证',
+);
 
 /**
  * 时间戳验证模式
  * 匹配数据库字段名 createTime 和 updateTime
  */
-export const TimestampSchema = z
-  .object({
+export const TimestampSchema = createSchema(
+  z.object({
     // / 记录创建时间
     createTime: z.date().describe('记录创建时间'),
     // / 记录最后更新时间
     updateTime: z.date().describe('记录最后更新时间'),
-  })
-  .describe('时间戳字段');
+  }),
+  'Timestamp',
+  '时间戳字段',
+);
 
 /**
  * 状态验证模式
  * 通用状态字段：0-禁用，1-启用
  */
-export const StatusSchema = z
-  .object({
+export const StatusSchema = createSchema(
+  z.object({
     // / 状态：0-禁用，1-启用
     status: z.number().int().min(0).max(1).describe('状态：0-禁用，1-启用'),
-  })
-  .describe('状态字段');
+  }),
+  'Status',
+  '状态字段',
+);
 
 /**
  * 排序查询参数验证模式
  * 用于排序查询的通用参数
  */
-export const SortSchema = z
-  .object({
+export const SortSchema = createSchema(
+  z.object({
     // / 排序字段
     sortBy: z.string().optional().describe('排序字段'),
     // / 排序方向：asc-升序，desc-降序
@@ -119,30 +186,36 @@ export const SortSchema = z
       .enum(['asc', 'desc'])
       .default('desc')
       .describe('排序方向：asc-升序，desc-降序'),
-  })
-  .describe('排序查询参数');
+  }),
+  'SortQuery',
+  '排序查询参数',
+);
 
 /**
  * 搜索查询参数验证模式
  * 用于搜索查询的通用参数
  */
-export const SearchSchema = z
-  .object({
+export const SearchSchema = createSchema(
+  z.object({
     // / 搜索关键词
     keyword: z.string().optional().describe('搜索关键词'),
-  })
-  .describe('搜索查询参数');
+  }),
+  'SearchQuery',
+  '搜索查询参数',
+);
 
 /**
  * 批量操作验证模式
  * 用于批量操作的通用参数
  */
-export const BatchOperationSchema = z
-  .object({
+export const BatchOperationSchema = createSchema(
+  z.object({
     // / ID 列表
     ids: z.array(z.string()).min(1, '至少选择一个项目').describe('ID 列表'),
-  })
-  .describe('批量操作参数');
+  }),
+  'BatchOperation',
+  '批量操作参数',
+);
 
 /**
  * 删除响应验证模式

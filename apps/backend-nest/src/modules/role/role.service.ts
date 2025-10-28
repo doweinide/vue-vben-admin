@@ -3,15 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Role } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  CreateRoleDto,
-  RolePermissionDto,
-  RoleQueryDto,
-  UpdateRoleDto,
-} from '../../schemas/role.schema';
+  CreateRoleSchema,
+  RolePermissionSchema,
+  RoleQuerySchema,
+  UpdateRoleSchema,
+} from '../../schemas';
 
 @Injectable()
 export class RoleService {
@@ -43,7 +42,7 @@ export class RoleService {
    * 批量分配权限
    */
   async batchAssignPermissions(
-    assignments: RolePermissionDto[],
+    assignments: (typeof RolePermissionSchema.Type)[],
   ): Promise<void> {
     await this.prisma.$transaction(async (prisma) => {
       for (const assignment of assignments) {
@@ -92,7 +91,7 @@ export class RoleService {
   /**
    * 创建角色
    */
-  async create(createRoleDto: CreateRoleDto): Promise<Role> {
+  async create(createRoleDto: typeof CreateRoleSchema.Type) {
     const { name, status, remark, menuIds: permissions = [] } = createRoleDto;
 
     // 检查角色名称是否重复
@@ -129,13 +128,17 @@ export class RoleService {
       await this.assignPermissions(role.id, permissions);
     }
 
-    return role;
+    return {
+      code: 200,
+      message: '创建角色成功',
+      data: role,
+    };
   }
 
   /**
    * 获取角色列表
    */
-  async findAll(query?: RoleQueryDto): Promise<any[]> {
+  async findAll(query?: typeof RoleQuerySchema.Type) {
     const where: any = {};
 
     if (query?.name) {
@@ -174,17 +177,23 @@ export class RoleService {
     });
 
     // 格式化返回数据，添加权限列表
-    return roles.map((role) => ({
+    const formattedRoles = roles.map((role) => ({
       ...role,
       permissions: role.rolePermissions.map((rp) => rp.menuId),
       userCount: role._count.userRoles,
     }));
+
+    return {
+      code: 200,
+      message: '获取角色列表成功',
+      data: formattedRoles,
+    };
   }
 
   /**
    * 根据ID获取角色详情
    */
-  async findOne(id: string): Promise<any> {
+  async findOne(id: string) {
     const role = await this.prisma.role.findUnique({
       where: { id },
       include: {
@@ -220,9 +229,15 @@ export class RoleService {
       throw new NotFoundException('角色不存在');
     }
 
-    return {
+    const roleData = {
       ...role,
       permissions: role.rolePermissions.map((rp) => rp.menuId),
+    };
+
+    return {
+      code: 200,
+      message: '获取角色详情成功',
+      data: roleData,
     };
   }
 
@@ -241,7 +256,7 @@ export class RoleService {
   /**
    * 删除角色
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string) {
     const role = await this.findOne(id);
 
     // 检查是否有用户使用该角色
@@ -261,18 +276,24 @@ export class RoleService {
     await this.prisma.role.delete({
       where: { id },
     });
+
+    return {
+      code: 200,
+      message: '删除角色成功',
+      data: null,
+    };
   }
 
   /**
    * 更新角色
    */
-  async update(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
+  async update(id: string, updateRoleDto: typeof UpdateRoleSchema.Type) {
     const role = await this.findOne(id);
 
     const { name, status, remark, menuIds: permissions } = updateRoleDto;
 
     // 检查角色名称是否重复
-    if (name && name !== role.name) {
+    if (name && name !== role.data.name) {
       const existingRole = await this.prisma.role.findUnique({
         where: { name },
       });
@@ -308,6 +329,10 @@ export class RoleService {
       await this.assignPermissions(id, permissions);
     }
 
-    return updatedRole;
+    return {
+      code: 200,
+      message: '更新角色成功',
+      data: updatedRole,
+    };
   }
 }

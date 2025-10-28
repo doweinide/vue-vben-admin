@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import { ResponseBuilder } from '../../schemas/base.schema';
+import { ResponseBuilder } from '../../schemas';
 
 /**
  * HTTP 异常过滤器

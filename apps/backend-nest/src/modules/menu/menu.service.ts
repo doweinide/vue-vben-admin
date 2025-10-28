@@ -3,16 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Menu } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  CreateMenuDto,
-  MenuNameExistsDto,
-  MenuPathExistsDto,
-  MenuQueryDto,
-  UpdateMenuDto,
-} from '../../schemas/menu.schema';
+  CreateMenuSchema,
+  MenuNameExistsSchema,
+  MenuPathExistsSchema,
+  MenuQuerySchema,
+  UpdateMenuSchema,
+} from '../../schemas';
 
 @Injectable()
 export class MenuService {
@@ -21,7 +20,7 @@ export class MenuService {
   /**
    * 创建菜单
    */
-  async create(createMenuDto: CreateMenuDto): Promise<Menu> {
+  async create(createMenuDto: typeof CreateMenuSchema.Type) {
     const {
       name,
       path,
@@ -61,7 +60,7 @@ export class MenuService {
       }
     }
 
-    return this.prisma.menu.create({
+    const menu = await this.prisma.menu.create({
       data: {
         name,
         path,
@@ -73,12 +72,18 @@ export class MenuService {
         meta: meta || undefined,
       },
     });
+
+    return {
+      code: 200,
+      message: '创建菜单成功',
+      data: menu,
+    };
   }
 
   /**
    * 获取菜单列表（树形结构）
    */
-  async findAll(query?: MenuQueryDto): Promise<Menu[]> {
+  async findAll(query?: typeof MenuQuerySchema.Type) {
     const where: any = {};
 
     if (query?.name) {
@@ -113,13 +118,19 @@ export class MenuService {
     });
 
     // 构建树形结构
-    return this.buildTree(menus);
+    const treeData = this.buildTree(menus);
+
+    return {
+      code: 200,
+      message: '获取菜单列表成功',
+      data: treeData,
+    };
   }
 
   /**
    * 根据ID获取菜单详情
    */
-  async findOne(id: string): Promise<Menu> {
+  async findOne(id: string) {
     const menu = await this.prisma.menu.findUnique({
       where: { id },
       include: {
@@ -137,13 +148,19 @@ export class MenuService {
       throw new NotFoundException('菜单不存在');
     }
 
-    return menu;
+    return {
+      code: 200,
+      message: '获取菜单详情成功',
+      data: menu,
+    };
   }
 
   /**
    * 检查菜单名称是否存在
    */
-  async isNameExists(params: MenuNameExistsDto): Promise<boolean> {
+  async isNameExists(
+    params: typeof MenuNameExistsSchema.Type,
+  ): Promise<boolean> {
     const { name, id } = params;
 
     const existingMenu = await this.prisma.menu.findUnique({
@@ -165,7 +182,9 @@ export class MenuService {
   /**
    * 检查菜单路径是否存在
    */
-  async isPathExists(params: MenuPathExistsDto): Promise<boolean> {
+  async isPathExists(
+    params: typeof MenuPathExistsSchema.Type,
+  ): Promise<boolean> {
     const { path, id } = params;
 
     const existingMenu = await this.prisma.menu.findUnique({
@@ -187,7 +206,7 @@ export class MenuService {
   /**
    * 删除菜单
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string) {
     const menu = await this.findOne(id);
 
     // 检查是否有子菜单
@@ -209,12 +228,18 @@ export class MenuService {
     await this.prisma.menu.delete({
       where: { id },
     });
+
+    return {
+      code: 200,
+      message: '删除菜单成功',
+      data: null,
+    };
   }
 
   /**
    * 更新菜单
    */
-  async update(id: string, updateMenuDto: UpdateMenuDto): Promise<Menu> {
+  async update(id: string, updateMenuDto: typeof UpdateMenuSchema.Type) {
     const menu = await this.findOne(id);
 
     const { name, path, component, type, authCode, pid, status, meta } =
@@ -241,7 +266,7 @@ export class MenuService {
     }
 
     // 检查菜单名称是否重复
-    if (name && name !== menu.name) {
+    if (name && name !== menu.data.name) {
       const existingMenuByName = await this.prisma.menu.findUnique({
         where: { name },
       });
@@ -251,7 +276,7 @@ export class MenuService {
     }
 
     // 检查路由路径是否重复
-    if (path && path !== menu.path) {
+    if (path && path !== menu.data.path) {
       const existingMenuByPath = await this.prisma.menu.findUnique({
         where: { path },
       });
@@ -271,10 +296,16 @@ export class MenuService {
     if (status !== undefined) updateData.status = status;
     if (meta !== undefined) updateData.meta = meta;
 
-    return this.prisma.menu.update({
+    const updatedMenu = await this.prisma.menu.update({
       where: { id },
       data: updateData,
     });
+
+    return {
+      code: 200,
+      message: '更新菜单成功',
+      data: updatedMenu,
+    };
   }
 
   /**

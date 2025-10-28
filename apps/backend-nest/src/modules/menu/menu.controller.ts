@@ -1,11 +1,3 @@
-import type {
-  CreateMenuDto,
-  MenuNameExistsDto,
-  MenuPathExistsDto,
-  MenuQueryDto,
-  UpdateMenuDto,
-} from '../../schemas/menu.schema';
-
 import {
   Body,
   Controller,
@@ -21,15 +13,15 @@ import {
   ApiPatch,
   ApiPost,
 } from '../../decorators/api.decorator';
-import { IdParamSchema } from '../../schemas/base.schema';
 import {
   CreateMenuSchema,
+  IdParamSchema,
   MenuNameExistsSchema,
   MenuPathExistsSchema,
   MenuQuerySchema,
   MenuResponseSchema,
   UpdateMenuSchema,
-} from '../../schemas/menu.schema';
+} from '../../schemas';
 import { MenuService } from './menu.service';
 
 @Controller('system/menu')
@@ -44,7 +36,7 @@ export class MenuController {
     bodySchema: CreateMenuSchema,
     responseSchema: MenuResponseSchema,
   })
-  async create(@Body() createMenuDto: CreateMenuDto) {
+  async create(@Body() createMenuDto: typeof CreateMenuSchema.Type) {
     return this.menuService.create(createMenuDto);
   }
 
@@ -56,7 +48,7 @@ export class MenuController {
     querySchema: MenuQuerySchema,
     responseSchema: MenuResponseSchema,
   })
-  async findAll(@Query() query: MenuQueryDto) {
+  async findAll(@Query() query: typeof MenuQuerySchema.Type) {
     return this.menuService.findAll(query);
   }
 
@@ -79,7 +71,7 @@ export class MenuController {
     tags: ['菜单管理'],
     querySchema: MenuNameExistsSchema,
   })
-  async isNameExists(@Query() params: MenuNameExistsDto) {
+  async isNameExists(@Query() params: typeof MenuNameExistsSchema.Type) {
     const exists = await this.menuService.isNameExists(params);
     return { exists };
   }
@@ -91,7 +83,7 @@ export class MenuController {
     tags: ['菜单管理'],
     querySchema: MenuPathExistsSchema,
   })
-  async isPathExists(@Query() params: MenuPathExistsDto) {
+  async isPathExists(@Query() params: typeof MenuPathExistsSchema.Type) {
     const exists = await this.menuService.isPathExists(params);
     return { exists };
   }
@@ -117,7 +109,10 @@ export class MenuController {
     bodySchema: UpdateMenuSchema,
     responseSchema: MenuResponseSchema,
   })
-  async update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateMenuDto: typeof UpdateMenuSchema.Type,
+  ) {
     return this.menuService.update(id, updateMenuDto);
   }
 }

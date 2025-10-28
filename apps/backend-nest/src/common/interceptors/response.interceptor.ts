@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseResponse, ResponseBuilder } from '../../schemas/base.schema';
+import { BaseResponse, ResponseBuilder } from '../../schemas';
 
 /**
  * 响应拦截器

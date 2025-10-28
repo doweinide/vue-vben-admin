@@ -46,7 +46,8 @@ export class ZodValidationInterceptor implements NestInterceptor {
           const validatedQuery = zodSchemas.querySchema.parse(
             request.query || {},
           );
-          request.query = validatedQuery;
+          // 使用 Object.assign 来更新 query 属性，避免直接赋值导致的只读错误
+          Object.assign(request.query, validatedQuery);
         }
 
         // 验证 params 参数
@@ -54,7 +55,8 @@ export class ZodValidationInterceptor implements NestInterceptor {
           const validatedParams = zodSchemas.paramsSchema.parse(
             request.params || {},
           );
-          request.params = validatedParams;
+          // 使用 Object.assign 来更新 params 属性
+          Object.assign(request.params, validatedParams);
         }
       } catch (error) {
         if (error instanceof ZodError) {

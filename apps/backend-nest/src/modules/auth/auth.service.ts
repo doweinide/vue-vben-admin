@@ -1,9 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { z } from 'zod';
 
-import { LoginRequestSchema } from '../../schemas/auth.schema';
+import { LoginRequestSchema } from '../../schemas';
 import { UserService } from '../user/user.service';
 
 /**
@@ -34,7 +33,7 @@ export class AuthService {
    * @returns 登录结果，包含 access_token 和用户信息
    * @throws UnauthorizedException 当用户名密码错误或用户被禁用时抛出
    */
-  async login(loginDto: z.infer<typeof LoginRequestSchema>) {
+  async login(loginDto: typeof LoginRequestSchema.Type) {
     // 根据用户名查找用户
     const user = await this.userService.findByUsername(loginDto.username);
 

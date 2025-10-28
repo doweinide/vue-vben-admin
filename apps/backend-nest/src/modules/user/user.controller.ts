@@ -1,11 +1,4 @@
-import type { PaginationQuery } from '../../schemas/base.schema';
-import type {
-  CreateUserRequest,
-  UpdateUserRequest,
-} from '../../schemas/user.schema';
-
 import { Body, Controller, Param, Query } from '@nestjs/common';
-import { z } from 'zod';
 
 import { Public } from '../../common';
 import {
@@ -14,29 +7,28 @@ import {
   ApiPatch,
   ApiPost,
 } from '../../decorators/api.decorator';
-import { IdParamSchema, PaginationSchema } from '../../schemas/base.schema';
 import {
   CreateUserRequestSchema,
   CreateUserResponseSchema,
   DeleteUserResponseSchema,
+  IdParamSchema,
   PaginatedUsersResponseSchema,
   UpdateUserRequestSchema,
   UpdateUserResponseSchema,
+  UserQuerySchema,
   UserResponseSchema,
-} from '../../schemas/user.schema';
+} from '../../schemas';
 import { UserService } from './user.service';
 
 // 分页用户响应 Schema - 直接使用工厂函数生成的完整响应结构
 const PaginatedUsersApiResponseSchema = PaginatedUsersResponseSchema;
 
-// 类型定义
-type UserResponse = z.infer<typeof UserResponseSchema>;
-type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
-type UpdateUserResponse = z.infer<typeof UpdateUserResponseSchema>;
-type DeleteUserResponse = z.infer<typeof DeleteUserResponseSchema>;
-type PaginatedUsersApiResponse = z.infer<
-  typeof PaginatedUsersApiResponseSchema
->;
+// 类型定义 - 使用新的 .Type 语法糖
+type UserResponse = typeof UserResponseSchema.Type;
+type CreateUserResponse = typeof CreateUserResponseSchema.Type;
+type UpdateUserResponse = typeof UpdateUserResponseSchema.Type;
+type DeleteUserResponse = typeof DeleteUserResponseSchema.Type;
+type PaginatedUsersApiResponse = typeof PaginatedUsersApiResponseSchema.Type;
 
 /**
  * 用户控制器
@@ -73,7 +65,7 @@ export class UserController {
     responseSchema: CreateUserResponseSchema,
   })
   create(
-    @Body() createUserDto: CreateUserRequest,
+    @Body() createUserDto: typeof CreateUserRequestSchema.Type,
   ): Promise<CreateUserResponse> {
     return this.userService.create(createUserDto);
   }
@@ -96,11 +88,11 @@ export class UserController {
     description: '支持分页查询，返回用户基本信息（不包含密码）',
     tags: ['用户管理'],
     responseSchema: PaginatedUsersApiResponseSchema,
-    querySchema: PaginationSchema,
+    querySchema: UserQuerySchema,
     requireAuth: true,
   })
-  async findAll(@Query() paginationQuery: PaginationQuery) {
-    return this.userService.findAll(paginationQuery);
+  async findAll(@Query() userQuery: typeof UserQuerySchema.Type) {
+    return this.userService.findAll(userQuery);
   }
 
   /**
@@ -179,7 +171,7 @@ export class UserController {
   })
   update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserRequest,
+    @Body() updateUserDto: typeof UpdateUserRequestSchema.Type,
   ): Promise<UpdateUserResponse> {
     return this.userService.update(id, updateUserDto);
   }
