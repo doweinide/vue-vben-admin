@@ -1,10 +1,9 @@
-import type { PaginationQuery } from '@/schemas';
-
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreateUserRequestSchema,
   ResponseBuilder,
   UpdateUserRequestSchema,
+  UserQuerySchema,
 } from '@/schemas';
 import {
   ConflictException,
@@ -118,19 +117,43 @@ export class UserService {
   /**
    * 获取用户列表
    *
-   * 支持分页查询，返回用户基本信息（不包含密码）
+   * 支持分页查询和条件过滤，返回用户基本信息（不包含密码）
    * 包含部门和角色关联信息
    *
-   * @param paginationQuery 分页查询参数
+   * @param query 查询参数，包含分页和过滤条件
    * @returns 分页的用户列表响应
    */
-  async findAll(paginationQuery: PaginationQuery) {
-    const { page = 1, limit = 10 } = paginationQuery;
+  async findAll(query?: typeof UserQuerySchema.Type) {
+    const { page = 1, limit = 10 } = query || {};
     const skip = (page - 1) * limit;
+
+    // 构建查询条件
+    const where: any = {};
+
+    if (query?.username) {
+      where.username = {
+        contains: query.username,
+      };
+    }
+
+    if (query?.email) {
+      where.email = {
+        contains: query.email,
+      };
+    }
+
+    if (query?.status !== undefined) {
+      where.status = query.status;
+    }
+
+    if (query?.deptId) {
+      where.deptId = query.deptId;
+    }
 
     // 并行查询用户列表和总数
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
+        where,
         skip,
         take: limit,
         select: {
@@ -166,7 +189,7 @@ export class UserService {
           createdAt: 'desc',
         },
       }),
-      this.prisma.user.count(),
+      this.prisma.user.count({ where }),
     ]);
 
     // 格式化用户数据
