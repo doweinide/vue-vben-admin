@@ -1,18 +1,10 @@
 import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Query,
-} from '@nestjs/common';
-
-import {
   ApiDelete,
   ApiGet,
   ApiPatch,
   ApiPost,
-} from '../../decorators/api.decorator';
+} from '@/decorators/api.decorator';
+import { ZodBody, ZodParam, ZodQuery } from '@/decorators/zod-param.decorator';
 import {
   CreateMenuSchema,
   IdParamSchema,
@@ -21,7 +13,9 @@ import {
   MenuQuerySchema,
   MenuResponseSchema,
   UpdateMenuSchema,
-} from '../../schemas';
+} from '@/schemas';
+import { Controller, HttpCode, HttpStatus } from '@nestjs/common';
+
 import { MenuService } from './menu.service';
 
 @Controller('system/menu')
@@ -36,7 +30,7 @@ export class MenuController {
     bodySchema: CreateMenuSchema,
     responseSchema: MenuResponseSchema,
   })
-  async create(@Body() createMenuDto: typeof CreateMenuSchema.Type) {
+  async create(@ZodBody() createMenuDto: typeof CreateMenuSchema.Type) {
     return this.menuService.create(createMenuDto);
   }
 
@@ -48,7 +42,7 @@ export class MenuController {
     querySchema: MenuQuerySchema,
     responseSchema: MenuResponseSchema,
   })
-  async findAll(@Query() query: typeof MenuQuerySchema.Type) {
+  async findAll(@ZodQuery() query: typeof MenuQuerySchema.Type) {
     return this.menuService.findAll(query);
   }
 
@@ -60,7 +54,7 @@ export class MenuController {
     paramSchema: IdParamSchema,
     responseSchema: MenuResponseSchema,
   })
-  async findOne(@Param('id') id: string) {
+  async findOne(@ZodParam('id') id: string) {
     return this.menuService.findOne(id);
   }
 
@@ -71,7 +65,7 @@ export class MenuController {
     tags: ['菜单管理'],
     querySchema: MenuNameExistsSchema,
   })
-  async isNameExists(@Query() params: typeof MenuNameExistsSchema.Type) {
+  async isNameExists(@ZodQuery() params: typeof MenuNameExistsSchema.Type) {
     const exists = await this.menuService.isNameExists(params);
     return { exists };
   }
@@ -83,7 +77,7 @@ export class MenuController {
     tags: ['菜单管理'],
     querySchema: MenuPathExistsSchema,
   })
-  async isPathExists(@Query() params: typeof MenuPathExistsSchema.Type) {
+  async isPathExists(@ZodQuery() params: typeof MenuPathExistsSchema.Type) {
     const exists = await this.menuService.isPathExists(params);
     return { exists };
   }
@@ -96,7 +90,7 @@ export class MenuController {
     tags: ['菜单管理'],
     paramSchema: IdParamSchema,
   })
-  async remove(@Param('id') id: string) {
+  async remove(@ZodParam('id') id: string) {
     await this.menuService.remove(id);
   }
 
@@ -110,8 +104,8 @@ export class MenuController {
     responseSchema: MenuResponseSchema,
   })
   async update(
-    @Param('id') id: string,
-    @Body() updateMenuDto: typeof UpdateMenuSchema.Type,
+    @ZodParam('id') id: string,
+    @ZodBody() updateMenuDto: typeof UpdateMenuSchema.Type,
   ) {
     return this.menuService.update(id, updateMenuDto);
   }

@@ -1,15 +1,14 @@
+import { PrismaService } from '@/prisma/prisma.service';
+import {
+  CreateDepartmentSchema,
+  DepartmentQuerySchema,
+  UpdateDepartmentSchema,
+} from '@/schemas';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
-import { PrismaService } from '../../prisma/prisma.service';
-import {
-  CreateDepartmentSchema,
-  DepartmentQuerySchema,
-  UpdateDepartmentSchema,
-} from '../../schemas';
 
 @Injectable()
 export class DepartmentService {

@@ -1,13 +1,14 @@
-import { Body, Controller, Request } from '@nestjs/common';
-
-import { Public } from '../../common';
-import { ApiGet, ApiPost } from '../../decorators/api.decorator';
+import { Public } from '@/common';
+import { ApiGet, ApiPost } from '@/decorators/api.decorator';
+import { ZodBody } from '@/decorators/zod-param.decorator';
 import {
   AuthUserSchema,
   createResponseSchema,
   LoginRequestSchema,
   LoginResponseSchema,
-} from '../../schemas';
+} from '@/schemas';
+import { Controller, Request } from '@nestjs/common';
+
 import { AuthService } from './auth.service';
 
 // 用户资料响应 Schema
@@ -91,7 +92,7 @@ export class AuthController {
     requireAuth: false,
   })
   async login(
-    @Body() loginDto: typeof LoginRequestSchema.Type,
+    @ZodBody() loginDto: typeof LoginRequestSchema.Type,
   ): Promise<typeof LoginResponseSchema.Type> {
     return this.authService.login(loginDto);
   }

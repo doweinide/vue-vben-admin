@@ -1,12 +1,11 @@
-import type { GeneratorConfig } from '../../utils/openApi-to-ts/types/openapi';
+import type { GeneratorConfig } from '@/utils/openApi-to-ts/types/openapi';
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import { generateTypeScriptCode } from '@/utils/openApi-to-ts';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-import { generateTypeScriptCode } from '../../utils/openApi-to-ts';
 
 @Injectable()
 export class OpenApiGeneratorService {

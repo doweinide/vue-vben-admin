@@ -1,12 +1,11 @@
-import { Body, Controller, Param, Query } from '@nestjs/common';
-
-import { Public } from '../../common';
+import { Public } from '@/common';
 import {
   ApiDelete,
   ApiGet,
   ApiPatch,
   ApiPost,
-} from '../../decorators/api.decorator';
+} from '@/decorators/api.decorator';
+import { ZodBody, ZodParam, ZodQuery } from '@/decorators/zod-param.decorator';
 import {
   CreateUserRequestSchema,
   CreateUserResponseSchema,
@@ -17,7 +16,9 @@ import {
   UpdateUserResponseSchema,
   UserQuerySchema,
   UserResponseSchema,
-} from '../../schemas';
+} from '@/schemas';
+import { Controller } from '@nestjs/common';
+
 import { UserService } from './user.service';
 
 // 分页用户响应 Schema - 直接使用工厂函数生成的完整响应结构
@@ -65,7 +66,7 @@ export class UserController {
     responseSchema: CreateUserResponseSchema,
   })
   create(
-    @Body() createUserDto: typeof CreateUserRequestSchema.Type,
+    @ZodBody() createUserDto: typeof CreateUserRequestSchema.Type,
   ): Promise<CreateUserResponse> {
     return this.userService.create(createUserDto);
   }
@@ -75,10 +76,8 @@ export class UserController {
    *
    * 支持分页查询，返回用户基本信息（不包含密码）
    * 角色信息会从 JSON 字符串反序列化为数组
-   *
-   * @param paginationQuery 分页查询参数
+   * @param userQuery 分页查询参数
    * @returns 分页的用户列表响应
-   *
    * @example
    * GET /users?page=1&limit=10
    */
@@ -91,7 +90,7 @@ export class UserController {
     querySchema: UserQuerySchema,
     requireAuth: true,
   })
-  async findAll(@Query() userQuery: typeof UserQuerySchema.Type) {
+  async findAll(@ZodQuery() userQuery: typeof UserQuerySchema.Type) {
     return this.userService.findAll(userQuery);
   }
 
@@ -115,7 +114,7 @@ export class UserController {
     responseSchema: UserResponseSchema,
     requireAuth: true,
   })
-  findOne(@Param('id') id: string): Promise<UserResponse> {
+  findOne(@ZodParam('id') id: string): Promise<UserResponse> {
     return this.userService.findOne(id);
   }
 
@@ -139,7 +138,7 @@ export class UserController {
     responseSchema: DeleteUserResponseSchema,
     requireAuth: true,
   })
-  remove(@Param('id') id: string): Promise<DeleteUserResponse> {
+  remove(@ZodParam('id') id: string): Promise<DeleteUserResponse> {
     return this.userService.remove(id);
   }
 
@@ -170,8 +169,8 @@ export class UserController {
     requireAuth: true,
   })
   update(
-    @Param('id') id: string,
-    @Body() updateUserDto: typeof UpdateUserRequestSchema.Type,
+    @ZodParam('id') id: string,
+    @ZodBody() updateUserDto: typeof UpdateUserRequestSchema.Type,
   ): Promise<UpdateUserResponse> {
     return this.userService.update(id, updateUserDto);
   }

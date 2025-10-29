@@ -1,9 +1,8 @@
+import { UserService } from '@/modules/system/user/user.service';
+import { LoginRequestSchema } from '@/schemas';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-
-import { LoginRequestSchema } from '../../schemas';
-import { UserService } from '../user/user.service';
 
 /**
  * 认证服务

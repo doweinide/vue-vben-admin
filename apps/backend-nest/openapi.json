@@ -670,6 +670,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "default": 1,
@@ -695,6 +696,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -744,6 +746,7 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "default": 1,
@@ -751,11 +754,13 @@
                         },
                         "createdAt": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "用户创建时间，自动设置为当前时间"
                         },
                         "updatedAt": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "用户信息最后更新时间，每次更新时自动更新"
                         }
@@ -886,6 +891,7 @@
           {
             "schema": {
               "type": "integer",
+              "nullable": true,
               "minimum": 0,
               "maximum": 1,
               "description": "按账户状态筛选：0-禁用，1-启用"
@@ -916,6 +922,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -965,6 +972,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "default": 1,
@@ -972,11 +980,13 @@
                               },
                               "createdAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户创建时间，自动设置为当前时间"
                               },
                               "updatedAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户信息最后更新时间，每次更新时自动更新"
                               },
@@ -1000,6 +1010,7 @@
                                   },
                                   "status": {
                                     "type": "integer",
+                                    "nullable": true,
                                     "minimum": 0,
                                     "maximum": 1,
                                     "description": "部门状态：0-禁用，1-启用"
@@ -1011,11 +1022,13 @@
                                   },
                                   "createTime": {
                                     "type": "string",
+                                    "nullable": true,
                                     "format": "date",
                                     "description": "创建时间"
                                   },
                                   "updateTime": {
                                     "type": "string",
+                                    "nullable": true,
                                     "format": "date",
                                     "description": "更新时间"
                                   }
@@ -1048,6 +1061,7 @@
                                     },
                                     "assignedAt": {
                                       "type": "string",
+                                      "nullable": true,
                                       "format": "date",
                                       "description": "分配时间"
                                     },
@@ -1070,6 +1084,7 @@
                                         },
                                         "status": {
                                           "type": "integer",
+                                          "nullable": true,
                                           "minimum": 0,
                                           "maximum": 1,
                                           "description": "角色状态：0-禁用，1-启用"
@@ -1081,11 +1096,13 @@
                                         },
                                         "createTime": {
                                           "type": "string",
+                                          "nullable": true,
                                           "format": "date",
                                           "description": "创建时间"
                                         },
                                         "updateTime": {
                                           "type": "string",
+                                          "nullable": true,
                                           "format": "date",
                                           "description": "更新时间"
                                         }
@@ -1122,18 +1139,22 @@
                         },
                         "total": {
                           "type": "number",
+                          "nullable": true,
                           "description": "总记录数"
                         },
                         "page": {
                           "type": "number",
+                          "nullable": true,
                           "description": "当前页码"
                         },
                         "limit": {
                           "type": "number",
+                          "nullable": true,
                           "description": "每页数量"
                         },
                         "totalPages": {
                           "type": "number",
+                          "nullable": true,
                           "description": "总页数"
                         }
                       },
@@ -1257,6 +1278,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -1301,6 +1323,7 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "default": 1,
@@ -1308,11 +1331,13 @@
                         },
                         "createdAt": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "用户创建时间，自动设置为当前时间"
                         },
                         "updatedAt": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "用户信息最后更新时间，每次更新时自动更新"
                         },
@@ -1336,6 +1361,7 @@
                             },
                             "status": {
                               "type": "integer",
+                              "nullable": true,
                               "minimum": 0,
                               "maximum": 1,
                               "description": "部门状态：0-禁用，1-启用"
@@ -1347,11 +1373,13 @@
                             },
                             "createTime": {
                               "type": "string",
+                              "nullable": true,
                               "format": "date",
                               "description": "创建时间"
                             },
                             "updateTime": {
                               "type": "string",
+                              "nullable": true,
                               "format": "date",
                               "description": "更新时间"
                             }
@@ -1384,6 +1412,7 @@
                               },
                               "assignedAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "分配时间"
                               },
@@ -1406,6 +1435,7 @@
                                   },
                                   "status": {
                                     "type": "integer",
+                                    "nullable": true,
                                     "minimum": 0,
                                     "maximum": 1,
                                     "description": "角色状态：0-禁用，1-启用"
@@ -1417,11 +1447,13 @@
                                   },
                                   "createTime": {
                                     "type": "string",
+                                    "nullable": true,
                                     "format": "date",
                                     "description": "创建时间"
                                   },
                                   "updateTime": {
                                     "type": "string",
+                                    "nullable": true,
                                     "format": "date",
                                     "description": "更新时间"
                                   }
@@ -1564,6 +1596,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -1722,6 +1755,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "description": "用户账户状态：0-禁用，1-启用"
@@ -1741,6 +1775,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -1790,6 +1825,7 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "default": 1,
@@ -1797,11 +1833,13 @@
                         },
                         "createdAt": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "用户创建时间，自动设置为当前时间"
                         },
                         "updatedAt": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "用户信息最后更新时间，每次更新时自动更新"
                         }
@@ -1914,6 +1952,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -1957,17 +1996,20 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "description": "用户账户状态：0-禁用，1-启用"
                         },
                         "createTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "创建时间"
                         },
                         "updateTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "更新时间"
                         },
@@ -1990,6 +2032,7 @@
                               },
                               "assignedAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "分配时间"
                               },
@@ -2012,6 +2055,7 @@
                                   },
                                   "status": {
                                     "type": "integer",
+                                    "nullable": true,
                                     "minimum": 0,
                                     "maximum": 1,
                                     "description": "角色状态：0-禁用，1-启用"
@@ -2023,11 +2067,13 @@
                                   },
                                   "createTime": {
                                     "type": "string",
+                                    "nullable": true,
                                     "format": "date",
                                     "description": "创建时间"
                                   },
                                   "updateTime": {
                                     "type": "string",
+                                    "nullable": true,
                                     "format": "date",
                                     "description": "更新时间"
                                   }
@@ -2072,6 +2118,7 @@
                             },
                             "status": {
                               "type": "integer",
+                              "nullable": true,
                               "minimum": 0,
                               "maximum": 1,
                               "description": "部门状态：0-禁用，1-启用"
@@ -2083,11 +2130,13 @@
                             },
                             "createTime": {
                               "type": "string",
+                              "nullable": true,
                               "format": "date",
                               "description": "创建时间"
                             },
                             "updateTime": {
                               "type": "string",
+                              "nullable": true,
                               "format": "date",
                               "description": "更新时间"
                             }
@@ -2232,6 +2281,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -2282,17 +2332,20 @@
                             },
                             "status": {
                               "type": "integer",
+                              "nullable": true,
                               "minimum": 0,
                               "maximum": 1,
                               "description": "用户账户状态：0-禁用，1-启用"
                             },
                             "createTime": {
                               "type": "string",
+                              "nullable": true,
                               "format": "date",
                               "description": "创建时间"
                             },
                             "updateTime": {
                               "type": "string",
+                              "nullable": true,
                               "format": "date",
                               "description": "更新时间"
                             },
@@ -2315,6 +2368,7 @@
                                   },
                                   "assignedAt": {
                                     "type": "string",
+                                    "nullable": true,
                                     "format": "date",
                                     "description": "分配时间"
                                   },
@@ -2337,6 +2391,7 @@
                                       },
                                       "status": {
                                         "type": "integer",
+                                        "nullable": true,
                                         "minimum": 0,
                                         "maximum": 1,
                                         "description": "角色状态：0-禁用，1-启用"
@@ -2348,11 +2403,13 @@
                                       },
                                       "createTime": {
                                         "type": "string",
+                                        "nullable": true,
                                         "format": "date",
                                         "description": "创建时间"
                                       },
                                       "updateTime": {
                                         "type": "string",
+                                        "nullable": true,
                                         "format": "date",
                                         "description": "更新时间"
                                       }
@@ -2397,6 +2454,7 @@
                                 },
                                 "status": {
                                   "type": "integer",
+                                  "nullable": true,
                                   "minimum": 0,
                                   "maximum": 1,
                                   "description": "部门状态：0-禁用，1-启用"
@@ -2408,11 +2466,13 @@
                                 },
                                 "createTime": {
                                   "type": "string",
+                                  "nullable": true,
                                   "format": "date",
                                   "description": "创建时间"
                                 },
                                 "updateTime": {
                                   "type": "string",
+                                  "nullable": true,
                                   "format": "date",
                                   "description": "更新时间"
                                 }
@@ -2526,6 +2586,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "default": 1,
@@ -2554,6 +2615,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -2579,6 +2641,7 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "description": "部门状态：0-禁用，1-启用"
@@ -2590,11 +2653,13 @@
                         },
                         "createTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "创建时间"
                         },
                         "updateTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "更新时间"
                         },
@@ -2649,17 +2714,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
                               },
                               "createdAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户创建时间，自动设置为当前时间"
                               },
                               "updatedAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户信息最后更新时间，每次更新时自动更新"
                               }
@@ -2787,6 +2855,7 @@
           {
             "schema": {
               "type": "integer",
+              "nullable": true,
               "minimum": 0,
               "maximum": 1,
               "description": "按部门状态筛选：0-禁用，1-启用"
@@ -2818,6 +2887,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -2843,6 +2913,7 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "description": "部门状态：0-禁用，1-启用"
@@ -2854,11 +2925,13 @@
                         },
                         "createTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "创建时间"
                         },
                         "updateTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "更新时间"
                         },
@@ -2913,17 +2986,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
                               },
                               "createdAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户创建时间，自动设置为当前时间"
                               },
                               "updatedAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户信息最后更新时间，每次更新时自动更新"
                               }
@@ -3035,6 +3111,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -3060,6 +3137,7 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "description": "部门状态：0-禁用，1-启用"
@@ -3071,11 +3149,13 @@
                         },
                         "createTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "创建时间"
                         },
                         "updateTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "更新时间"
                         },
@@ -3130,17 +3210,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
                               },
                               "createdAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户创建时间，自动设置为当前时间"
                               },
                               "updatedAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户信息最后更新时间，每次更新时自动更新"
                               }
@@ -3347,6 +3430,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "description": "部门状态：0-禁用，1-启用"
@@ -3371,6 +3455,7 @@
                   "properties": {
                     "code": {
                       "type": "number",
+                      "nullable": true,
                       "description": "响应状态码，200表示成功，其他表示错误"
                     },
                     "message": {
@@ -3396,6 +3481,7 @@
                         },
                         "status": {
                           "type": "integer",
+                          "nullable": true,
                           "minimum": 0,
                           "maximum": 1,
                           "description": "部门状态：0-禁用，1-启用"
@@ -3407,11 +3493,13 @@
                         },
                         "createTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "创建时间"
                         },
                         "updateTime": {
                           "type": "string",
+                          "nullable": true,
                           "format": "date",
                           "description": "更新时间"
                         },
@@ -3466,17 +3554,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
                               },
                               "createdAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户创建时间，自动设置为当前时间"
                               },
                               "updatedAt": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "用户信息最后更新时间，每次更新时自动更新"
                               }
@@ -3613,6 +3704,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "default": 1,
@@ -3632,18 +3724,22 @@
                       },
                       "hideInMenu": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否在菜单中隐藏"
                       },
                       "hideInBreadcrumb": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否在面包屑中隐藏"
                       },
                       "hideChildrenInMenu": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否隐藏子菜单"
                       },
                       "orderNo": {
                         "type": "number",
+                        "nullable": true,
                         "description": "排序号"
                       },
                       "frameSrc": {
@@ -3656,18 +3752,22 @@
                       },
                       "ignoreKeepAlive": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否忽略缓存"
                       },
                       "affix": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否固定标签页"
                       },
                       "carryParam": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否携带参数"
                       },
                       "single": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否单独显示"
                       },
                       "currentActiveMenu": {
@@ -3676,22 +3776,27 @@
                       },
                       "hideTab": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否隐藏标签页"
                       },
                       "hideMenu": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否隐藏菜单"
                       },
                       "isLink": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否为外链"
                       },
                       "ignoreRoute": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否忽略路由"
                       },
                       "hidePathForChildren": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否为子级隐藏路径"
                       }
                     },
@@ -3753,6 +3858,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "菜单状态：0-禁用，1-启用"
@@ -3763,11 +3869,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -3802,6 +3910,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -3819,6 +3928,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "角色状态：0-禁用，1-启用"
@@ -3830,11 +3940,13 @@
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }
@@ -3980,6 +4092,7 @@
           {
             "schema": {
               "type": "integer",
+              "nullable": true,
               "minimum": 0,
               "maximum": 1,
               "description": "按菜单状态筛选：0-禁用，1-启用"
@@ -4048,6 +4161,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "菜单状态：0-禁用，1-启用"
@@ -4058,11 +4172,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -4097,6 +4213,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -4114,6 +4231,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "角色状态：0-禁用，1-启用"
@@ -4125,11 +4243,13 @@
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }
@@ -4279,6 +4399,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "菜单状态：0-禁用，1-启用"
@@ -4289,11 +4410,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -4328,6 +4451,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -4345,6 +4469,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "角色状态：0-禁用，1-启用"
@@ -4356,11 +4481,13 @@
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }
@@ -4597,6 +4724,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "description": "菜单状态：0-禁用，1-启用"
@@ -4615,18 +4743,22 @@
                       },
                       "hideInMenu": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否在菜单中隐藏"
                       },
                       "hideInBreadcrumb": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否在面包屑中隐藏"
                       },
                       "hideChildrenInMenu": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否隐藏子菜单"
                       },
                       "orderNo": {
                         "type": "number",
+                        "nullable": true,
                         "description": "排序号"
                       },
                       "frameSrc": {
@@ -4639,18 +4771,22 @@
                       },
                       "ignoreKeepAlive": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否忽略缓存"
                       },
                       "affix": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否固定标签页"
                       },
                       "carryParam": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否携带参数"
                       },
                       "single": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否单独显示"
                       },
                       "currentActiveMenu": {
@@ -4659,22 +4795,27 @@
                       },
                       "hideTab": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否隐藏标签页"
                       },
                       "hideMenu": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否隐藏菜单"
                       },
                       "isLink": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否为外链"
                       },
                       "ignoreRoute": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否忽略路由"
                       },
                       "hidePathForChildren": {
                         "type": "boolean",
+                        "nullable": true,
                         "description": "是否为子级隐藏路径"
                       }
                     },
@@ -4732,6 +4873,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "菜单状态：0-禁用，1-启用"
@@ -4742,11 +4884,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -4781,6 +4925,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -4798,6 +4943,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "角色状态：0-禁用，1-启用"
@@ -4809,11 +4955,13 @@
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }
@@ -5419,6 +5567,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "default": 1,
@@ -5464,6 +5613,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "角色状态：0-禁用，1-启用"
@@ -5475,11 +5625,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -5502,6 +5654,7 @@
                           },
                           "assignedAt": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "分配时间"
                           },
@@ -5536,6 +5689,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
@@ -5578,6 +5732,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -5618,17 +5773,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "菜单状态：0-禁用，1-启用"
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }
@@ -5755,6 +5913,7 @@
           {
             "schema": {
               "type": "integer",
+              "nullable": true,
               "minimum": 0,
               "maximum": 1,
               "description": "按角色状态筛选：0-禁用，1-启用"
@@ -5784,6 +5943,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "角色状态：0-禁用，1-启用"
@@ -5795,11 +5955,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -5822,6 +5984,7 @@
                           },
                           "assignedAt": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "分配时间"
                           },
@@ -5856,6 +6019,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
@@ -5898,6 +6062,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -5938,17 +6103,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "菜单状态：0-禁用，1-启用"
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }
@@ -6070,6 +6238,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "角色状态：0-禁用，1-启用"
@@ -6081,11 +6250,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -6108,6 +6279,7 @@
                           },
                           "assignedAt": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "分配时间"
                           },
@@ -6142,6 +6314,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
@@ -6184,6 +6357,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -6224,17 +6398,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "菜单状态：0-禁用，1-启用"
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }
@@ -6437,6 +6614,7 @@
                   },
                   "status": {
                     "type": "integer",
+                    "nullable": true,
                     "minimum": 0,
                     "maximum": 1,
                     "description": "角色状态：0-禁用，1-启用"
@@ -6477,6 +6655,7 @@
                     },
                     "status": {
                       "type": "integer",
+                      "nullable": true,
                       "minimum": 0,
                       "maximum": 1,
                       "description": "角色状态：0-禁用，1-启用"
@@ -6488,11 +6667,13 @@
                     },
                     "createTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "创建时间"
                     },
                     "updateTime": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date",
                       "description": "更新时间"
                     },
@@ -6515,6 +6696,7 @@
                           },
                           "assignedAt": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "分配时间"
                           },
@@ -6549,6 +6731,7 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "用户账户状态：0-禁用，1-启用"
@@ -6591,6 +6774,7 @@
                           },
                           "createTime": {
                             "type": "string",
+                            "nullable": true,
                             "format": "date",
                             "description": "创建时间"
                           },
@@ -6631,17 +6815,20 @@
                               },
                               "status": {
                                 "type": "integer",
+                                "nullable": true,
                                 "minimum": 0,
                                 "maximum": 1,
                                 "description": "菜单状态：0-禁用，1-启用"
                               },
                               "createTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "创建时间"
                               },
                               "updateTime": {
                                 "type": "string",
+                                "nullable": true,
                                 "format": "date",
                                 "description": "更新时间"
                               }

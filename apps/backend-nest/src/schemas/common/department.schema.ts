@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import { zPro as z } from '@/utils/zod/z-enhanced';
+// import { z } from 'zod';
 
 import {
   createPaginatedResponseSchema,
@@ -70,8 +71,8 @@ export const UpdateDepartmentSchema = createSchema(
 export const DepartmentQuerySchema = createSchema(
   z.object({
     // / 页码，从1开始
-    page: z.coerce.number().min(1).default(1).describe('页码，从1开始'),
-    limit: z.coerce
+    page: z.number().min(1).default(1).describe('页码，从1开始'),
+    limit: z
       .number()
       .min(1)
       .max(100)

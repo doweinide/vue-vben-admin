@@ -9,12 +9,12 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { PathCollector } from './config/path-collector';
 import { ResponseFormatInterceptor } from './interceptors/response-format.interceptor';
-import { AuthModule } from './modules/auth/auth.module';
-import { DepartmentModule } from './modules/department/department.module';
-import { MenuModule } from './modules/menu/menu.module';
-import { OpenApiGeneratorModule } from './modules/openapi-generator/openapi-generator.module';
-import { RoleModule } from './modules/role/role.module';
-import { UserModule } from './modules/user/user.module';
+import { OpenApiGeneratorModule } from './modules/docs/openapi-generator/openapi-generator.module';
+import { AuthModule } from './modules/system/auth/auth.module';
+import { DepartmentModule } from './modules/system/department/department.module';
+import { MenuModule } from './modules/system/menu/menu.module';
+import { RoleModule } from './modules/system/role/role.module';
+import { UserModule } from './modules/system/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TestValidationController } from './test-validation.controller';
 

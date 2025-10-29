@@ -1,18 +1,17 @@
-import type { PaginationQuery } from '../../schemas';
+import type { PaginationQuery } from '@/schemas';
 
+import { PrismaService } from '@/prisma/prisma.service';
+import {
+  CreateUserRequestSchema,
+  ResponseBuilder,
+  UpdateUserRequestSchema,
+} from '@/schemas';
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-
-import { PrismaService } from '../../prisma/prisma.service';
-import {
-  CreateUserRequestSchema,
-  ResponseBuilder,
-  UpdateUserRequestSchema,
-} from '../../schemas';
 
 /**
  * 用户服务

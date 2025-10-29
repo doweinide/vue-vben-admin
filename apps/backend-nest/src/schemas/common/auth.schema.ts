@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { zPro as z } from '@/utils/zod/z-enhanced';
 
 import { createResponseSchema, createSchema } from '../base/base.schema';
 

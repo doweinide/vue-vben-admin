@@ -1,25 +1,19 @@
 import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Query,
-} from '@nestjs/common';
-
-import {
   ApiDelete,
   ApiGet,
   ApiPatch,
   ApiPost,
-} from '../../decorators/api.decorator';
+} from '@/decorators/api.decorator';
+import { ZodBody, ZodParam, ZodQuery } from '@/decorators/zod-param.decorator';
 import {
   CreateDepartmentSchema,
   DepartmentQuerySchema,
   DepartmentResponseSchema,
   IdParamSchema,
   UpdateDepartmentSchema,
-} from '../../schemas';
+} from '@/schemas';
+import { Controller, HttpCode, HttpStatus } from '@nestjs/common';
+
 import { DepartmentService } from './department.service';
 
 @Controller('system/dept')
@@ -35,7 +29,7 @@ export class DepartmentController {
     responseSchema: DepartmentResponseSchema,
   })
   async create(
-    @Body() createDepartmentDto: typeof CreateDepartmentSchema.Type,
+    @ZodBody() createDepartmentDto: typeof CreateDepartmentSchema.Type,
   ) {
     return this.departmentService.create(createDepartmentDto);
   }
@@ -48,7 +42,9 @@ export class DepartmentController {
     querySchema: DepartmentQuerySchema,
     responseSchema: DepartmentResponseSchema,
   })
-  async findAll(@Query() query: typeof DepartmentQuerySchema.Type) {
+  async findAll(@ZodQuery() query: typeof DepartmentQuerySchema.Type) {
+    console.log('Received query:', query);
+    console.log('Type of query.status:', typeof query.status);
     return this.departmentService.findAll(query);
   }
 
@@ -60,7 +56,7 @@ export class DepartmentController {
     paramSchema: IdParamSchema,
     responseSchema: DepartmentResponseSchema,
   })
-  async findOne(@Param('id') id: string) {
+  async findOne(@ZodParam('id') id: string) {
     return this.departmentService.findOne(id);
   }
 
@@ -72,7 +68,7 @@ export class DepartmentController {
     tags: ['部门管理'],
     paramSchema: IdParamSchema,
   })
-  async remove(@Param('id') id: string) {
+  async remove(@ZodParam('id') id: string) {
     await this.departmentService.remove(id);
   }
 
@@ -86,8 +82,8 @@ export class DepartmentController {
     responseSchema: DepartmentResponseSchema,
   })
   async update(
-    @Param('id') id: string,
-    @Body() updateDepartmentDto: typeof UpdateDepartmentSchema.Type,
+    @ZodParam('id') id: string,
+    @ZodBody() updateDepartmentDto: typeof UpdateDepartmentSchema.Type,
   ) {
     return this.departmentService.update(id, updateDepartmentDto);
   }

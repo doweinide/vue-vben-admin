@@ -1,17 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreateMenuSchema,
   MenuNameExistsSchema,
   MenuPathExistsSchema,
   MenuQuerySchema,
   UpdateMenuSchema,
-} from '../../schemas';
+} from '@/schemas';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 @Injectable()
 export class MenuService {

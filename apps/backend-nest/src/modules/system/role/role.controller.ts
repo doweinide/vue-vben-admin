@@ -1,11 +1,10 @@
-import { Body, Controller, Param, Query } from '@nestjs/common';
-
 import {
   ApiDelete,
   ApiGet,
   ApiPatch,
   ApiPost,
-} from '../../decorators/api.decorator';
+} from '@/decorators/api.decorator';
+import { ZodBody, ZodParam, ZodQuery } from '@/decorators/zod-param.decorator';
 import {
   CreateRoleSchema,
   IdParamSchema,
@@ -14,7 +13,9 @@ import {
   RoleQuerySchema,
   RoleResponseSchema,
   UpdateRoleSchema,
-} from '../../schemas';
+} from '@/schemas';
+import { Controller } from '@nestjs/common';
+
 import { RoleService } from './role.service';
 
 /**
@@ -38,8 +39,8 @@ export class RoleController {
     bodySchema: RolePermissionSchema,
   })
   async assignPermissions(
-    @Param('id') id: string,
-    @Body() rolePermissionDto: typeof RolePermissionSchema.Type,
+    @ZodParam('id') id: string,
+    @ZodBody() rolePermissionDto: typeof RolePermissionSchema.Type,
   ) {
     await this.roleService.assignPermissions(id, rolePermissionDto.menuIds);
     return { message: '权限分配成功' };
@@ -52,7 +53,9 @@ export class RoleController {
     tags: ['角色管理'],
     bodySchema: RoleNameCheckSchema,
   })
-  checkNameExists(@Body() roleNameCheckDto: typeof RoleNameCheckSchema.Type) {
+  checkNameExists(
+    @ZodBody() roleNameCheckDto: typeof RoleNameCheckSchema.Type,
+  ) {
     return { exists: false };
   }
 
@@ -64,7 +67,7 @@ export class RoleController {
     bodySchema: CreateRoleSchema,
     responseSchema: RoleResponseSchema,
   })
-  create(@Body() createRoleDto: typeof CreateRoleSchema.Type) {
+  create(@ZodBody() createRoleDto: typeof CreateRoleSchema.Type) {
     return this.roleService.create(createRoleDto);
   }
 
@@ -76,7 +79,7 @@ export class RoleController {
     querySchema: RoleQuerySchema,
     responseSchema: RoleResponseSchema,
   })
-  findAll(@Query() query: typeof RoleQuerySchema.Type) {
+  findAll(@ZodQuery() query: typeof RoleQuerySchema.Type) {
     return this.roleService.findAll(query);
   }
 
@@ -88,7 +91,7 @@ export class RoleController {
     paramSchema: IdParamSchema,
     responseSchema: RoleResponseSchema,
   })
-  findOne(@Param('id') id: string) {
+  findOne(@ZodParam('id') id: string) {
     return this.roleService.findOne(id);
   }
 
@@ -99,7 +102,7 @@ export class RoleController {
     tags: ['角色管理'],
     paramSchema: IdParamSchema,
   })
-  getPermissions(@Param('id') id: string) {
+  getPermissions(@ZodParam('id') id: string) {
     return this.roleService.getRolePermissions(id);
   }
 
@@ -110,7 +113,7 @@ export class RoleController {
     tags: ['角色管理'],
     paramSchema: IdParamSchema,
   })
-  remove(@Param('id') id: string) {
+  remove(@ZodParam('id') id: string) {
     return this.roleService.remove(id);
   }
 
@@ -124,8 +127,8 @@ export class RoleController {
     responseSchema: RoleResponseSchema,
   })
   update(
-    @Param('id') id: string,
-    @Body() updateRoleDto: typeof UpdateRoleSchema.Type,
+    @ZodParam('id') id: string,
+    @ZodBody() updateRoleDto: typeof UpdateRoleSchema.Type,
   ) {
     return this.roleService.update(id, updateRoleDto);
   }

@@ -1,16 +1,15 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreateRoleSchema,
   RolePermissionSchema,
   RoleQuerySchema,
   UpdateRoleSchema,
-} from '../../schemas';
+} from '@/schemas';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 @Injectable()
 export class RoleService {
