@@ -37,7 +37,7 @@ export class OpenApiGeneratorService {
         separateTypes: true,
         includeComments: true,
         generateIndex: true,
-        generateUtils: true,
+        generateUtils: false,
         functionNaming: 'snake_case',
         typeNaming: 'snake_case',
         createByTags: createByTags ?? false,

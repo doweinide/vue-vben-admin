@@ -111,31 +111,37 @@ export class OpenAPIConfig {
       tags: [
         {
           name: '认证管理',
-          description: '用户认证相关接口，包括登录、注册、令牌刷新等',
+          description:
+            '用户认证相关接口，包括登录、注册、令牌刷新等（English: auth）',
         },
         {
           name: '用户管理',
-          description: '用户信息管理接口，包括用户信息查询、更新、删除等',
+          description:
+            '用户信息管理接口，包括用户信息查询、更新、删除等（English: user）',
         },
         {
           name: '菜单管理',
-          description: '系统菜单管理接口，包括菜单的增删改查、权限配置等',
+          description:
+            '系统菜单管理接口，包括菜单的增删改查、权限配置等（English: menu）',
         },
         {
           name: '角色管理',
-          description: '用户角色管理接口，包括角色的增删改查、权限分配等',
+          description:
+            '用户角色管理接口，包括角色的增删改查、权限分配等（English: role）',
         },
         {
           name: '部门管理',
-          description: '组织部门管理接口，包括部门的增删改查、层级管理等',
+          description:
+            '组织部门管理接口，包括部门的增删改查、层级管理等（English: department）',
         },
         {
           name: '系统管理',
-          description: '系统基础接口，包括健康检查、系统信息等',
+          description:
+            '系统基础接口，包括健康检查、系统信息等（English: system）',
         },
         {
           name: '测试',
-          description: '测试相关接口，用于验证系统功能和性能',
+          description: '测试相关接口，用于验证系统功能和性能（English: test）',
         },
       ],
     });

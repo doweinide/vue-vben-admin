@@ -296,6 +296,12 @@ class TypeScriptGenerator {
    * 格式化文件名称
    */
   private formatFileName(name: string): string {
+    // 尝试从 OpenAPI 文档的 tags 中查找英文副名
+    const englishName = this.getTagEnglishName(name);
+    if (englishName) {
+      return englishName;
+    }
+
     // 如果是中文标签，直接使用中文名称
     if (/[\u4E00-\u9FA5]/.test(name)) {
       return name;
@@ -624,6 +630,26 @@ class TypeScriptGenerator {
     return schema.type === 'object' || schema.properties
       ? `export interface ${typeName} ${typeDefinition}`
       : `export type ${typeName} = ${typeDefinition};`;
+  }
+
+  /**
+   * 获取 tag 的英文副名/没有直接返回tagName
+   */
+  private getTagEnglishName(tagName: string): null | string {
+    if (!this.doc.tags) {
+      return null;
+    }
+
+    const tag = this.doc.tags.find((t: any) => t.name === tagName);
+    if (!tag?.description) {
+      return tagName;
+    }
+
+    // 使用正则表达式匹配 description 中的英文名称
+    // 匹配格式：（English: xxx）
+    // eslint-disable-next-line regexp/no-super-linear-backtracking
+    const match = tag.description.match(/（English:\s*([^）]*)）/);
+    return match ? match[1].trim() : tagName;
   }
 
   /**
