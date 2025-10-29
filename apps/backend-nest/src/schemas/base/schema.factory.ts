@@ -1,7 +1,4 @@
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-import { z } from 'zod';
-
-extendZodWithOpenApi(z);
+import { zPro as z } from '@/utils/zod/z-enhanced';
 
 /**
  * 通用 schema 工厂

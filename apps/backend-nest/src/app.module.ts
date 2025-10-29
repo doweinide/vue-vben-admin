@@ -9,7 +9,6 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { PathCollector } from './config/path-collector';
 import { ResponseFormatInterceptor } from './interceptors/response-format.interceptor';
-import { ZodValidationInterceptor } from './interceptors/zod-validation.interceptor';
 import { AuthModule } from './modules/auth/auth.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { MenuModule } from './modules/menu/menu.module';
@@ -67,11 +66,6 @@ import { TestValidationController } from './test-validation.controller';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
-    // 全局 Zod 验证拦截器
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ZodValidationInterceptor,
     },
     // 全局响应格式拦截器
     {

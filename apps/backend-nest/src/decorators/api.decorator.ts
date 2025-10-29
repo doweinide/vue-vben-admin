@@ -1,5 +1,5 @@
+import { zPro as z } from '@/utils/zod/z-enhanced';
 import { applyDecorators, Delete, Get, Patch, Post, Put } from '@nestjs/common';
-import { z } from 'zod';
 
 import { openAPIConfig } from '../config/openapi.config';
 

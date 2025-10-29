@@ -1,12 +1,9 @@
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-import { z } from 'zod';
+import { zPro as z } from '@/utils/zod/z-enhanced';
 
 import { createSchema } from './schema.factory';
 
 // 重新导出 createSchema 函数
 export { createSchema };
-
-extendZodWithOpenApi(z);
 
 /**
  * ✅ 基础响应结构（所有接口通用的最外层格式）
