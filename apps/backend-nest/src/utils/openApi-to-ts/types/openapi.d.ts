@@ -103,6 +103,8 @@ export interface GeneratorConfig {
   typeNaming: 'camelCase' | 'PascalCase' | 'snake_case';
   // 代码风格
   useAsync: boolean; // 是否使用 async/await
+  // 响应数据 key（例如 'data'）。设置后将把响应类型展开为 ResponseType['data']
+  responseDataKey?: string;
 }
 
 // 文件树节点

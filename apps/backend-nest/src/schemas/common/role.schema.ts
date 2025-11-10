@@ -128,7 +128,7 @@ export const RoleNameCheckSchema = createSchema(
  * 角色响应数据类型
  * 基于 Role 数据库模型定义
  */
-export const RoleResponseSchema = createSchema(
+export const RoleResponseSchema = createResponseSchema(
   z.object({
     // / 角色唯一标识
     id: z.string().describe('角色唯一标识'),

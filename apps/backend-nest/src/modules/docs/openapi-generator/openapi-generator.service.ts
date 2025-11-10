@@ -3,6 +3,7 @@ import type { GeneratorConfig } from '@/utils/openApi-to-ts/types/openapi';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import { openAPIConfig } from '@/config/openapi.config';
 import { generateTypeScriptCode } from '@/utils/openApi-to-ts';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -15,9 +16,9 @@ export class OpenApiGeneratorService {
 
   async generateTypescriptFiles(createByTags?: boolean) {
     try {
-      // 获取当前后端的 openapi.json
-      const openApiJsonPath = this.getOpenApiJsonPath();
-      const openApiJson = await this.loadOpenApiJson(openApiJsonPath);
+      // 先生成并保存最新的 OpenAPI 文档（openapi.json）
+      this.logger.log('正在生成最新 OpenAPI 文档并保存 openapi.json...');
+      const openApiJson = openAPIConfig.generateDocument();
 
       // 配置输出目录
       const outputPath = String.raw`F:\github_product\vben3_backend_font\playground\src\api\auto-api`;
@@ -42,12 +43,14 @@ export class OpenApiGeneratorService {
         typeNaming: 'snake_case',
         createByTags: createByTags ?? false,
         importTemplate: "import { request } from '#/api/request';",
+        // 将响应类型统一展开为 ['data']
+        responseDataKey: 'data',
       };
 
       // 生成 TypeScript 代码
       this.logger.log('开始生成 TypeScript 代码...');
       const result = await generateTypeScriptCode(
-        openApiJson,
+        openApiJson as any,
         config,
         apiPrefix,
       );

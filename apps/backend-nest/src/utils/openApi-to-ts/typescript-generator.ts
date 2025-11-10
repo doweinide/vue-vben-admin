@@ -434,7 +434,11 @@ class TypeScriptGenerator {
       : '';
 
     // 构建返回类型
-    const returnType = `Promise<${this.formatTypeName(`${functionName}Response`)}>`;
+    const baseResponseType = this.formatTypeName(`${functionName}Response`);
+    const responseType = this.config.responseDataKey
+      ? `${baseResponseType}['${this.config.responseDataKey}']`
+      : baseResponseType;
+    const returnType = `Promise<${responseType}>`;
 
     // 构建函数签名
     const signature = `export const ${functionName} = async (${paramType}): ${returnType} => {`;
@@ -459,9 +463,7 @@ class TypeScriptGenerator {
     // 处理路径参数，将 {id} 转换为 ${params.id}
     const processedUrl = this.processPathParameters(path, operation);
 
-    lines.push(
-      `  const response = await request<${this.formatTypeName(`${functionName}Response`)}>({`,
-    );
+    lines.push(`  const response = await request<${responseType}>({`);
     lines.push(`    url: ${processedUrl},`);
     lines.push(`    method: '${method.toUpperCase()}',`);
 
