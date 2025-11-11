@@ -11,44 +11,74 @@ import {
  * 菜单元数据（JSON格式存储图标、标题等信息）
  */
 export const MenuMetaSchema = createSchema(
-  z.object({
-    // / 菜单标题
-    title: z.string().optional().describe('菜单标题'),
-    // / 菜单图标
-    icon: z.string().optional().describe('菜单图标'),
-    // / 是否在菜单中隐藏
-    hideInMenu: z.boolean().optional().describe('是否在菜单中隐藏'),
-    // / 是否在面包屑中隐藏
-    hideInBreadcrumb: z.boolean().optional().describe('是否在面包屑中隐藏'),
-    // / 是否隐藏子菜单
-    hideChildrenInMenu: z.boolean().optional().describe('是否隐藏子菜单'),
-    // / 排序号
-    orderNo: z.number().optional().describe('排序号'),
-    // / 内嵌框架地址
-    frameSrc: z.string().optional().describe('内嵌框架地址'),
-    // / 外部链接地址
-    externalLink: z.string().optional().describe('外部链接地址'),
-    // / 是否忽略缓存
-    ignoreKeepAlive: z.boolean().optional().describe('是否忽略缓存'),
-    // / 是否固定标签页
-    affix: z.boolean().optional().describe('是否固定标签页'),
-    // / 是否携带参数
-    carryParam: z.boolean().optional().describe('是否携带参数'),
-    // / 是否单独显示
-    single: z.boolean().optional().describe('是否单独显示'),
-    // / 当前激活菜单
-    currentActiveMenu: z.string().optional().describe('当前激活菜单'),
-    // / 是否隐藏标签页
-    hideTab: z.boolean().optional().describe('是否隐藏标签页'),
-    // / 是否隐藏菜单
-    hideMenu: z.boolean().optional().describe('是否隐藏菜单'),
-    // / 是否为外链
-    isLink: z.boolean().optional().describe('是否为外链'),
-    // / 是否忽略路由
-    ignoreRoute: z.boolean().optional().describe('是否忽略路由'),
-    // / 是否为子级隐藏路径
-    hidePathForChildren: z.boolean().optional().describe('是否为子级隐藏路径'),
-  }),
+  z
+    .object({
+      // / 菜单标题
+      title: z.string().optional().describe('菜单标题'),
+      // / 菜单图标
+      icon: z.string().optional().describe('菜单图标'),
+      // / 菜单激活时的图标
+      activeIcon: z.string().optional().describe('菜单激活时的图标'),
+      // / 是否在菜单中隐藏
+      hideInMenu: z.boolean().optional().describe('是否在菜单中隐藏'),
+      // / 是否在面包屑中隐藏
+      hideInBreadcrumb: z.boolean().optional().describe('是否在面包屑中隐藏'),
+      // / 是否隐藏子菜单
+      hideChildrenInMenu: z.boolean().optional().describe('是否隐藏子菜单'),
+      // / 排序号
+      orderNo: z.number().optional().describe('排序号'),
+      // / 内嵌框架地址
+      frameSrc: z.string().optional().describe('内嵌框架地址'),
+      // / 表单使用：内嵌页面地址（iframeSrc 别名）
+      iframeSrc: z
+        .string()
+        .optional()
+        .describe('内嵌页面地址（iframeSrc 别名）'),
+      // / 外部链接地址
+      externalLink: z.string().optional().describe('外部链接地址'),
+      // / 表单使用：外部链接（externalLink 别名）
+      link: z.string().optional().describe('外部链接（link 别名）'),
+      // / 是否忽略缓存
+      ignoreKeepAlive: z.boolean().optional().describe('是否忽略缓存'),
+      // / 是否开启缓存（与 ignoreKeepAlive 相对）
+      keepAlive: z.boolean().optional().describe('是否开启缓存'),
+      // / 是否固定标签页
+      affix: z.boolean().optional().describe('是否固定标签页'),
+      // / 是否固定标签页（表单使用的别名）
+      affixTab: z.boolean().optional().describe('是否固定标签页（别名）'),
+      // / 是否携带参数
+      carryParam: z.boolean().optional().describe('是否携带参数'),
+      // / 是否单独显示
+      single: z.boolean().optional().describe('是否单独显示'),
+      // / 当前激活菜单
+      currentActiveMenu: z.string().optional().describe('当前激活菜单'),
+      // / 是否隐藏标签页
+      hideTab: z.boolean().optional().describe('是否隐藏标签页'),
+      // / 是否隐藏标签页（表单使用的别名）
+      hideInTab: z.boolean().optional().describe('是否隐藏标签页（别名）'),
+      // / 是否隐藏菜单
+      hideMenu: z.boolean().optional().describe('是否隐藏菜单'),
+      // / 是否为外链
+      isLink: z.boolean().optional().describe('是否为外链'),
+      // / 是否忽略路由
+      ignoreRoute: z.boolean().optional().describe('是否忽略路由'),
+      // / 是否为子级隐藏路径
+      hidePathForChildren: z
+        .boolean()
+        .optional()
+        .describe('是否为子级隐藏路径'),
+
+      // / 徽标类型：dot-圆点，normal-文本
+      badgeType: z
+        .string()
+        .optional()
+        .describe('徽标类型：dot-圆点，normal-文本'),
+      // / 徽标文本
+      badge: z.string().optional().describe('徽标文本'),
+      // / 徽标样式变体
+      badgeVariants: z.string().optional().describe('徽标样式变体'),
+    })
+    .passthrough(),
   'MenuMeta',
   '菜单元数据',
 );

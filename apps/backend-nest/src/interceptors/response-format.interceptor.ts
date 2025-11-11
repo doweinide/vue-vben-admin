@@ -38,6 +38,13 @@ export class ResponseFormatInterceptor implements NestInterceptor {
 
         // 检查是否已经是三段式格式
         if (this.isThreeSegmentFormat(data)) {
+          // 确保 data 字段始终存在，若为 undefined 则归一化为 null，避免被 JSON 序列化丢失
+          if (data.data === undefined) {
+            return {
+              ...data,
+              data: null,
+            };
+          }
           return data;
         }
 

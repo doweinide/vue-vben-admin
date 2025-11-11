@@ -75,9 +75,7 @@
       "get": {
         "summary": "健康检查",
         "description": "检查应用程序运行状态，返回服务状态、时间戳和运行时间",
-        "tags": [
-          "系统管理"
-        ],
+        "tags": ["系统管理"],
         "operationId": "AppController_getHealth",
         "responses": {
           "200": {
@@ -152,9 +150,7 @@
       "get": {
         "summary": "欢迎信息",
         "description": "应用程序根路径接口，返回欢迎信息",
-        "tags": [
-          "系统管理"
-        ],
+        "tags": ["系统管理"],
         "operationId": "AppController_getHello",
         "responses": {
           "200": {
@@ -229,9 +225,7 @@
       "post": {
         "summary": "测试创建",
         "description": "测试 Body 参数的自动验证",
-        "tags": [
-          "测试"
-        ],
+        "tags": ["测试"],
         "operationId": "TestValidationController_create",
         "requestBody": {
           "content": {
@@ -252,11 +246,7 @@
                     "minimum": 18
                   }
                 },
-                "required": [
-                  "name",
-                  "email",
-                  "age"
-                ]
+                "required": ["name", "email", "age"]
               }
             }
           }
@@ -332,9 +322,7 @@
       "get": {
         "summary": "测试获取列表",
         "description": "测试 Query 参数的自动验证",
-        "tags": [
-          "测试"
-        ],
+        "tags": ["测试"],
         "operationId": "TestValidationController_findAll",
         "parameters": [
           {
@@ -429,9 +417,7 @@
       "get": {
         "summary": "测试获取详情",
         "description": "测试 Param 参数的自动验证",
-        "tags": [
-          "测试"
-        ],
+        "tags": ["测试"],
         "operationId": "TestValidationController_findOne",
         "parameters": [
           {
@@ -515,9 +501,7 @@
       "post": {
         "summary": "测试更新",
         "description": "测试 Body + Param 参数的自动验证",
-        "tags": [
-          "测试"
-        ],
+        "tags": ["测试"],
         "operationId": "TestValidationController_update",
         "parameters": [
           {
@@ -626,9 +610,7 @@
       "post": {
         "summary": "创建用户",
         "description": "创建新用户账户，公共接口允许用户注册",
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "operationId": "UserController_create",
         "requestBody": {
           "content": {
@@ -677,11 +659,7 @@
                     "description": "用户账户状态：0-禁用，1-启用"
                   }
                 },
-                "required": [
-                  "username",
-                  "email",
-                  "password"
-                ]
+                "required": ["username", "email", "password"]
               }
             }
           }
@@ -776,11 +754,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -832,9 +806,7 @@
       "get": {
         "summary": "获取用户列表",
         "description": "支持分页查询，返回用户基本信息（不包含密码）",
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearerAuth": []
@@ -1168,11 +1140,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -1246,9 +1214,7 @@
       "get": {
         "summary": "获取用户详情",
         "description": "根据用户ID获取用户详细信息，需要认证",
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearerAuth": []
@@ -1468,12 +1434,7 @@
                                 "description": "关联的角色信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "userId",
-                              "roleId",
-                              "assignedAt"
-                            ]
+                            "required": ["id", "userId", "roleId", "assignedAt"]
                           },
                           "description": "用户角色关联（多对多）"
                         }
@@ -1488,11 +1449,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -1564,9 +1521,7 @@
       "delete": {
         "summary": "删除用户",
         "description": "删除指定用户，需要认证和管理员权限",
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearerAuth": []
@@ -1611,17 +1566,11 @@
                           "description": "删除成功消息"
                         }
                       },
-                      "required": [
-                        "message"
-                      ],
+                      "required": ["message"],
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -1693,9 +1642,7 @@
       "patch": {
         "summary": "更新用户信息",
         "description": "更新指定用户的信息，需要认证",
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearerAuth": []
@@ -1855,11 +1802,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -1933,9 +1876,7 @@
       "get": {
         "summary": "获取当前用户信息",
         "description": "获取当前登录用户的详细信息，需要提供有效的 JWT token",
-        "tags": [
-          "认证管理"
-        ],
+        "tags": ["认证管理"],
         "security": [
           {
             "bearerAuth": []
@@ -2162,11 +2103,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -2240,9 +2177,7 @@
       "post": {
         "summary": "用户登录",
         "description": "用户通过用户名和密码进行登录认证，成功后返回 JWT token",
-        "tags": [
-          "认证管理"
-        ],
+        "tags": ["认证管理"],
         "operationId": "AuthController_login",
         "requestBody": {
           "content": {
@@ -2263,10 +2198,7 @@
                     "description": "用户密码"
                   }
                 },
-                "required": [
-                  "username",
-                  "password"
-                ]
+                "required": ["username", "password"]
               }
             }
           }
@@ -2498,18 +2430,11 @@
                           "description": "用户信息"
                         }
                       },
-                      "required": [
-                        "access_token",
-                        "user"
-                      ],
+                      "required": ["access_token", "user"],
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -2563,9 +2488,7 @@
       "post": {
         "summary": "创建部门",
         "description": "创建新的部门",
-        "tags": [
-          "部门管理"
-        ],
+        "tags": ["部门管理"],
         "operationId": "DepartmentController_create",
         "requestBody": {
           "content": {
@@ -2598,9 +2521,7 @@
                     "description": "备注信息"
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               }
             }
           }
@@ -2754,11 +2675,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -2812,9 +2729,7 @@
       "get": {
         "summary": "获取部门列表",
         "description": "获取部门列表，支持筛选条件",
-        "tags": [
-          "部门管理"
-        ],
+        "tags": ["部门管理"],
         "operationId": "DepartmentController_findAll",
         "parameters": [
           {
@@ -3026,11 +2941,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -3084,9 +2995,7 @@
       "get": {
         "summary": "获取部门详情",
         "description": "根据ID获取部门详情",
-        "tags": [
-          "部门管理"
-        ],
+        "tags": ["部门管理"],
         "operationId": "DepartmentController_findOne",
         "parameters": [
           {
@@ -3250,11 +3159,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -3306,9 +3211,7 @@
       "delete": {
         "summary": "删除部门",
         "description": "删除指定ID的部门",
-        "tags": [
-          "部门管理"
-        ],
+        "tags": ["部门管理"],
         "operationId": "DepartmentController_remove",
         "parameters": [
           {
@@ -3394,9 +3297,7 @@
       "patch": {
         "summary": "更新部门",
         "description": "更新指定ID的部门信息",
-        "tags": [
-          "部门管理"
-        ],
+        "tags": ["部门管理"],
         "operationId": "DepartmentController_update",
         "parameters": [
           {
@@ -3594,11 +3495,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -3652,9 +3549,7 @@
       "post": {
         "summary": "创建菜单",
         "description": "创建新的菜单项",
-        "tags": [
-          "菜单管理"
-        ],
+        "tags": ["菜单管理"],
         "operationId": "MenuController_create",
         "requestBody": {
           "content": {
@@ -3682,13 +3577,7 @@
                   },
                   "type": {
                     "type": "string",
-                    "enum": [
-                      "catalog",
-                      "menu",
-                      "button",
-                      "embedded",
-                      "link"
-                    ],
+                    "enum": ["catalog", "menu", "button", "embedded", "link"],
                     "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
                   },
                   "authCode": {
@@ -3722,6 +3611,10 @@
                         "type": "string",
                         "description": "菜单图标"
                       },
+                      "activeIcon": {
+                        "type": "string",
+                        "description": "菜单激活时的图标"
+                      },
                       "hideInMenu": {
                         "type": "boolean",
                         "nullable": true,
@@ -3746,19 +3639,37 @@
                         "type": "string",
                         "description": "内嵌框架地址"
                       },
+                      "iframeSrc": {
+                        "type": "string",
+                        "description": "内嵌页面地址（iframeSrc 别名）"
+                      },
                       "externalLink": {
                         "type": "string",
                         "description": "外部链接地址"
+                      },
+                      "link": {
+                        "type": "string",
+                        "description": "外部链接（link 别名）"
                       },
                       "ignoreKeepAlive": {
                         "type": "boolean",
                         "nullable": true,
                         "description": "是否忽略缓存"
                       },
+                      "keepAlive": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "是否开启缓存"
+                      },
                       "affix": {
                         "type": "boolean",
                         "nullable": true,
                         "description": "是否固定标签页"
+                      },
+                      "affixTab": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "是否固定标签页（别名）"
                       },
                       "carryParam": {
                         "type": "boolean",
@@ -3779,6 +3690,11 @@
                         "nullable": true,
                         "description": "是否隐藏标签页"
                       },
+                      "hideInTab": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "是否隐藏标签页（别名）"
+                      },
                       "hideMenu": {
                         "type": "boolean",
                         "nullable": true,
@@ -3798,15 +3714,27 @@
                         "type": "boolean",
                         "nullable": true,
                         "description": "是否为子级隐藏路径"
+                      },
+                      "badgeType": {
+                        "type": "string",
+                        "description": "徽标类型：dot-圆点，normal-文本"
+                      },
+                      "badge": {
+                        "type": "string",
+                        "description": "徽标文本"
+                      },
+                      "badgeVariants": {
+                        "type": "string",
+                        "description": "徽标样式变体"
                       }
+                    },
+                    "additionalProperties": {
+                      "nullable": true
                     },
                     "description": "菜单元数据（JSON格式存储图标、标题等信息）"
                   }
                 },
-                "required": [
-                  "name",
-                  "type"
-                ]
+                "required": ["name", "type"]
               }
             }
           }
@@ -3973,12 +3901,7 @@
                                 "description": "关联的角色信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -3994,11 +3917,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -4052,9 +3971,7 @@
       "get": {
         "summary": "获取菜单列表",
         "description": "获取菜单列表，支持筛选条件",
-        "tags": [
-          "菜单管理"
-        ],
+        "tags": ["菜单管理"],
         "operationId": "MenuController_findAll",
         "parameters": [
           {
@@ -4095,13 +4012,7 @@
           {
             "schema": {
               "type": "string",
-              "enum": [
-                "catalog",
-                "menu",
-                "button",
-                "embedded",
-                "link"
-              ],
+              "enum": ["catalog", "menu", "button", "embedded", "link"],
               "description": "按菜单类型筛选"
             },
             "required": false,
@@ -4296,12 +4207,7 @@
                                 "description": "关联的角色信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -4317,11 +4223,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -4375,9 +4277,7 @@
       "get": {
         "summary": "获取菜单详情",
         "description": "根据ID获取菜单详情",
-        "tags": [
-          "菜单管理"
-        ],
+        "tags": ["菜单管理"],
         "operationId": "MenuController_findOne",
         "parameters": [
           {
@@ -4554,12 +4454,7 @@
                                 "description": "关联的角色信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -4575,11 +4470,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -4631,9 +4522,7 @@
       "delete": {
         "summary": "删除菜单",
         "description": "删除指定ID的菜单",
-        "tags": [
-          "菜单管理"
-        ],
+        "tags": ["菜单管理"],
         "operationId": "MenuController_remove",
         "parameters": [
           {
@@ -4719,9 +4608,7 @@
       "patch": {
         "summary": "更新菜单",
         "description": "根据ID更新菜单信息",
-        "tags": [
-          "菜单管理"
-        ],
+        "tags": ["菜单管理"],
         "operationId": "MenuController_update",
         "parameters": [
           {
@@ -4762,13 +4649,7 @@
                   },
                   "type": {
                     "type": "string",
-                    "enum": [
-                      "catalog",
-                      "menu",
-                      "button",
-                      "embedded",
-                      "link"
-                    ],
+                    "enum": ["catalog", "menu", "button", "embedded", "link"],
                     "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
                   },
                   "authCode": {
@@ -4801,6 +4682,10 @@
                         "type": "string",
                         "description": "菜单图标"
                       },
+                      "activeIcon": {
+                        "type": "string",
+                        "description": "菜单激活时的图标"
+                      },
                       "hideInMenu": {
                         "type": "boolean",
                         "nullable": true,
@@ -4825,19 +4710,37 @@
                         "type": "string",
                         "description": "内嵌框架地址"
                       },
+                      "iframeSrc": {
+                        "type": "string",
+                        "description": "内嵌页面地址（iframeSrc 别名）"
+                      },
                       "externalLink": {
                         "type": "string",
                         "description": "外部链接地址"
+                      },
+                      "link": {
+                        "type": "string",
+                        "description": "外部链接（link 别名）"
                       },
                       "ignoreKeepAlive": {
                         "type": "boolean",
                         "nullable": true,
                         "description": "是否忽略缓存"
                       },
+                      "keepAlive": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "是否开启缓存"
+                      },
                       "affix": {
                         "type": "boolean",
                         "nullable": true,
                         "description": "是否固定标签页"
+                      },
+                      "affixTab": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "是否固定标签页（别名）"
                       },
                       "carryParam": {
                         "type": "boolean",
@@ -4858,6 +4761,11 @@
                         "nullable": true,
                         "description": "是否隐藏标签页"
                       },
+                      "hideInTab": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "是否隐藏标签页（别名）"
+                      },
                       "hideMenu": {
                         "type": "boolean",
                         "nullable": true,
@@ -4877,7 +4785,22 @@
                         "type": "boolean",
                         "nullable": true,
                         "description": "是否为子级隐藏路径"
+                      },
+                      "badgeType": {
+                        "type": "string",
+                        "description": "徽标类型：dot-圆点，normal-文本"
+                      },
+                      "badge": {
+                        "type": "string",
+                        "description": "徽标文本"
+                      },
+                      "badgeVariants": {
+                        "type": "string",
+                        "description": "徽标样式变体"
                       }
+                    },
+                    "additionalProperties": {
+                      "nullable": true
                     },
                     "description": "菜单元数据（JSON格式存储图标、标题等信息）"
                   }
@@ -5048,12 +4971,7 @@
                                 "description": "关联的角色信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -5069,11 +4987,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -5127,9 +5041,7 @@
       "get": {
         "summary": "检查菜单名称是否存在",
         "description": "检查菜单名称是否已存在",
-        "tags": [
-          "菜单管理"
-        ],
+        "tags": ["菜单管理"],
         "operationId": "MenuController_isNameExists",
         "parameters": [
           {
@@ -5227,9 +5139,7 @@
       "get": {
         "summary": "检查菜单路径是否存在",
         "description": "检查菜单路径是否已存在",
-        "tags": [
-          "菜单管理"
-        ],
+        "tags": ["菜单管理"],
         "operationId": "MenuController_isPathExists",
         "parameters": [
           {
@@ -5327,9 +5237,7 @@
       "post": {
         "summary": "分配角色权限",
         "description": "为角色分配菜单权限",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_assignPermissions",
         "parameters": [
           {
@@ -5364,10 +5272,7 @@
                     "description": "菜单权限ID列表"
                   }
                 },
-                "required": [
-                  "roleId",
-                  "menuIds"
-                ]
+                "required": ["roleId", "menuIds"]
               }
             }
           }
@@ -5443,9 +5348,7 @@
       "get": {
         "summary": "获取角色权限",
         "description": "获取角色的菜单权限列表",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_getPermissions",
         "parameters": [
           {
@@ -5533,9 +5436,7 @@
       "post": {
         "summary": "检查角色名称是否存在",
         "description": "检查指定的角色名称是否已存在",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_checkNameExists",
         "requestBody": {
           "content": {
@@ -5549,9 +5450,7 @@
                     "description": "角色名称（唯一）"
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               }
             }
           }
@@ -5629,9 +5528,7 @@
       "post": {
         "summary": "创建角色",
         "description": "创建新的角色",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_create",
         "requestBody": {
           "content": {
@@ -5667,9 +5564,7 @@
                     "description": "菜单权限ID列表"
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               }
             }
           }
@@ -5796,12 +5691,7 @@
                                 "description": "关联的用户信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "userId",
-                              "roleId",
-                              "assignedAt"
-                            ]
+                            "required": ["id", "userId", "roleId", "assignedAt"]
                           },
                           "description": "角色下的用户（多对多关联）"
                         },
@@ -5894,12 +5784,7 @@
                                 "description": "关联的菜单信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -5914,11 +5799,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -5970,9 +5851,7 @@
       "get": {
         "summary": "获取角色列表",
         "description": "获取角色列表，支持分页和搜索",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_findAll",
         "parameters": [
           {
@@ -6146,12 +6025,7 @@
                                 "description": "关联的用户信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "userId",
-                              "roleId",
-                              "assignedAt"
-                            ]
+                            "required": ["id", "userId", "roleId", "assignedAt"]
                           },
                           "description": "角色下的用户（多对多关联）"
                         },
@@ -6244,12 +6118,7 @@
                                 "description": "关联的菜单信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -6264,11 +6133,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -6322,9 +6187,7 @@
       "get": {
         "summary": "获取角色详情",
         "description": "根据ID获取角色详情",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_findOne",
         "parameters": [
           {
@@ -6461,12 +6324,7 @@
                                 "description": "关联的用户信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "userId",
-                              "roleId",
-                              "assignedAt"
-                            ]
+                            "required": ["id", "userId", "roleId", "assignedAt"]
                           },
                           "description": "角色下的用户（多对多关联）"
                         },
@@ -6559,12 +6417,7 @@
                                 "description": "关联的菜单信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -6579,11 +6432,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }
@@ -6635,9 +6484,7 @@
       "delete": {
         "summary": "删除角色",
         "description": "根据ID删除角色",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_remove",
         "parameters": [
           {
@@ -6723,9 +6570,7 @@
       "patch": {
         "summary": "更新角色",
         "description": "根据ID更新角色信息",
-        "tags": [
-          "角色管理"
-        ],
+        "tags": ["角色管理"],
         "operationId": "RoleController_update",
         "parameters": [
           {
@@ -6898,12 +6743,7 @@
                                 "description": "关联的用户信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "userId",
-                              "roleId",
-                              "assignedAt"
-                            ]
+                            "required": ["id", "userId", "roleId", "assignedAt"]
                           },
                           "description": "角色下的用户（多对多关联）"
                         },
@@ -6996,12 +6836,7 @@
                                 "description": "关联的菜单信息"
                               }
                             },
-                            "required": [
-                              "id",
-                              "roleId",
-                              "menuId",
-                              "createTime"
-                            ]
+                            "required": ["id", "roleId", "menuId", "createTime"]
                           },
                           "description": "角色权限关联"
                         }
@@ -7016,11 +6851,7 @@
                       "description": "响应数据"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["code", "message", "data"]
                 }
               }
             }

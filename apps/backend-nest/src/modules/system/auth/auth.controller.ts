@@ -7,7 +7,8 @@ import {
   LoginRequestSchema,
   LoginResponseSchema,
 } from '@/schemas';
-import { Controller, Request } from '@nestjs/common';
+import { Controller, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
 
 import { AuthService } from './auth.service';
 
@@ -57,6 +58,7 @@ export class AuthController {
     responseSchema: ProfileResponseSchema,
     requireAuth: true,
   })
+  @UseGuards(PassportAuthGuard('jwt'))
   getProfile(@Request() req): ProfileResponse {
     return {
       code: 200,
