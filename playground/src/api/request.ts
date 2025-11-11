@@ -86,7 +86,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     defaultResponseInterceptor({
       codeField: 'code',
       dataField: 'data',
-      successCode: 0,
+      // 同时兼容 mock 服务(code=0) 与 Nest 服务(code=200)
+      successCode: (code: any) => code === 0 || code === 200,
     }),
   );
 

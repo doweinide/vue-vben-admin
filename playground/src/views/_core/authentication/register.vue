@@ -7,6 +7,11 @@ import { computed, h, ref } from 'vue';
 import { AuthenticationRegister, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+import { message } from 'ant-design-vue';
+
+import { post_users } from '#/api/auto-api';
+import { router } from '#/router';
+
 defineOptions({ name: 'Register' });
 
 const loading = ref(false);
@@ -21,6 +26,15 @@ const formSchema = computed((): VbenFormSchema[] => {
       fieldName: 'username',
       label: $t('authentication.username'),
       rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
+    },
+    {
+      component: 'VbenInput',
+      componentProps: {
+        placeholder: $t('authentication.emailTip'),
+      },
+      fieldName: 'email',
+      label: $t('authentication.email'),
+      rules: z.string().email({ message: $t('authentication.emailTip') }),
     },
     {
       component: 'VbenInputPassword',
@@ -84,6 +98,23 @@ const formSchema = computed((): VbenFormSchema[] => {
 function handleSubmit(value: Recordable<any>) {
   // eslint-disable-next-line no-console
   console.log('register submit:', value);
+  loading.value = true;
+  post_users({
+    body: {
+      username: value.username,
+      email: value.email,
+      password: value.password,
+    },
+  })
+    .then(() => {
+      loading.value = false;
+      message.success('注册成功');
+      // 注册成功后，跳转到登录页
+      router.push({ name: 'Login' });
+    })
+    .catch(() => {
+      loading.value = false;
+    });
 }
 </script>
 

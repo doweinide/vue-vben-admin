@@ -30,42 +30,44 @@ const MOCK_USER_OPTIONS: BasicOption[] = [
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
-    {
-      component: 'VbenSelect',
-      // componentProps(_values, form) {
-      //   return {
-      //     'onUpdate:modelValue': (value: string) => {
-      //       const findItem = MOCK_USER_OPTIONS.find(
-      //         (item) => item.value === value,
-      //       );
-      //       if (findItem) {
-      //         form.setValues({
-      //           password: '123456',
-      //           username: findItem.label,
-      //         });
-      //       }
-      //     },
-      //     options: MOCK_USER_OPTIONS,
-      //     placeholder: $t('authentication.selectAccount'),
-      //   };
-      // },
-      componentProps: {
-        options: MOCK_USER_OPTIONS,
-        placeholder: $t('authentication.selectAccount'),
-      },
-      fieldName: 'selectAccount',
-      label: $t('authentication.selectAccount'),
-      rules: z
-        .string()
-        .min(1, { message: $t('authentication.selectAccount') })
-        .optional()
-        .default('vben'),
-    },
+    // {
+    //   component: 'VbenSelect',
+    //   // componentProps(_values, form) {
+    //   //   return {
+    //   //     'onUpdate:modelValue': (value: string) => {
+    //   //       const findItem = MOCK_USER_OPTIONS.find(
+    //   //         (item) => item.value === value,
+    //   //       );
+    //   //       if (findItem) {
+    //   //         form.setValues({
+    //   //           password: '123456',
+    //   //           username: findItem.label,
+    //   //         });
+    //   //       }
+    //   //     },
+    //   //     options: MOCK_USER_OPTIONS,
+    //   //     placeholder: $t('authentication.selectAccount'),
+    //   //   };
+    //   // },
+    //   componentProps: {
+    //     options: MOCK_USER_OPTIONS,
+    //     placeholder: $t('authentication.selectAccount'),
+    //   },
+    //   fieldName: 'selectAccount',
+    //   label: $t('authentication.selectAccount'),
+    //   rules: z
+    //     .string()
+    //     .min(1, { message: $t('authentication.selectAccount') })
+    //     .optional()
+    //     .default('vben'),
+    // },
     {
       component: 'VbenInput',
       componentProps: {
         placeholder: $t('authentication.usernameTip'),
       },
+      defaultValue: 'vben21',
+
       dependencies: {
         trigger(values, form) {
           if (values.selectAccount) {
@@ -91,6 +93,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       componentProps: {
         placeholder: $t('authentication.password'),
       },
+      defaultValue: '123qwe,',
       fieldName: 'password',
       label: $t('authentication.password'),
       rules: z.string().min(1, { message: $t('authentication.passwordTip') }),
@@ -128,5 +131,11 @@ async function onSubmit(params: Recordable<any>) {
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
     @submit="onSubmit"
+    :show-code-login="false"
+    :show-forget-password="true"
+    :show-qrcode-login="false"
+    :show-register="true"
+    :show-remember-me="true"
+    :show-third-party-login="false"
   />
 </template>

@@ -1,4 +1,6 @@
-import type { Recordable, UserInfo } from '@vben/types';
+import type { Recordable } from '@vben/types';
+
+import type { get_auth_profile_response } from '#/api/auto-api/types';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -10,7 +12,8 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import { get_auth_profile, post_auth_login } from '#/api/auto-api/auth';
+import { logoutApi } from '#/api/core/auth';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -19,6 +22,24 @@ export const useAuthStore = defineStore('auth', () => {
   const router = useRouter();
 
   const loginLoading = ref(false);
+
+  function toBasicUserInfo(authUser: get_auth_profile_response['data']): {
+    avatar: string;
+    realName: string;
+    roles?: string[];
+    userId: string;
+    username: string;
+  } {
+    return {
+      avatar: authUser.avatar ?? '',
+      realName: authUser.name ?? '',
+      roles: (authUser.userRoles ?? [])
+        .map((ur) => ur.role?.name)
+        .filter(Boolean) as string[],
+      userId: authUser.id,
+      username: authUser.username,
+    };
+  }
 
   /**
    * 异步处理登录操作
@@ -31,34 +52,35 @@ export const useAuthStore = defineStore('auth', () => {
     onSuccess?: () => Promise<void> | void,
   ) {
     // 异步处理用户登录操作并获取 accessToken
-    let userInfo: null | UserInfo = null;
+    let userInfo;
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
-
+      const loginResp = await post_auth_login({
+        body: {
+          username: params?.username,
+          password: params?.password,
+        },
+      });
+      const accessToken = loginResp?.access_token;
       // 如果成功获取到 accessToken
       if (accessToken) {
         accessStore.setAccessToken(accessToken);
-
         // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
+        // const [fetchUserInfoResult,accessCodes ] = await Promise.all([
+        //   fetchUserInfo(),
+        //   getAccessCodesApi(),
+        // ]);
+        // accessStore.setAccessCodes(accessCodes);
 
+        const fetchUserInfoResult = await fetchUserInfo();
         userInfo = fetchUserInfoResult;
-
-        userStore.setUserInfo(userInfo);
-        accessStore.setAccessCodes(accessCodes);
 
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
         } else {
           onSuccess
             ? await onSuccess?.()
-            : await router.push(
-                userInfo.homePath || preferences.app.defaultHomePath,
-              );
+            : await router.push(preferences.app.defaultHomePath);
         }
 
         if (userInfo?.realName) {
@@ -100,10 +122,13 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchUserInfo() {
-    let userInfo: null | UserInfo = null;
-    userInfo = await getUserInfoApi();
-    userStore.setUserInfo(userInfo);
-    return userInfo;
+    let userInfo: get_auth_profile_response['data'] | null = null;
+    const resp = await get_auth_profile();
+    userInfo = resp ?? null;
+    if (userInfo) {
+      userStore.setUserInfo(toBasicUserInfo(userInfo));
+    }
+    return userStore.userInfo;
   }
 
   function $reset() {
