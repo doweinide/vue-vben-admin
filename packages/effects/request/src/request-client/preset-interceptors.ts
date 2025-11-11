@@ -26,6 +26,14 @@ export const defaultResponseInterceptor = ({
         return response;
       }
 
+      // 204 No Content 视为成功，无需校验业务 code
+      // 当返回体为空时，直接返回 undefined（或 body 模式下返回原始 data）
+      if (status === 204) {
+        return config.responseReturn === 'body'
+          ? responseData
+          : (undefined as any);
+      }
+
       if (status >= 200 && status < 400) {
         if (config.responseReturn === 'body') {
           return responseData;
@@ -134,6 +142,10 @@ export const errorMessageResponseInterceptor = (
       const status = error?.response?.status;
 
       switch (status) {
+        case 204: {
+          // 204 No Content 为成功响应，不提示错误消息
+          return Promise.reject(error);
+        }
         case 400: {
           errorMessage = $t('ui.fallback.http.badRequest');
           break;
