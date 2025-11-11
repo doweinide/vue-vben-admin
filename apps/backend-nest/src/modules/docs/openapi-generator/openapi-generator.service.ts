@@ -18,7 +18,11 @@ export class OpenApiGeneratorService {
     try {
       // 先生成并保存最新的 OpenAPI 文档（openapi.json）
       this.logger.log('正在生成最新 OpenAPI 文档并保存 openapi.json...');
-      const openApiJson = openAPIConfig.generateDocument();
+      const document = openAPIConfig.generateDocument();
+
+      // 读取刚生成的 openapi.json（避免类型不匹配问题）
+      const openApiJsonPath = this.getOpenApiJsonPath();
+      const openApiJson = await this.loadOpenApiJson(openApiJsonPath);
 
       // 配置输出目录
       const outputPath = String.raw`F:\github_product\vben3_backend_font\playground\src\api\auto-api`;
@@ -50,7 +54,7 @@ export class OpenApiGeneratorService {
       // 生成 TypeScript 代码
       this.logger.log('开始生成 TypeScript 代码...');
       const result = await generateTypeScriptCode(
-        openApiJson as any,
+        openApiJson,
         config,
         apiPrefix,
       );

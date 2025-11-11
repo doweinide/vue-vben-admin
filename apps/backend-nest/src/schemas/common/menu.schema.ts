@@ -239,7 +239,7 @@ export const MenuPathExistsSchema = createSchema(
  * 菜单响应数据类型
  * 基于 Menu 数据库模型定义
  */
-export const MenuResponseSchema = createSchema(
+export const MenuResponseSchema = createResponseSchema(
   z.object({
     // / 菜单唯一标识
     id: z.string().describe('菜单唯一标识'),

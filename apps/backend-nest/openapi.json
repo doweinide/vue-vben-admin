@@ -3819,124 +3819,106 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "菜单唯一标识"
-                    },
-                    "name": {
-                      "type": "string",
-                      "maxLength": 100,
-                      "description": "菜单名称（唯一）"
-                    },
-                    "path": {
-                      "type": "string",
+                    "code": {
+                      "type": "number",
                       "nullable": true,
-                      "maxLength": 200,
-                      "description": "路由路径（唯一，可为空）"
+                      "description": "响应状态码，200表示成功，其他表示错误"
                     },
-                    "component": {
+                    "message": {
                       "type": "string",
-                      "nullable": true,
-                      "maxLength": 200,
-                      "description": "组件路径"
+                      "description": "响应消息，描述操作结果"
                     },
-                    "type": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
-                    },
-                    "authCode": {
-                      "type": "string",
-                      "nullable": true,
-                      "maxLength": 100,
-                      "description": "权限标识码"
-                    },
-                    "pid": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID，支持树形结构"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "nullable": true,
-                      "minimum": 0,
-                      "maximum": 1,
-                      "description": "菜单状态：0-禁用，1-启用"
-                    },
-                    "meta": {
-                      "nullable": true,
-                      "description": "菜单元数据（JSON格式存储图标、标题等信息）"
-                    },
-                    "createTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "创建时间"
-                    },
-                    "updateTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "更新时间"
-                    },
-                    "parentId": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID"
-                    },
-                    "childrenIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "子级菜单ID列表"
-                    },
-                    "rolePermissions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "关联记录唯一标识"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "菜单唯一标识"
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 100,
+                          "description": "菜单名称（唯一）"
+                        },
+                        "path": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "路由路径（唯一，可为空）"
+                        },
+                        "component": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "组件路径"
+                        },
+                        "type": {
+                          "type": "string",
+                          "maxLength": 20,
+                          "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
+                        },
+                        "authCode": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100,
+                          "description": "权限标识码"
+                        },
+                        "pid": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID，支持树形结构"
+                        },
+                        "status": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 1,
+                          "description": "菜单状态：0-禁用，1-启用"
+                        },
+                        "meta": {
+                          "nullable": true,
+                          "description": "菜单元数据（JSON格式存储图标、标题等信息）"
+                        },
+                        "createTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "创建时间"
+                        },
+                        "updateTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "更新时间"
+                        },
+                        "parentId": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID"
+                        },
+                        "childrenIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
                           },
-                          "roleId": {
-                            "type": "string",
-                            "description": "角色ID"
-                          },
-                          "menuId": {
-                            "type": "string",
-                            "description": "菜单ID"
-                          },
-                          "createTime": {
-                            "type": "string",
-                            "nullable": true,
-                            "format": "date",
-                            "description": "创建时间"
-                          },
-                          "role": {
+                          "description": "子级菜单ID列表"
+                        },
+                        "rolePermissions": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
                               "id": {
                                 "type": "string",
-                                "description": "角色唯一标识"
+                                "description": "关联记录唯一标识"
                               },
-                              "name": {
+                              "roleId": {
                                 "type": "string",
-                                "maxLength": 100,
-                                "description": "角色名称（唯一）"
+                                "description": "角色ID"
                               },
-                              "status": {
-                                "type": "integer",
-                                "nullable": true,
-                                "minimum": 0,
-                                "maximum": 1,
-                                "description": "角色状态：0-禁用，1-启用"
-                              },
-                              "remark": {
+                              "menuId": {
                                 "type": "string",
-                                "nullable": true,
-                                "description": "备注信息"
+                                "description": "菜单ID"
                               },
                               "createTime": {
                                 "type": "string",
@@ -3944,40 +3926,78 @@
                                 "format": "date",
                                 "description": "创建时间"
                               },
-                              "updateTime": {
-                                "type": "string",
-                                "nullable": true,
-                                "format": "date",
-                                "description": "更新时间"
+                              "role": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "角色唯一标识"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "description": "角色名称（唯一）"
+                                  },
+                                  "status": {
+                                    "type": "integer",
+                                    "nullable": true,
+                                    "minimum": 0,
+                                    "maximum": 1,
+                                    "description": "角色状态：0-禁用，1-启用"
+                                  },
+                                  "remark": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "备注信息"
+                                  },
+                                  "createTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "创建时间"
+                                  },
+                                  "updateTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "更新时间"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "status",
+                                  "createTime",
+                                  "updateTime"
+                                ],
+                                "description": "关联的角色信息"
                               }
                             },
                             "required": [
                               "id",
-                              "name",
-                              "status",
-                              "createTime",
-                              "updateTime"
-                            ],
-                            "description": "关联的角色信息"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "roleId",
-                          "menuId",
-                          "createTime"
-                        ]
+                              "roleId",
+                              "menuId",
+                              "createTime"
+                            ]
+                          },
+                          "description": "角色权限关联"
+                        }
                       },
-                      "description": "角色权限关联"
+                      "required": [
+                        "id",
+                        "name",
+                        "type",
+                        "status",
+                        "createTime",
+                        "updateTime"
+                      ],
+                      "description": "响应数据"
                     }
                   },
                   "required": [
-                    "id",
-                    "name",
-                    "type",
-                    "status",
-                    "createTime",
-                    "updateTime"
+                    "code",
+                    "message",
+                    "data"
                   ]
                 }
               }
@@ -4122,124 +4142,106 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "菜单唯一标识"
-                    },
-                    "name": {
-                      "type": "string",
-                      "maxLength": 100,
-                      "description": "菜单名称（唯一）"
-                    },
-                    "path": {
-                      "type": "string",
+                    "code": {
+                      "type": "number",
                       "nullable": true,
-                      "maxLength": 200,
-                      "description": "路由路径（唯一，可为空）"
+                      "description": "响应状态码，200表示成功，其他表示错误"
                     },
-                    "component": {
+                    "message": {
                       "type": "string",
-                      "nullable": true,
-                      "maxLength": 200,
-                      "description": "组件路径"
+                      "description": "响应消息，描述操作结果"
                     },
-                    "type": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
-                    },
-                    "authCode": {
-                      "type": "string",
-                      "nullable": true,
-                      "maxLength": 100,
-                      "description": "权限标识码"
-                    },
-                    "pid": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID，支持树形结构"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "nullable": true,
-                      "minimum": 0,
-                      "maximum": 1,
-                      "description": "菜单状态：0-禁用，1-启用"
-                    },
-                    "meta": {
-                      "nullable": true,
-                      "description": "菜单元数据（JSON格式存储图标、标题等信息）"
-                    },
-                    "createTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "创建时间"
-                    },
-                    "updateTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "更新时间"
-                    },
-                    "parentId": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID"
-                    },
-                    "childrenIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "子级菜单ID列表"
-                    },
-                    "rolePermissions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "关联记录唯一标识"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "菜单唯一标识"
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 100,
+                          "description": "菜单名称（唯一）"
+                        },
+                        "path": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "路由路径（唯一，可为空）"
+                        },
+                        "component": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "组件路径"
+                        },
+                        "type": {
+                          "type": "string",
+                          "maxLength": 20,
+                          "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
+                        },
+                        "authCode": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100,
+                          "description": "权限标识码"
+                        },
+                        "pid": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID，支持树形结构"
+                        },
+                        "status": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 1,
+                          "description": "菜单状态：0-禁用，1-启用"
+                        },
+                        "meta": {
+                          "nullable": true,
+                          "description": "菜单元数据（JSON格式存储图标、标题等信息）"
+                        },
+                        "createTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "创建时间"
+                        },
+                        "updateTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "更新时间"
+                        },
+                        "parentId": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID"
+                        },
+                        "childrenIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
                           },
-                          "roleId": {
-                            "type": "string",
-                            "description": "角色ID"
-                          },
-                          "menuId": {
-                            "type": "string",
-                            "description": "菜单ID"
-                          },
-                          "createTime": {
-                            "type": "string",
-                            "nullable": true,
-                            "format": "date",
-                            "description": "创建时间"
-                          },
-                          "role": {
+                          "description": "子级菜单ID列表"
+                        },
+                        "rolePermissions": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
                               "id": {
                                 "type": "string",
-                                "description": "角色唯一标识"
+                                "description": "关联记录唯一标识"
                               },
-                              "name": {
+                              "roleId": {
                                 "type": "string",
-                                "maxLength": 100,
-                                "description": "角色名称（唯一）"
+                                "description": "角色ID"
                               },
-                              "status": {
-                                "type": "integer",
-                                "nullable": true,
-                                "minimum": 0,
-                                "maximum": 1,
-                                "description": "角色状态：0-禁用，1-启用"
-                              },
-                              "remark": {
+                              "menuId": {
                                 "type": "string",
-                                "nullable": true,
-                                "description": "备注信息"
+                                "description": "菜单ID"
                               },
                               "createTime": {
                                 "type": "string",
@@ -4247,40 +4249,78 @@
                                 "format": "date",
                                 "description": "创建时间"
                               },
-                              "updateTime": {
-                                "type": "string",
-                                "nullable": true,
-                                "format": "date",
-                                "description": "更新时间"
+                              "role": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "角色唯一标识"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "description": "角色名称（唯一）"
+                                  },
+                                  "status": {
+                                    "type": "integer",
+                                    "nullable": true,
+                                    "minimum": 0,
+                                    "maximum": 1,
+                                    "description": "角色状态：0-禁用，1-启用"
+                                  },
+                                  "remark": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "备注信息"
+                                  },
+                                  "createTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "创建时间"
+                                  },
+                                  "updateTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "更新时间"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "status",
+                                  "createTime",
+                                  "updateTime"
+                                ],
+                                "description": "关联的角色信息"
                               }
                             },
                             "required": [
                               "id",
-                              "name",
-                              "status",
-                              "createTime",
-                              "updateTime"
-                            ],
-                            "description": "关联的角色信息"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "roleId",
-                          "menuId",
-                          "createTime"
-                        ]
+                              "roleId",
+                              "menuId",
+                              "createTime"
+                            ]
+                          },
+                          "description": "角色权限关联"
+                        }
                       },
-                      "description": "角色权限关联"
+                      "required": [
+                        "id",
+                        "name",
+                        "type",
+                        "status",
+                        "createTime",
+                        "updateTime"
+                      ],
+                      "description": "响应数据"
                     }
                   },
                   "required": [
-                    "id",
-                    "name",
-                    "type",
-                    "status",
-                    "createTime",
-                    "updateTime"
+                    "code",
+                    "message",
+                    "data"
                   ]
                 }
               }
@@ -4360,124 +4400,106 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "菜单唯一标识"
-                    },
-                    "name": {
-                      "type": "string",
-                      "maxLength": 100,
-                      "description": "菜单名称（唯一）"
-                    },
-                    "path": {
-                      "type": "string",
+                    "code": {
+                      "type": "number",
                       "nullable": true,
-                      "maxLength": 200,
-                      "description": "路由路径（唯一，可为空）"
+                      "description": "响应状态码，200表示成功，其他表示错误"
                     },
-                    "component": {
+                    "message": {
                       "type": "string",
-                      "nullable": true,
-                      "maxLength": 200,
-                      "description": "组件路径"
+                      "description": "响应消息，描述操作结果"
                     },
-                    "type": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
-                    },
-                    "authCode": {
-                      "type": "string",
-                      "nullable": true,
-                      "maxLength": 100,
-                      "description": "权限标识码"
-                    },
-                    "pid": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID，支持树形结构"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "nullable": true,
-                      "minimum": 0,
-                      "maximum": 1,
-                      "description": "菜单状态：0-禁用，1-启用"
-                    },
-                    "meta": {
-                      "nullable": true,
-                      "description": "菜单元数据（JSON格式存储图标、标题等信息）"
-                    },
-                    "createTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "创建时间"
-                    },
-                    "updateTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "更新时间"
-                    },
-                    "parentId": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID"
-                    },
-                    "childrenIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "子级菜单ID列表"
-                    },
-                    "rolePermissions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "关联记录唯一标识"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "菜单唯一标识"
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 100,
+                          "description": "菜单名称（唯一）"
+                        },
+                        "path": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "路由路径（唯一，可为空）"
+                        },
+                        "component": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "组件路径"
+                        },
+                        "type": {
+                          "type": "string",
+                          "maxLength": 20,
+                          "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
+                        },
+                        "authCode": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100,
+                          "description": "权限标识码"
+                        },
+                        "pid": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID，支持树形结构"
+                        },
+                        "status": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 1,
+                          "description": "菜单状态：0-禁用，1-启用"
+                        },
+                        "meta": {
+                          "nullable": true,
+                          "description": "菜单元数据（JSON格式存储图标、标题等信息）"
+                        },
+                        "createTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "创建时间"
+                        },
+                        "updateTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "更新时间"
+                        },
+                        "parentId": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID"
+                        },
+                        "childrenIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
                           },
-                          "roleId": {
-                            "type": "string",
-                            "description": "角色ID"
-                          },
-                          "menuId": {
-                            "type": "string",
-                            "description": "菜单ID"
-                          },
-                          "createTime": {
-                            "type": "string",
-                            "nullable": true,
-                            "format": "date",
-                            "description": "创建时间"
-                          },
-                          "role": {
+                          "description": "子级菜单ID列表"
+                        },
+                        "rolePermissions": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
                               "id": {
                                 "type": "string",
-                                "description": "角色唯一标识"
+                                "description": "关联记录唯一标识"
                               },
-                              "name": {
+                              "roleId": {
                                 "type": "string",
-                                "maxLength": 100,
-                                "description": "角色名称（唯一）"
+                                "description": "角色ID"
                               },
-                              "status": {
-                                "type": "integer",
-                                "nullable": true,
-                                "minimum": 0,
-                                "maximum": 1,
-                                "description": "角色状态：0-禁用，1-启用"
-                              },
-                              "remark": {
+                              "menuId": {
                                 "type": "string",
-                                "nullable": true,
-                                "description": "备注信息"
+                                "description": "菜单ID"
                               },
                               "createTime": {
                                 "type": "string",
@@ -4485,40 +4507,78 @@
                                 "format": "date",
                                 "description": "创建时间"
                               },
-                              "updateTime": {
-                                "type": "string",
-                                "nullable": true,
-                                "format": "date",
-                                "description": "更新时间"
+                              "role": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "角色唯一标识"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "description": "角色名称（唯一）"
+                                  },
+                                  "status": {
+                                    "type": "integer",
+                                    "nullable": true,
+                                    "minimum": 0,
+                                    "maximum": 1,
+                                    "description": "角色状态：0-禁用，1-启用"
+                                  },
+                                  "remark": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "备注信息"
+                                  },
+                                  "createTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "创建时间"
+                                  },
+                                  "updateTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "更新时间"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "status",
+                                  "createTime",
+                                  "updateTime"
+                                ],
+                                "description": "关联的角色信息"
                               }
                             },
                             "required": [
                               "id",
-                              "name",
-                              "status",
-                              "createTime",
-                              "updateTime"
-                            ],
-                            "description": "关联的角色信息"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "roleId",
-                          "menuId",
-                          "createTime"
-                        ]
+                              "roleId",
+                              "menuId",
+                              "createTime"
+                            ]
+                          },
+                          "description": "角色权限关联"
+                        }
                       },
-                      "description": "角色权限关联"
+                      "required": [
+                        "id",
+                        "name",
+                        "type",
+                        "status",
+                        "createTime",
+                        "updateTime"
+                      ],
+                      "description": "响应数据"
                     }
                   },
                   "required": [
-                    "id",
-                    "name",
-                    "type",
-                    "status",
-                    "createTime",
-                    "updateTime"
+                    "code",
+                    "message",
+                    "data"
                   ]
                 }
               }
@@ -4834,124 +4894,106 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "菜单唯一标识"
-                    },
-                    "name": {
-                      "type": "string",
-                      "maxLength": 100,
-                      "description": "菜单名称（唯一）"
-                    },
-                    "path": {
-                      "type": "string",
+                    "code": {
+                      "type": "number",
                       "nullable": true,
-                      "maxLength": 200,
-                      "description": "路由路径（唯一，可为空）"
+                      "description": "响应状态码，200表示成功，其他表示错误"
                     },
-                    "component": {
+                    "message": {
                       "type": "string",
-                      "nullable": true,
-                      "maxLength": 200,
-                      "description": "组件路径"
+                      "description": "响应消息，描述操作结果"
                     },
-                    "type": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
-                    },
-                    "authCode": {
-                      "type": "string",
-                      "nullable": true,
-                      "maxLength": 100,
-                      "description": "权限标识码"
-                    },
-                    "pid": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID，支持树形结构"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "nullable": true,
-                      "minimum": 0,
-                      "maximum": 1,
-                      "description": "菜单状态：0-禁用，1-启用"
-                    },
-                    "meta": {
-                      "nullable": true,
-                      "description": "菜单元数据（JSON格式存储图标、标题等信息）"
-                    },
-                    "createTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "创建时间"
-                    },
-                    "updateTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date",
-                      "description": "更新时间"
-                    },
-                    "parentId": {
-                      "type": "string",
-                      "nullable": true,
-                      "description": "父级菜单ID"
-                    },
-                    "childrenIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "子级菜单ID列表"
-                    },
-                    "rolePermissions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "关联记录唯一标识"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "菜单唯一标识"
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 100,
+                          "description": "菜单名称（唯一）"
+                        },
+                        "path": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "路由路径（唯一，可为空）"
+                        },
+                        "component": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "组件路径"
+                        },
+                        "type": {
+                          "type": "string",
+                          "maxLength": 20,
+                          "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
+                        },
+                        "authCode": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100,
+                          "description": "权限标识码"
+                        },
+                        "pid": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID，支持树形结构"
+                        },
+                        "status": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 1,
+                          "description": "菜单状态：0-禁用，1-启用"
+                        },
+                        "meta": {
+                          "nullable": true,
+                          "description": "菜单元数据（JSON格式存储图标、标题等信息）"
+                        },
+                        "createTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "创建时间"
+                        },
+                        "updateTime": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date",
+                          "description": "更新时间"
+                        },
+                        "parentId": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID"
+                        },
+                        "childrenIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
                           },
-                          "roleId": {
-                            "type": "string",
-                            "description": "角色ID"
-                          },
-                          "menuId": {
-                            "type": "string",
-                            "description": "菜单ID"
-                          },
-                          "createTime": {
-                            "type": "string",
-                            "nullable": true,
-                            "format": "date",
-                            "description": "创建时间"
-                          },
-                          "role": {
+                          "description": "子级菜单ID列表"
+                        },
+                        "rolePermissions": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
                               "id": {
                                 "type": "string",
-                                "description": "角色唯一标识"
+                                "description": "关联记录唯一标识"
                               },
-                              "name": {
+                              "roleId": {
                                 "type": "string",
-                                "maxLength": 100,
-                                "description": "角色名称（唯一）"
+                                "description": "角色ID"
                               },
-                              "status": {
-                                "type": "integer",
-                                "nullable": true,
-                                "minimum": 0,
-                                "maximum": 1,
-                                "description": "角色状态：0-禁用，1-启用"
-                              },
-                              "remark": {
+                              "menuId": {
                                 "type": "string",
-                                "nullable": true,
-                                "description": "备注信息"
+                                "description": "菜单ID"
                               },
                               "createTime": {
                                 "type": "string",
@@ -4959,40 +5001,78 @@
                                 "format": "date",
                                 "description": "创建时间"
                               },
-                              "updateTime": {
-                                "type": "string",
-                                "nullable": true,
-                                "format": "date",
-                                "description": "更新时间"
+                              "role": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "角色唯一标识"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "description": "角色名称（唯一）"
+                                  },
+                                  "status": {
+                                    "type": "integer",
+                                    "nullable": true,
+                                    "minimum": 0,
+                                    "maximum": 1,
+                                    "description": "角色状态：0-禁用，1-启用"
+                                  },
+                                  "remark": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "备注信息"
+                                  },
+                                  "createTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "创建时间"
+                                  },
+                                  "updateTime": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "date",
+                                    "description": "更新时间"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "status",
+                                  "createTime",
+                                  "updateTime"
+                                ],
+                                "description": "关联的角色信息"
                               }
                             },
                             "required": [
                               "id",
-                              "name",
-                              "status",
-                              "createTime",
-                              "updateTime"
-                            ],
-                            "description": "关联的角色信息"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "roleId",
-                          "menuId",
-                          "createTime"
-                        ]
+                              "roleId",
+                              "menuId",
+                              "createTime"
+                            ]
+                          },
+                          "description": "角色权限关联"
+                        }
                       },
-                      "description": "角色权限关联"
+                      "required": [
+                        "id",
+                        "name",
+                        "type",
+                        "status",
+                        "createTime",
+                        "updateTime"
+                      ],
+                      "description": "响应数据"
                     }
                   },
                   "required": [
-                    "id",
-                    "name",
-                    "type",
-                    "status",
-                    "createTime",
-                    "updateTime"
+                    "code",
+                    "message",
+                    "data"
                   ]
                 }
               }
