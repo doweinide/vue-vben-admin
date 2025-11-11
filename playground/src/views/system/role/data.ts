@@ -37,6 +37,8 @@ export function useFormSchema(): VbenFormSchema[] {
       formItemClass: 'items-start',
       label: $t('system.role.setPermissions'),
       modelPropName: 'modelValue',
+      // 该字段承载 Tree 的选中值，需为数组
+      defaultValue: [],
     },
   ];
 }

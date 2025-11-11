@@ -16,8 +16,8 @@ const systemStore = useSystemStore();
 const formData = ref<any>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', [$t('system.dept.name')])
-    : $t('ui.actionTitle.create', [$t('system.dept.name')]);
+    ? $t('ui.actionTitle.edit', [$t('system.user.name')])
+    : $t('ui.actionTitle.create', [$t('system.user.name')]);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -37,16 +37,42 @@ const [Modal, modalApi] = useVbenModal({
     if (valid) {
       modalApi.lock();
       const data = await formApi.getValues();
-      const payload = {
-        name: data.name as string,
-        pid: data.pid as string | undefined,
-        remark: data.remark as string | undefined,
+      const createPayload = {
+        avatar: data.avatar as string | undefined,
+        deptId: data.deptId as string | undefined,
+        email: data.email as string,
+        name: data.name as string | undefined,
+        password: data.password as string,
         status: data.status as number | undefined,
-      } as { name: string; pid?: string; remark?: string; status?: number };
+        username: data.username as string,
+      } as {
+        avatar?: string;
+        deptId?: string;
+        email: string;
+        name?: string;
+        password: string;
+        status?: number;
+        username: string;
+      };
+      const updatePayload = {
+        avatar: data.avatar as string | undefined,
+        deptId: data.deptId as string | undefined,
+        email: data.email as string | undefined,
+        name: data.name as string | undefined,
+        status: data.status as number | undefined,
+        username: data.username as string | undefined,
+      } as {
+        avatar?: string;
+        deptId?: string;
+        email?: string;
+        name?: string;
+        status?: number;
+        username?: string;
+      };
       try {
         await (formData.value?.id
-          ? systemStore.updateDepartment(formData.value.id, payload)
-          : systemStore.createDepartment(payload));
+          ? systemStore.updateUser(formData.value.id, updatePayload)
+          : systemStore.createUser(createPayload));
         modalApi.close();
         emit('success');
       } finally {
@@ -58,9 +84,6 @@ const [Modal, modalApi] = useVbenModal({
     if (isOpen) {
       const data = modalApi.getData<any>();
       if (data) {
-        if (data.pid === 0) {
-          data.pid = undefined;
-        }
         formData.value = data;
         formApi.setValues(formData.value);
       }

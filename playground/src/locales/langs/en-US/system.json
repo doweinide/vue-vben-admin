@@ -61,5 +61,19 @@
     "operation": "Operation",
     "permissions": "Permissions",
     "setPermissions": "Permissions"
+  },
+  "user": {
+    "title": "User Management",
+    "list": "User List",
+    "name": "User",
+    "username": "Username",
+    "realName": "Real Name",
+    "email": "Email",
+    "password": "Password",
+    "department": "Department",
+    "status": "Status",
+    "createTime": "Create Time",
+    "operation": "Operation",
+    "remark": "Remark"
   }
 }

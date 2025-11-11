@@ -728,8 +728,18 @@ export interface post_system_menu_request {
     component?: string;
     /** 菜单元数据（JSON格式存储图标、标题等信息） */
     meta?: {
+      /** 菜单激活时的图标 */
+      activeIcon?: string;
       /** 是否固定标签页 */
       affix?: boolean;
+      /** 是否固定标签页（别名） */
+      affixTab?: boolean;
+      /** 徽标文本 */
+      badge?: string;
+      /** 徽标类型：dot-圆点，normal-文本 */
+      badgeType?: string;
+      /** 徽标样式变体 */
+      badgeVariants?: string;
       /** 是否携带参数 */
       carryParam?: boolean;
       /** 当前激活菜单 */
@@ -744,6 +754,8 @@ export interface post_system_menu_request {
       hideInBreadcrumb?: boolean;
       /** 是否在菜单中隐藏 */
       hideInMenu?: boolean;
+      /** 是否隐藏标签页（别名） */
+      hideInTab?: boolean;
       /** 是否隐藏菜单 */
       hideMenu?: boolean;
       /** 是否为子级隐藏路径 */
@@ -752,12 +764,18 @@ export interface post_system_menu_request {
       hideTab?: boolean;
       /** 菜单图标 */
       icon?: string;
+      /** 内嵌页面地址（别名） */
+      iframeSrc?: string;
       /** 是否忽略缓存 */
       ignoreKeepAlive?: boolean;
       /** 是否忽略路由 */
       ignoreRoute?: boolean;
       /** 是否为外链 */
       isLink?: boolean;
+      /** 是否开启缓存（与 ignoreKeepAlive 相对） */
+      keepAlive?: boolean;
+      /** 外部链接（别名） */
+      link?: string;
       /** 排序号 */
       orderNo?: number;
       /** 是否单独显示 */
@@ -987,8 +1005,18 @@ export interface patch_system_menu_id_request {
     component?: string;
     /** 菜单元数据（JSON格式存储图标、标题等信息） */
     meta?: {
+      /** 菜单激活时的图标 */
+      activeIcon?: string;
       /** 是否固定标签页 */
       affix?: boolean;
+      /** 是否固定标签页（别名） */
+      affixTab?: boolean;
+      /** 徽标文本 */
+      badge?: string;
+      /** 徽标类型：dot-圆点，normal-文本 */
+      badgeType?: string;
+      /** 徽标样式变体 */
+      badgeVariants?: string;
       /** 是否携带参数 */
       carryParam?: boolean;
       /** 当前激活菜单 */
@@ -1003,6 +1031,8 @@ export interface patch_system_menu_id_request {
       hideInBreadcrumb?: boolean;
       /** 是否在菜单中隐藏 */
       hideInMenu?: boolean;
+      /** 是否隐藏标签页（别名） */
+      hideInTab?: boolean;
       /** 是否隐藏菜单 */
       hideMenu?: boolean;
       /** 是否为子级隐藏路径 */
@@ -1011,12 +1041,18 @@ export interface patch_system_menu_id_request {
       hideTab?: boolean;
       /** 菜单图标 */
       icon?: string;
+      /** 内嵌页面地址（别名） */
+      iframeSrc?: string;
       /** 是否忽略缓存 */
       ignoreKeepAlive?: boolean;
       /** 是否忽略路由 */
       ignoreRoute?: boolean;
       /** 是否为外链 */
       isLink?: boolean;
+      /** 是否开启缓存（与 ignoreKeepAlive 相对） */
+      keepAlive?: boolean;
+      /** 外部链接（别名） */
+      link?: string;
       /** 排序号 */
       orderNo?: number;
       /** 是否单独显示 */

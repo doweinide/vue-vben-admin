@@ -13,7 +13,6 @@ import { SvgAntdvLogoIcon } from '@vben/icons';
 import { IFrameView } from '#/layouts';
 import { $t } from '#/locales';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes: RouteRecordRaw[] = [
   {
     meta: {
@@ -92,4 +91,4 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-// export default routes;
+export default routes;

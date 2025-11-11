@@ -39,6 +39,15 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/system/dept/list.vue'),
       },
+      {
+        path: '/system/user',
+        name: 'SystemUser',
+        meta: {
+          icon: 'mdi:account-multiple',
+          title: $t('system.user.title'),
+        },
+        component: () => import('#/views/system/user/list.vue'),
+      },
     ],
   },
 ];

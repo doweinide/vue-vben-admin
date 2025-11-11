@@ -2,10 +2,10 @@ import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
-import type { SystemDeptApi } from '#/api/system/dept';
+import type { get_system_dept_list_response } from '#/api/auto-api/types';
 
 import { z } from '#/adapter/form';
-import { getDeptList } from '#/api/system/dept';
+import { get_system_dept_list } from '#/api/auto-api/department';
 import { $t } from '#/locales';
 
 /**
@@ -29,7 +29,27 @@ export function useSchema(): VbenFormSchema[] {
       component: 'ApiTreeSelect',
       componentProps: {
         allowClear: true,
-        api: getDeptList,
+        api: async () => {
+          // auto-api returns flat list, convert to tree
+          const list = (await get_system_dept_list(
+            {},
+          )) as unknown as get_system_dept_list_response['data'][];
+          const map = new Map<string, any>();
+          const roots: any[] = [];
+          for (const item of list) {
+            map.set(item.id, { ...item, children: [] });
+          }
+          for (const item of list) {
+            const node = map.get(item.id);
+            const pid = item.pid;
+            if (pid && map.has(pid)) {
+              map.get(pid).children.push(node);
+            } else {
+              roots.push(node);
+            }
+          }
+          return roots;
+        },
         class: 'w-full',
         labelField: 'name',
         valueField: 'id',
@@ -75,8 +95,8 @@ export function useSchema(): VbenFormSchema[] {
  * @param onActionClick 表格操作按钮点击事件
  */
 export function useColumns(
-  onActionClick?: OnActionClickFn<SystemDeptApi.SystemDept>,
-): VxeTableGridOptions<SystemDeptApi.SystemDept>['columns'] {
+  onActionClick?: OnActionClickFn<get_system_dept_list_response['data']>,
+): VxeTableGridOptions<get_system_dept_list_response['data']>['columns'] {
   return [
     {
       align: 'left',
@@ -118,7 +138,7 @@ export function useColumns(
           'edit', // 默认的编辑按钮
           {
             code: 'delete', // 默认的删除按钮
-            disabled: (row: SystemDeptApi.SystemDept) => {
+            disabled: (row: get_system_dept_list_response['data']) => {
               return !!(row.children && row.children.length > 0);
             },
           },

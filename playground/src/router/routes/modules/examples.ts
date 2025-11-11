@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
 import { $t } from '#/locales';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const routes: RouteRecordRaw[] = [
   {
     meta: {
@@ -331,5 +331,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 ];
+
+export default routes;
 
 // export default routes;

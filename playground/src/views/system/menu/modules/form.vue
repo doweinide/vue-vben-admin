@@ -4,6 +4,11 @@ import type { ChangeEvent } from 'ant-design-vue/es/_util/EventInterface';
 import type { Recordable } from '@vben/types';
 
 import type { VbenFormSchema } from '#/adapter/form';
+import type {
+  get_system_menu_list_response,
+  patch_system_menu_id_request,
+  post_system_menu_request,
+} from '#/api/auto-api/types';
 
 import { computed, h, ref } from 'vue';
 
@@ -16,13 +21,10 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 
 import { useVbenForm, z } from '#/adapter/form';
 import {
-  createMenu,
-  getMenuList,
-  isMenuNameExists,
-  isMenuPathExists,
-  SystemMenuApi,
-  updateMenu,
-} from '#/api/system/menu';
+  get_system_menu_list,
+  patch_system_menu_id,
+  post_system_menu,
+} from '#/api/auto-api/menu';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
 
@@ -31,7 +33,14 @@ import { getMenuTypeOptions } from '../data';
 const emit = defineEmits<{
   success: [];
 }>();
-const formData = ref<SystemMenuApi.SystemMenu>();
+const formData = ref<get_system_menu_list_response['data']>();
+const BADGE_VARIANTS = [
+  'default',
+  'destructive',
+  'primary',
+  'success',
+  'warning',
+] as const;
 const titleSuffix = ref<string>();
 const schema: VbenFormSchema[] = [
   {
@@ -53,23 +62,31 @@ const schema: VbenFormSchema[] = [
     rules: z
       .string()
       .min(2, $t('ui.formRules.minLength', [$t('system.menu.menuName'), 2]))
-      .max(30, $t('ui.formRules.maxLength', [$t('system.menu.menuName'), 30]))
-      .refine(
-        async (value: string) => {
-          return !(await isMenuNameExists(value, formData.value?.id));
-        },
-        (value) => ({
-          message: $t('ui.formRules.alreadyExists', [
-            $t('system.menu.menuName'),
-            value,
-          ]),
-        }),
-      ),
+      .max(30, $t('ui.formRules.maxLength', [$t('system.menu.menuName'), 30])),
   },
   {
     component: 'ApiTreeSelect',
     componentProps: {
-      api: getMenuList,
+      api: async () => {
+        const list = (await get_system_menu_list(
+          {},
+        )) as unknown as get_system_menu_list_response['data'][];
+        const map = new Map<string, any>();
+        const roots: any[] = [];
+        for (const item of list) {
+          map.set(item.id, { ...item, children: [] });
+        }
+        for (const item of list) {
+          const node = map.get(item.id);
+          const pid = item.pid;
+          if (pid && map.has(pid)) {
+            map.get(pid).children.push(node);
+          } else {
+            roots.push(node);
+          }
+        }
+        return roots;
+      },
       class: 'w-full',
       filterTreeNode(input: string, node: Recordable<any>) {
         if (!input || input.length === 0) {
@@ -136,17 +153,6 @@ const schema: VbenFormSchema[] = [
           return value.startsWith('/');
         },
         $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
-      )
-      .refine(
-        async (value: string) => {
-          return !(await isMenuPathExists(value, formData.value?.id));
-        },
-        (value) => ({
-          message: $t('ui.formRules.alreadyExists', [
-            $t('system.menu.path'),
-            value,
-          ]),
-        }),
       ),
   },
   {
@@ -170,9 +176,7 @@ const schema: VbenFormSchema[] = [
         },
         $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
       )
-      .refine(async (value: string) => {
-        return await isMenuPathExists(value, formData.value?.id);
-      }, $t('system.menu.activePathMustExist'))
+      .optional()
       .optional(),
   },
   {
@@ -307,7 +311,7 @@ const schema: VbenFormSchema[] = [
     componentProps: {
       allowClear: true,
       class: 'w-full',
-      options: SystemMenuApi.BadgeVariants.map((v) => ({
+      options: BADGE_VARIANTS.map((v) => ({
         label: v,
         value: v,
       })),
@@ -447,10 +451,12 @@ const [Drawer, drawerApi] = useVbenDrawer({
   onConfirm: onSubmit,
   onOpenChange(isOpen) {
     if (isOpen) {
-      const data = drawerApi.getData<SystemMenuApi.SystemMenu>();
+      const data = drawerApi.getData<get_system_menu_list_response['data']>();
       if (data?.type === 'link') {
+        // @ts-ignore
         data.linkSrc = data.meta?.link;
       } else if (data?.type === 'embedded') {
+        // @ts-ignore
         data.linkSrc = data.meta?.iframeSrc;
       }
       if (data) {
@@ -471,10 +477,10 @@ async function onSubmit() {
   const { valid } = await formApi.validate();
   if (valid) {
     drawerApi.lock();
-    const data =
-      await formApi.getValues<
-        Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>
-      >();
+    type MenuFormValues = post_system_menu_request['body'] & {
+      linkSrc?: string;
+    };
+    const data = await formApi.getValues<MenuFormValues>();
     if (data.type === 'link') {
       data.meta = { ...data.meta, link: data.linkSrc };
     } else if (data.type === 'embedded') {
@@ -483,8 +489,11 @@ async function onSubmit() {
     delete data.linkSrc;
     try {
       await (formData.value?.id
-        ? updateMenu(formData.value.id, data)
-        : createMenu(data));
+        ? patch_system_menu_id({
+            id: formData.value.id,
+            body: data as patch_system_menu_id_request['body'],
+          })
+        : post_system_menu({ body: data }));
       drawerApi.close();
       emit('success');
     } finally {

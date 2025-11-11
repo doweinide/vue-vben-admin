@@ -3,6 +3,7 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
+import type { get_system_menu_list_response } from '#/api/auto-api/types';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
@@ -13,7 +14,10 @@ import { MenuBadge } from '@vben-core/menu-ui';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMenu, getMenuList, SystemMenuApi } from '#/api/system/menu';
+import {
+  delete_system_menu_id,
+  get_system_menu_list,
+} from '#/api/auto-api/menu';
 
 import { useColumns } from './data';
 import Form from './modules/form.vue';
@@ -34,7 +38,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async (_params) => {
-          return await getMenuList();
+          // backend now returns tree structure directly (with `children`)
+          const tree = (await get_system_menu_list(
+            {},
+          )) as unknown as get_system_menu_list_response['data'][];
+          return tree;
         },
       },
     },
@@ -50,7 +58,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     treeConfig: {
       parentField: 'pid',
       rowField: 'id',
-      transform: false,
+      // accept tree data; enable transform for built-in support if flat
+      // transform: true,
     },
   } as VxeTableGridOptions,
 });
@@ -58,7 +67,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMenuApi.SystemMenu>) {
+}: OnActionClickParams<get_system_menu_list_response['data']>) {
   switch (code) {
     case 'append': {
       onAppend(row);
@@ -81,23 +90,22 @@ function onActionClick({
 function onRefresh() {
   gridApi.query();
 }
-function onEdit(row: SystemMenuApi.SystemMenu) {
+function onEdit(row: get_system_menu_list_response['data']) {
   formDrawerApi.setData(row).open();
 }
 function onCreate() {
   formDrawerApi.setData({}).open();
 }
-function onAppend(row: SystemMenuApi.SystemMenu) {
+function onAppend(row: get_system_menu_list_response['data']) {
   formDrawerApi.setData({ pid: row.id }).open();
 }
-
-function onDelete(row: SystemMenuApi.SystemMenu) {
+function onDelete(row: get_system_menu_list_response['data']) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
-  deleteMenu(row.id)
+  delete_system_menu_id({ id: row.id })
     .then(() => {
       message.success({
         content: $t('ui.actionMessage.deleteSuccess', [row.name]),

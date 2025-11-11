@@ -24,7 +24,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /**
- * 编辑部门
+ * 编辑用户
  * @param row
  */
 function onEdit(row: any) {
@@ -32,34 +32,26 @@ function onEdit(row: any) {
 }
 
 /**
- * 添加下级部门
- * @param row
- */
-function onAppend(row: any) {
-  formModalApi.setData({ pid: row.id }).open();
-}
-
-/**
- * 创建新部门
+ * 创建新用户
  */
 function onCreate() {
   formModalApi.setData(null).open();
 }
 
 /**
- * 删除部门
+ * 删除用户
  * @param row
  */
 async function onDelete(row: any) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+    content: $t('ui.actionMessage.deleting', [row.username]),
     duration: 0,
     key: 'action_process_msg',
   });
   try {
-    await systemStore.deleteDepartment(row.id);
+    await systemStore.deleteUser(row.id);
     message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      content: $t('ui.actionMessage.deleteSuccess', [row.username]),
       key: 'action_process_msg',
     });
     refreshGrid();
@@ -73,10 +65,6 @@ async function onDelete(row: any) {
  */
 function onActionClick({ code, row }: OnActionClickParams<any>) {
   switch (code) {
-    case 'append': {
-      onAppend(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
       break;
@@ -95,13 +83,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     pagerConfig: {
-      enabled: false,
+      enabled: true,
+      pageSize: 10,
     },
     proxyConfig: {
       ajax: {
-        query: async (_params) => {
-          await systemStore.fetchDepartments();
-          return systemStore.departments;
+        query: async ({ page }, formValues) => {
+          const response = await systemStore.fetchUsers({
+            page: page.currentPage,
+            limit: page.pageSize,
+            ...formValues,
+          });
+          return {
+            items: response.items || [],
+            total: response.total || 0,
+          };
         },
       },
     },
@@ -109,12 +105,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       custom: true,
       export: false,
       refresh: true,
+      search: true,
       zoom: true,
-    },
-    treeConfig: {
-      parentField: 'pid',
-      rowField: 'id',
-      transform: false,
     },
   } as VxeTableGridOptions,
 });
@@ -129,11 +121,11 @@ function refreshGrid() {
 <template>
   <Page auto-content-height>
     <FormModal @success="refreshGrid" />
-    <Grid table-title="部门列表">
+    <Grid table-title="用户列表">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', [$t('system.dept.name')]) }}
+          {{ $t('ui.actionTitle.create', [$t('system.user.name')]) }}
         </Button>
       </template>
     </Grid>
