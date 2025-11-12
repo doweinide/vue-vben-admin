@@ -404,3 +404,123 @@ export const PaginatedMenusResponseSchema = createPaginatedResponseSchema(
   'PaginatedMenusResponse',
   '分页菜单列表响应',
 );
+
+/**
+ * 批量菜单同步请求 Schema
+ * 前端一次性传入完整菜单数组，后端全量替换（删除旧数据并创建新数据）
+ */
+// 单项菜单同步结构，供批量同步使用（简化 children 以避免循环引用）
+const MenuSyncItemSchema = z
+  .object({
+    // / 菜单唯一标识（可选，仅用于关系映射）
+    id: z.string().optional().describe('菜单唯一标识（可选，仅用于关系映射）'),
+    // / 菜单名称（唯一）
+    name: z
+      .string()
+      .min(1, '菜单名称不能为空')
+      .max(100, '菜单名称不能超过100个字符')
+      .describe('菜单名称（唯一）'),
+    // / 路由路径（唯一，可为空）
+    path: z
+      .string()
+      .max(200, '路由路径不能超过200个字符')
+      .optional()
+      .nullable()
+      .describe('路由路径（唯一，可为空）'),
+    // / 组件路径
+    component: z
+      .string()
+      .max(200, '组件路径不能超过200个字符')
+      .optional()
+      .nullable()
+      .describe('组件路径'),
+    // / 菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链
+    type: z
+      .enum(['catalog', 'menu', 'button', 'embedded', 'link'], {
+        message: '菜单类型必须是 catalog、menu、button、embedded 或 link 之一',
+      })
+      .describe(
+        '菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链',
+      ),
+    // / 权限标识码
+    authCode: z
+      .string()
+      .max(100, '权限标识不能超过100个字符')
+      .optional()
+      .nullable()
+      .describe('权限标识码'),
+    // / 父级菜单ID，支持树形结构
+    pid: z.string().optional().nullable().describe('父级菜单ID，支持树形结构'),
+    // / 菜单状态：0-禁用，1-启用
+    status: z
+      .number()
+      .int()
+      .min(0, '状态值必须为0或1')
+      .max(1, '状态值必须为0或1')
+      .default(1)
+      .describe('菜单状态：0-禁用，1-启用'),
+    // / 菜单元数据（JSON格式存储图标、标题等信息）
+    meta: MenuMetaSchema.optional()
+      .nullable()
+      .describe('菜单元数据（JSON格式存储图标、标题等信息）'),
+    // / 子菜单（仅声明为任意对象数组，避免 z.lazy 循环）
+    children: z.array(z.any()).optional().describe('子菜单'),
+  })
+  .passthrough();
+
+export const BatchMenuSyncSchema = createSchema(
+  z
+    .union([
+      z.object({ menus: z.array(MenuSyncItemSchema) }),
+      z.array(MenuSyncItemSchema),
+    ])
+    .describe('批量菜单同步请求（智能同步，支持数组或 {menus: []}）'),
+  'BatchMenuSync',
+  '批量菜单同步请求',
+);
+
+/**
+ * 批量菜单同步响应 Schema
+ */
+export const BatchMenuSyncResponseSchema = createResponseSchema(
+  z.object({
+    createdCount: z.number().describe('新增的菜单条数'),
+    updatedCount: z.number().describe('更新的菜单条数'),
+    deletedCount: z.number().describe('删除的菜单条数'),
+    logs: z.array(z.string()).describe('操作日志'),
+  }),
+  'BatchMenuSyncResponse',
+  '批量菜单同步响应',
+);
+
+/**
+ * 批量菜单同步状态响应 Schema
+ * 用于异步执行时的即时状态返回
+ */
+export const BatchMenuSyncStatusResponseSchema = createResponseSchema(
+  z.object({
+    status: z.enum(['running', 'started']).describe('同步状态'),
+  }),
+  'BatchMenuSyncStatusResponse',
+  '批量菜单同步状态响应',
+);
+
+/**
+ * 批量菜单同步（状态或结果）响应 Schema
+ * 兼容异步执行：可能返回状态，或返回最终结果统计
+ */
+export const BatchMenuSyncStatusOrResultResponseSchema = createResponseSchema(
+  z.union([
+    z.object({
+      createdCount: z.number().describe('新增的菜单条数'),
+      updatedCount: z.number().describe('更新的菜单条数'),
+      deletedCount: z.number().describe('删除的菜单条数'),
+      logs: z.array(z.string()).describe('操作日志'),
+    }),
+    z.object({
+      status: z.enum(['running', 'started']).describe('同步状态'),
+    }),
+  ]),
+  'BatchMenuSyncStatusOrResultResponse',
+  '批量菜单同步结果或状态响应',
+);

@@ -43,48 +43,48 @@ export class RoleService {
   async batchAssignPermissions(
     assignments: (typeof RolePermissionSchema.Type)[],
   ): Promise<void> {
-    await this.prisma.$transaction(async (prisma) => {
-      for (const assignment of assignments) {
-        const { roleId, menuIds } = assignment;
+    // 为兼容 Prisma Accelerate（Edge 客户端），避免使用回调式事务。
+    // 改为顺序执行，每个分配独立校验与更新，确保稳定性。
+    for (const assignment of assignments) {
+      const { roleId, menuIds } = assignment;
 
-        // 验证角色是否存在
-        const role = await prisma.role.findUnique({
-          where: { id: roleId },
+      // 验证角色是否存在
+      const role = await this.prisma.role.findUnique({
+        where: { id: roleId },
+      });
+      if (!role) {
+        throw new NotFoundException(`角色 ${roleId} 不存在`);
+      }
+
+      // 验证菜单是否存在
+      if (menuIds.length > 0) {
+        const menuCount = await this.prisma.menu.count({
+          where: {
+            id: { in: menuIds },
+          },
         });
-        if (!role) {
-          throw new NotFoundException(`角色 ${roleId} 不存在`);
-        }
-
-        // 验证菜单是否存在
-        if (menuIds.length > 0) {
-          const menuCount = await prisma.menu.count({
-            where: {
-              id: { in: menuIds },
-            },
-          });
-          if (menuCount !== menuIds.length) {
-            throw new BadRequestException(`角色 ${roleId} 的部分菜单不存在`);
-          }
-        }
-
-        // 删除现有权限
-        await prisma.rolePermission.deleteMany({
-          where: { roleId },
-        });
-
-        // 添加新权限
-        if (menuIds.length > 0) {
-          const rolePermissions = menuIds.map((menuId) => ({
-            roleId,
-            menuId,
-          }));
-
-          await prisma.rolePermission.createMany({
-            data: rolePermissions,
-          });
+        if (menuCount !== menuIds.length) {
+          throw new BadRequestException(`角色 ${roleId} 的部分菜单不存在`);
         }
       }
-    });
+
+      // 删除现有权限
+      await this.prisma.rolePermission.deleteMany({
+        where: { roleId },
+      });
+
+      // 添加新权限
+      if (menuIds.length > 0) {
+        const rolePermissions = menuIds.map((menuId) => ({
+          roleId,
+          menuId,
+        }));
+
+        await this.prisma.rolePermission.createMany({
+          data: rolePermissions,
+        });
+      }
+    }
   }
 
   /**

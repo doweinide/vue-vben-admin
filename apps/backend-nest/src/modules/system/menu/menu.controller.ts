@@ -6,6 +6,8 @@ import {
 } from '@/decorators/api.decorator';
 import { ZodBody, ZodParam, ZodQuery } from '@/decorators/zod-param.decorator';
 import {
+  BatchMenuSyncSchema,
+  BatchMenuSyncStatusOrResultResponseSchema,
   CreateMenuSchema,
   IdParamSchema,
   MenuNameExistsSchema,
@@ -92,6 +94,21 @@ export class MenuController {
   })
   async remove(@ZodParam('id') id: string) {
     await this.menuService.remove(id);
+  }
+
+  @ApiPost({
+    path: 'sync',
+    summary: '批量同步菜单（智能同步）',
+    description:
+      '一次性同步菜单：只更新变化、新增不存在、删除未提供（保留按钮）',
+    tags: ['菜单管理'],
+    bodySchema: BatchMenuSyncSchema,
+    responseSchema: BatchMenuSyncStatusOrResultResponseSchema,
+  })
+  async sync(
+    @ZodBody() payload: typeof BatchMenuSyncSchema.Type,
+  ): Promise<typeof BatchMenuSyncStatusOrResultResponseSchema.Type> {
+    return this.menuService.syncBatch(payload);
   }
 
   @ApiPatch({
