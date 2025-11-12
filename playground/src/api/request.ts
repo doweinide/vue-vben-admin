@@ -10,6 +10,7 @@ import {
   defaultResponseInterceptor,
   errorMessageResponseInterceptor,
   RequestClient,
+  successMessageResponseInterceptor,
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 import { cloneDeep } from '@vben/utils';
@@ -82,6 +83,18 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   });
 
   // 处理返回的响应数据格式
+  client.addResponseInterceptor(
+    successMessageResponseInterceptor(
+      {
+        codeField: 'code',
+        messageField: 'message',
+        successCode: (code: any) => code === 0 || code === 200,
+      },
+      (msg: string) => {
+        message.success(msg);
+      },
+    ),
+  );
   client.addResponseInterceptor(
     defaultResponseInterceptor({
       codeField: 'code',

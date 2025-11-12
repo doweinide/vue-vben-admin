@@ -6,6 +6,7 @@ import type {
 } from 'axios';
 
 type ExtendOptions<T = any> = {
+  errorMessage?: boolean | string;
   /**
    * 参数序列化方式。预置的有
    * - brackets: ids[]=1&ids[]=2&ids[]=3
@@ -26,6 +27,7 @@ type ExtendOptions<T = any> = {
    * - data: 解构响应的BODY数据，只返回其中的data节点数据（会检查status和code是否为成功状态）。
    */
   responseReturn?: 'body' | 'data' | 'raw';
+  successMessage?: boolean | string;
 };
 type RequestClientConfig<T = any> = AxiosRequestConfig<T> & ExtendOptions<T>;
 

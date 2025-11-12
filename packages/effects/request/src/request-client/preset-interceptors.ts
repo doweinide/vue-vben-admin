@@ -6,6 +6,42 @@ import { isFunction } from '@vben/utils';
 
 import axios from 'axios';
 
+export const successMessageResponseInterceptor = (
+  {
+    codeField = 'code',
+    messageField = 'message',
+    successCode = 0,
+  }: {
+    codeField?: string;
+    messageField?: string;
+    successCode?: ((code: any) => boolean) | number | string;
+  } = {},
+  makeSuccessMessage?: MakeErrorMessageFn,
+): ResponseInterceptorConfig => {
+  return {
+    fulfilled: (response) => {
+      const { config, data } = response as any;
+      const flag = (config as any)?.successMessage;
+      if (!flag) {
+        return response;
+      }
+      const code = (data as any)?.[codeField];
+      const ok =
+        typeof successCode === 'function'
+          ? (successCode as any)(code)
+          : code === successCode;
+      if (ok) {
+        const msg =
+          typeof flag === 'string' ? flag : (data as any)?.[messageField];
+        if (msg) {
+          makeSuccessMessage?.(msg, response);
+        }
+      }
+      return response;
+    },
+  };
+};
+
 export const defaultResponseInterceptor = ({
   codeField = 'code',
   dataField = 'data',
@@ -122,6 +158,14 @@ export const errorMessageResponseInterceptor = (
 ): ResponseInterceptorConfig => {
   return {
     rejected: (error: any) => {
+      const cfg = error?.config ?? error?.response?.config;
+      if (cfg?.errorMessage === false) {
+        return Promise.reject(error);
+      }
+      if (typeof cfg?.errorMessage === 'string') {
+        makeErrorMessage?.(cfg.errorMessage, error);
+        return Promise.reject(error);
+      }
       if (axios.isCancel(error)) {
         return Promise.reject(error);
       }
