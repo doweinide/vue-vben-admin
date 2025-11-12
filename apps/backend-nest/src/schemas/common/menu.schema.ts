@@ -27,6 +27,8 @@ export const MenuMetaSchema = createSchema(
       hideChildrenInMenu: z.boolean().optional().describe('是否隐藏子菜单'),
       // / 排序号
       orderNo: z.number().optional().describe('排序号'),
+      // / 排序号（别名）
+      order: z.number().optional().describe('排序号（别名）'),
       // / 内嵌框架地址
       frameSrc: z.string().optional().describe('内嵌框架地址'),
       // / 表单使用：内嵌页面地址（iframeSrc 别名）

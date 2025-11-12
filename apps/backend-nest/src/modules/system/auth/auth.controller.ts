@@ -7,6 +7,7 @@ import {
   LoginRequestSchema,
   LoginResponseSchema,
 } from '@/schemas';
+import { zPro as z } from '@/utils/zod/z-enhanced';
 import { Controller, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
 
@@ -19,7 +20,29 @@ const ProfileResponseSchema = createResponseSchema(
   '用户资料响应',
 );
 
+const UserMenusResponseSchema = createResponseSchema(
+  z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      path: z.string().optional().nullable(),
+      component: z.string().optional().nullable(),
+      type: z.string(),
+      authCode: z.string().optional().nullable(),
+      pid: z.string().optional().nullable(),
+      status: z.number().int().min(0).max(1),
+      meta: z.any().optional().nullable(),
+      createTime: z.date(),
+      updateTime: z.date(),
+      children: z.array(z.any()).optional(),
+    }),
+  ),
+  'UserMenusResponse',
+  '用户菜单响应',
+);
+
 type ProfileResponse = typeof ProfileResponseSchema.Type;
+type UserMenusResponse = typeof UserMenusResponseSchema.Type;
 
 /**
  * 认证控制器
@@ -37,6 +60,24 @@ export class AuthController {
    * @param authService 认证服务，处理认证业务逻辑
    */
   constructor(private readonly authService: AuthService) {}
+
+  @ApiGet({
+    path: 'menus',
+    summary: '获取当前用户可访问菜单',
+    description: '合并用户启用角色的有效菜单并返回树结构',
+    tags: ['认证管理'],
+    responseSchema: UserMenusResponseSchema,
+    requireAuth: true,
+  })
+  @UseGuards(PassportAuthGuard('jwt'))
+  async getMenus(@Request() req): Promise<UserMenusResponse> {
+    const resp = await this.authService.getUserMenus(req.user.id);
+    return {
+      code: 200,
+      message: resp.message ?? '获取用户菜单成功',
+      data: (resp.data as any[]) ?? [],
+    };
+  }
 
   /**
    * 获取当前用户信息

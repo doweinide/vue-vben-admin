@@ -1,5 +1,6 @@
 import { UserService } from '@/modules/system/user/user.service';
-import { LoginRequestSchema } from '@/schemas';
+import { PrismaService } from '@/prisma/prisma.service';
+import { LoginRequestSchema, ResponseBuilder } from '@/schemas';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
@@ -21,7 +22,75 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private prisma: PrismaService,
   ) {}
+
+  async getUserMenus(userId: string) {
+    const userResp = await this.userService.findOne(userId);
+    const user = userResp.data as any;
+    const roleIds = (user?.userRoles || [])
+      .filter((ur: any) => ur?.role?.status === 1)
+      .map((ur: any) => ur.roleId);
+    if (roleIds.length === 0) {
+      return ResponseBuilder.success([], '获取用户菜单成功');
+    }
+    const rp = await this.prisma.rolePermission.findMany({
+      where: { roleId: { in: roleIds } },
+      select: { menuId: true },
+    });
+    const menuIdSet = new Set(rp.map((x) => x.menuId));
+    if (menuIdSet.size === 0) {
+      return ResponseBuilder.success([], '获取用户菜单成功');
+    }
+    const selectFields = {
+      id: true,
+      name: true,
+      path: true,
+      component: true,
+      type: true,
+      authCode: true,
+      pid: true,
+      status: true,
+      meta: true,
+      createTime: true,
+      updateTime: true,
+    };
+    const enabledMenus = await this.prisma.menu.findMany({
+      where: { status: 1 },
+      select: selectFields,
+    });
+    const map = new Map<string, any>();
+    for (const m of enabledMenus) {
+      map.set(m.id, { ...m, children: [] });
+    }
+    const includeIds = new Set<string>();
+    for (const id of menuIdSet) {
+      const pathIds: string[] = [];
+      let cur: string | undefined = id;
+      let valid = true;
+      while (cur) {
+        const node = map.get(cur);
+        if (!node) {
+          valid = false;
+          break;
+        }
+        pathIds.push(cur);
+        cur = node.pid as string | undefined;
+      }
+      if (!valid) continue;
+      for (const pid of pathIds) includeIds.add(pid);
+    }
+    const roots: any[] = [];
+    for (const item of map.values()) {
+      if (!includeIds.has(item.id)) continue;
+      if (item.pid && includeIds.has(item.pid)) {
+        map.get(item.pid).children.push(item);
+      } else {
+        roots.push(item);
+      }
+    }
+    return ResponseBuilder.success(roots, '获取用户菜单成功');
+  }
 
   /**
    * 用户登录
