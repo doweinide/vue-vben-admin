@@ -225,6 +225,7 @@ export const CreateUserRequestSchema = createSchema(
       .max(1, '状态值必须为0或1')
       .default(1)
       .describe('用户账户状态：0-禁用，1-启用'),
+    roleIds: z.array(z.string()).optional().describe('角色ID列表'),
   }),
   'CreateUserRequest',
   '创建用户请求',
@@ -278,6 +279,7 @@ export const UpdateUserRequestSchema = createSchema(
       .max(1, '状态值必须为0或1')
       .optional()
       .describe('用户账户状态：0-禁用，1-启用'),
+    roleIds: z.array(z.string()).optional().describe('角色ID列表'),
   }),
   'UpdateUserRequest',
   '更新用户请求',

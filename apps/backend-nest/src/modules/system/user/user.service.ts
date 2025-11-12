@@ -106,12 +106,42 @@ export class UserService {
       },
     });
 
+    if (createUserDto.roleIds && createUserDto.roleIds.length > 0) {
+      const rolesCount = await this.prisma.role.count({
+        where: { id: { in: createUserDto.roleIds } },
+      });
+      if (rolesCount !== createUserDto.roleIds.length) {
+        throw new NotFoundException('指定的角色不存在');
+      }
+      await this.prisma.userRole.deleteMany({ where: { userId: user.id } });
+      await this.prisma.userRole.createMany({
+        data: createUserDto.roleIds.map((roleId) => ({
+          userId: user.id,
+          roleId,
+        })),
+      });
+    }
+
+    const created = await this.prisma.user.findUniqueOrThrow({
+      where: { id: user.id },
+      include: {
+        department: {
+          select: { id: true, name: true, pid: true },
+        },
+        userRoles: {
+          include: {
+            role: { select: { id: true, name: true, status: true } },
+          },
+        },
+      },
+    });
+
     // 返回用户信息（包含密码，用于创建响应）
     return {
       code: 200,
       message: '用户创建成功',
-      data: user,
-    };
+      data: created,
+      };
   }
 
   /**
@@ -417,10 +447,41 @@ export class UserService {
       },
     });
 
+    if (updateUserDto.roleIds) {
+      if (updateUserDto.roleIds.length > 0) {
+        const rolesCount = await this.prisma.role.count({
+          where: { id: { in: updateUserDto.roleIds } },
+        });
+        if (rolesCount !== updateUserDto.roleIds.length) {
+          throw new NotFoundException('指定的角色不存在');
+        }
+      }
+      await this.prisma.userRole.deleteMany({ where: { userId: id } });
+      if (updateUserDto.roleIds.length > 0) {
+        await this.prisma.userRole.createMany({
+          data: updateUserDto.roleIds.map((roleId) => ({ userId: id, roleId })),
+        });
+      }
+    }
+
+    const updated = await this.prisma.user.findUniqueOrThrow({
+      where: { id },
+      include: {
+        department: {
+          select: { id: true, name: true, pid: true },
+        },
+        userRoles: {
+          include: {
+            role: { select: { id: true, name: true, status: true } },
+          },
+        },
+      },
+    });
+
     return {
       code: 200,
       message: '用户更新成功',
-      data: user,
+      data: updated,
     };
   }
 }
