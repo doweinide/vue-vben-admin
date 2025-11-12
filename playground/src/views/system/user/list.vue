@@ -7,13 +7,13 @@ import type {
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import { useSystemStore } from '#/store/system';
 
-import { useColumns } from './data';
+import { useColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const systemStore = useSystemStore();
@@ -76,10 +76,32 @@ function onActionClick({ code, row }: OnActionClickParams<any>) {
   }
 }
 
+async function onStatusChange(newStatus: number, row: any) {
+  const status: Record<number, string> = { 0: '禁用', 1: '启用' };
+  try {
+    await new Promise((resolve, reject) => {
+      Modal.confirm({
+        title: '切换状态',
+        content: `你要将${row.username}的状态切换为 【${status[newStatus]}】 吗？`,
+        onOk: () => resolve(true),
+        onCancel: () => reject(new Error('已取消')),
+      });
+    });
+    await systemStore.updateUser(row.id, { status: newStatus });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents: {},
+  formOptions: {
+    schema: useGridFormSchema(),
+    submitOnChange: true,
+  },
   gridOptions: {
-    columns: useColumns(onActionClick),
+    columns: useColumns(onActionClick, onStatusChange),
     height: 'auto',
     keepSource: true,
     pagerConfig: {

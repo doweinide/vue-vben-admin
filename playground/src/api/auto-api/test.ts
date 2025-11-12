@@ -17,11 +17,13 @@ import { request } from '#/api/request';
  */
 export const get_test_validation = async (
   params: get_test_validation_request,
+  config?: any,
 ): Promise<get_test_validation_response['data']> => {
   const response = await request<get_test_validation_response['data']>({
     url: '/api/test-validation',
     method: 'GET',
     params,
+    ...config,
   });
   return response;
 };
@@ -32,11 +34,13 @@ export const get_test_validation = async (
  */
 export const post_test_validation = async (
   params: post_test_validation_request,
+  config?: any,
 ): Promise<post_test_validation_response['data']> => {
   const response = await request<post_test_validation_response['data']>({
     url: '/api/test-validation',
     method: 'POST',
     data: params.body,
+    ...config,
   });
   return response;
 };
@@ -47,10 +51,12 @@ export const post_test_validation = async (
  */
 export const get_test_validation_id = async (
   params: get_test_validation_id_request,
+  config?: any,
 ): Promise<get_test_validation_id_response['data']> => {
   const response = await request<get_test_validation_id_response['data']>({
     url: `/api/test-validation/${params.id}`,
     method: 'GET',
+    ...config,
   });
   return response;
 };
@@ -61,11 +67,13 @@ export const get_test_validation_id = async (
  */
 export const post_test_validation_id = async (
   params: post_test_validation_id_request,
+  config?: any,
 ): Promise<post_test_validation_id_response['data']> => {
   const response = await request<post_test_validation_id_response['data']>({
     url: `/api/test-validation/${params.id}`,
     method: 'POST',
     data: params.body,
+    ...config,
   });
   return response;
 };

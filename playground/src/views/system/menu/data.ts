@@ -23,6 +23,10 @@ export function getMenuTypeOptions() {
 
 export function useColumns(
   onActionClick: OnActionClickFn<get_system_menu_list_response['data']>,
+  onStatusChange?: (
+    newStatus: number,
+    row: any,
+  ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions<get_system_menu_list_response['data']>['columns'] {
   return [
     {
@@ -75,7 +79,10 @@ export function useColumns(
       title: $t('system.menu.component'),
     },
     {
-      cellRender: { name: 'CellTag' },
+      cellRender: {
+        attrs: { beforeChange: onStatusChange },
+        name: onStatusChange ? 'CellSwitch' : 'CellTag',
+      },
       field: 'status',
       title: $t('system.menu.status'),
       width: 100,

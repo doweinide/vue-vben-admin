@@ -96,6 +96,10 @@ export function useSchema(): VbenFormSchema[] {
  */
 export function useColumns(
   onActionClick?: OnActionClickFn<get_system_dept_list_response['data']>,
+  onStatusChange?: (
+    newStatus: number,
+    row: any,
+  ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions<get_system_dept_list_response['data']>['columns'] {
   return [
     {
@@ -107,7 +111,10 @@ export function useColumns(
       width: 150,
     },
     {
-      cellRender: { name: 'CellTag' },
+      cellRender: {
+        attrs: { beforeChange: onStatusChange },
+        name: onStatusChange ? 'CellSwitch' : 'CellTag',
+      },
       field: 'status',
       title: $t('system.dept.status'),
       width: 100,
@@ -138,7 +145,7 @@ export function useColumns(
           'edit', // 默认的编辑按钮
           {
             code: 'delete', // 默认的删除按钮
-            disabled: (row: get_system_dept_list_response['data']) => {
+            disabled: (row: any) => {
               return !!(row.children && row.children.length > 0);
             },
           },

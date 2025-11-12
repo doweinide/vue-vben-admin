@@ -141,7 +141,7 @@ export class UserService {
       code: 200,
       message: '用户创建成功',
       data: created,
-      };
+    };
   }
 
   /**

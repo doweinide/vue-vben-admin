@@ -19,11 +19,13 @@ import { request } from '#/api/request';
  */
 export const get_users = async (
   params: get_users_request,
+  config?: any,
 ): Promise<get_users_response['data']> => {
   const response = await request<get_users_response['data']>({
     url: '/api/users',
     method: 'GET',
     params,
+    ...config,
   });
   return response;
 };
@@ -34,11 +36,13 @@ export const get_users = async (
  */
 export const post_users = async (
   params: post_users_request,
+  config?: any,
 ): Promise<post_users_response['data']> => {
   const response = await request<post_users_response['data']>({
     url: '/api/users',
     method: 'POST',
     data: params.body,
+    ...config,
   });
   return response;
 };
@@ -49,10 +53,12 @@ export const post_users = async (
  */
 export const get_users_id = async (
   params: get_users_id_request,
+  config?: any,
 ): Promise<get_users_id_response['data']> => {
   const response = await request<get_users_id_response['data']>({
     url: `/api/users/${params.id}`,
     method: 'GET',
+    ...config,
   });
   return response;
 };
@@ -63,10 +69,12 @@ export const get_users_id = async (
  */
 export const delete_users_id = async (
   params: delete_users_id_request,
+  config?: any,
 ): Promise<delete_users_id_response['data']> => {
   const response = await request<delete_users_id_response['data']>({
     url: `/api/users/${params.id}`,
     method: 'DELETE',
+    ...config,
   });
   return response;
 };
@@ -77,11 +85,13 @@ export const delete_users_id = async (
  */
 export const patch_users_id = async (
   params: patch_users_id_request,
+  config?: any,
 ): Promise<patch_users_id_response['data']> => {
   const response = await request<patch_users_id_response['data']>({
     url: `/api/users/${params.id}`,
     method: 'PATCH',
     data: params.body,
+    ...config,
   });
   return response;
 };

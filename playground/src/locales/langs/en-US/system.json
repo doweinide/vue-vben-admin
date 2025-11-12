@@ -47,7 +47,13 @@
       "normal": "Text",
       "none": "None"
     },
-    "badgeVariants": "Badge Style"
+    "badgeVariants": "Badge Style",
+    "sync": "Sync Menu",
+    "syncConfirmTitle": "Sync Menu",
+    "syncConfirmContent": "Are you sure you want to sync the menu? This operation will update all menu data.",
+    "syncing": "Syncing menu...",
+    "syncSuccess": "Menu synced successfully",
+    "syncFailed": "Menu sync failed"
   },
   "role": {
     "title": "Role Management",
@@ -71,6 +77,7 @@
     "email": "Email",
     "password": "Password",
     "department": "Department",
+    "roles": "Roles",
     "status": "Status",
     "createTime": "Create Time",
     "operation": "Operation",

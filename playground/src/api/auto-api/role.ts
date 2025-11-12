@@ -25,10 +25,12 @@ import { request } from '#/api/request';
  */
 export const get_roles_id_permissions = async (
   params: get_roles_id_permissions_request,
+  config?: any,
 ): Promise<get_roles_id_permissions_response['data']> => {
   const response = await request<get_roles_id_permissions_response['data']>({
     url: `/api/roles/${params.id}/permissions`,
     method: 'GET',
+    ...config,
   });
   return response;
 };
@@ -39,11 +41,13 @@ export const get_roles_id_permissions = async (
  */
 export const post_roles_id_permissions = async (
   params: post_roles_id_permissions_request,
+  config?: any,
 ): Promise<post_roles_id_permissions_response['data']> => {
   const response = await request<post_roles_id_permissions_response['data']>({
     url: `/api/roles/${params.id}/permissions`,
     method: 'POST',
     data: params.body,
+    ...config,
   });
   return response;
 };
@@ -54,11 +58,13 @@ export const post_roles_id_permissions = async (
  */
 export const post_roles_check_name = async (
   params: post_roles_check_name_request,
+  config?: any,
 ): Promise<post_roles_check_name_response['data']> => {
   const response = await request<post_roles_check_name_response['data']>({
     url: '/api/roles/check-name',
     method: 'POST',
     data: params.body,
+    ...config,
   });
   return response;
 };
@@ -69,11 +75,13 @@ export const post_roles_check_name = async (
  */
 export const get_roles = async (
   params: get_roles_request,
+  config?: any,
 ): Promise<get_roles_response['data']> => {
   const response = await request<get_roles_response['data']>({
     url: '/api/roles',
     method: 'GET',
     params,
+    ...config,
   });
   return response;
 };
@@ -84,11 +92,13 @@ export const get_roles = async (
  */
 export const post_roles = async (
   params: post_roles_request,
+  config?: any,
 ): Promise<post_roles_response['data']> => {
   const response = await request<post_roles_response['data']>({
     url: '/api/roles',
     method: 'POST',
     data: params.body,
+    ...config,
   });
   return response;
 };
@@ -99,10 +109,12 @@ export const post_roles = async (
  */
 export const get_roles_id = async (
   params: get_roles_id_request,
+  config?: any,
 ): Promise<get_roles_id_response['data']> => {
   const response = await request<get_roles_id_response['data']>({
     url: `/api/roles/${params.id}`,
     method: 'GET',
+    ...config,
   });
   return response;
 };
@@ -113,10 +125,12 @@ export const get_roles_id = async (
  */
 export const delete_roles_id = async (
   params: delete_roles_id_request,
+  config?: any,
 ): Promise<delete_roles_id_response['data']> => {
   const response = await request<delete_roles_id_response['data']>({
     url: `/api/roles/${params.id}`,
     method: 'DELETE',
+    ...config,
   });
   return response;
 };
@@ -127,11 +141,13 @@ export const delete_roles_id = async (
  */
 export const patch_roles_id = async (
   params: patch_roles_id_request,
+  config?: any,
 ): Promise<patch_roles_id_response['data']> => {
   const response = await request<patch_roles_id_response['data']>({
     url: `/api/roles/${params.id}`,
     method: 'PATCH',
     data: params.body,
+    ...config,
   });
   return response;
 };

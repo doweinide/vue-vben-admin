@@ -28,7 +28,13 @@ const [Form, formApi] = useVbenForm({
 
 function resetForm() {
   formApi.resetForm();
-  formApi.setValues(formData.value || {});
+  const initial = { ...formData.value } as any;
+  if (Array.isArray(initial.userRoles)) {
+    initial.roleIds = initial.userRoles
+      .map((ur: any) => ur?.roleId)
+      .filter(Boolean);
+  }
+  formApi.setValues(initial);
 }
 
 const [Modal, modalApi] = useVbenModal({
@@ -45,12 +51,14 @@ const [Modal, modalApi] = useVbenModal({
         password: data.password as string,
         status: data.status as number | undefined,
         username: data.username as string,
+        roleIds: (data.roleIds as string[] | undefined) ?? undefined,
       } as {
         avatar?: string;
         deptId?: string;
         email: string;
         name?: string;
         password: string;
+        roleIds?: string[];
         status?: number;
         username: string;
       };
@@ -61,11 +69,13 @@ const [Modal, modalApi] = useVbenModal({
         name: data.name as string | undefined,
         status: data.status as number | undefined,
         username: data.username as string | undefined,
+        roleIds: (data.roleIds as string[] | undefined) ?? undefined,
       } as {
         avatar?: string;
         deptId?: string;
         email?: string;
         name?: string;
+        roleIds?: string[];
         status?: number;
         username?: string;
       };
@@ -85,7 +95,13 @@ const [Modal, modalApi] = useVbenModal({
       const data = modalApi.getData<any>();
       if (data) {
         formData.value = data;
-        formApi.setValues(formData.value);
+        const initial = { ...formData.value } as any;
+        if (Array.isArray(initial.userRoles)) {
+          initial.roleIds = initial.userRoles
+            .map((ur: any) => ur?.roleId)
+            .filter(Boolean);
+        }
+        formApi.setValues(initial);
       }
     }
   },

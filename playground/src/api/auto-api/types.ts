@@ -156,6 +156,8 @@ export interface post_users_request {
     name?: string;
     /** 用户密码，存储加密后的密码哈希值 */
     password: string;
+    /** 角色ID列表 */
+    roleIds?: string[];
     /** 用户账户状态：0-禁用，1-启用 */
     status?: number;
     /** 用户名，必须唯一，用于登录认证 */
@@ -292,6 +294,8 @@ export interface patch_users_id_request {
     name?: string;
     /** 用户密码，存储加密后的密码哈希值 */
     password?: string;
+    /** 角色ID列表 */
+    roleIds?: string[];
     /** 用户账户状态：0-禁用，1-启用 */
     status?: number;
     /** 用户名，必须唯一，用于登录认证 */
@@ -764,7 +768,7 @@ export interface post_system_menu_request {
       hideTab?: boolean;
       /** 菜单图标 */
       icon?: string;
-      /** 内嵌页面地址（别名） */
+      /** 内嵌页面地址（iframeSrc 别名） */
       iframeSrc?: string;
       /** 是否忽略缓存 */
       ignoreKeepAlive?: boolean;
@@ -772,9 +776,9 @@ export interface post_system_menu_request {
       ignoreRoute?: boolean;
       /** 是否为外链 */
       isLink?: boolean;
-      /** 是否开启缓存（与 ignoreKeepAlive 相对） */
+      /** 是否开启缓存 */
       keepAlive?: boolean;
-      /** 外部链接（别名） */
+      /** 外部链接（link 别名） */
       link?: string;
       /** 排序号 */
       orderNo?: number;
@@ -1041,7 +1045,7 @@ export interface patch_system_menu_id_request {
       hideTab?: boolean;
       /** 菜单图标 */
       icon?: string;
-      /** 内嵌页面地址（别名） */
+      /** 内嵌页面地址（iframeSrc 别名） */
       iframeSrc?: string;
       /** 是否忽略缓存 */
       ignoreKeepAlive?: boolean;
@@ -1049,9 +1053,9 @@ export interface patch_system_menu_id_request {
       ignoreRoute?: boolean;
       /** 是否为外链 */
       isLink?: boolean;
-      /** 是否开启缓存（与 ignoreKeepAlive 相对） */
+      /** 是否开启缓存 */
       keepAlive?: boolean;
-      /** 外部链接（别名） */
+      /** 外部链接（link 别名） */
       link?: string;
       /** 排序号 */
       orderNo?: number;
@@ -1151,6 +1155,17 @@ export type get_system_menu_path_exists_response = {
   code?: number;
   data?: Record<string, any>;
   message?: string;
+};
+export interface post_system_menu_sync_request {
+  body: any;
+}
+export type post_system_menu_sync_response = {
+  /** 响应状态码，200表示成功，其他表示错误 */
+  code: number;
+  /** 响应数据 */
+  data: any;
+  /** 响应消息，描述操作结果 */
+  message: string;
 };
 export interface get_roles_id_permissions_request {
   id: string;

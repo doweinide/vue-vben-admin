@@ -108,22 +108,9 @@ async function loadPermissions() {
     const list = (await get_system_menu_list(
       {},
     )) as unknown as get_system_menu_list_response['data'][];
-    // Build tree from flat list using pid
-    const map = new Map<string, any>();
-    const roots: any[] = [];
-    for (const item of list) {
-      map.set(item.id, { ...item, children: [] });
-    }
-    for (const item of list) {
-      const node = map.get(item.id);
-      const pid = item.pid;
-      if (pid && map.has(pid)) {
-        map.get(pid).children.push(node);
-      } else {
-        roots.push(node);
-      }
-    }
-    permissions.value = roots as unknown as DataNode[];
+    permissions.value = (Array.isArray(list)
+      ? list
+      : []) as unknown as DataNode[];
   } finally {
     loadingPermissions.value = false;
   }
@@ -161,8 +148,8 @@ function getNodeClass(node: Recordable<any>) {
             icon-field="meta.icon"
           >
             <template #node="{ value }">
-              <IconifyIcon v-if="value.meta.icon" :icon="value.meta.icon" />
-              {{ $t(value.meta.title) }}
+              <IconifyIcon v-if="value.meta?.icon" :icon="value.meta?.icon" />
+              {{ $t(value.meta?.title ?? value.name) }}
             </template>
           </Tree>
         </Spin>

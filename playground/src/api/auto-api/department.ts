@@ -19,11 +19,13 @@ import { request } from '#/api/request';
  */
 export const post_system_dept = async (
   params: post_system_dept_request,
+  config?: any,
 ): Promise<post_system_dept_response['data']> => {
   const response = await request<post_system_dept_response['data']>({
     url: '/api/system/dept',
     method: 'POST',
     data: params.body,
+    ...config,
   });
   return response;
 };
@@ -34,11 +36,13 @@ export const post_system_dept = async (
  */
 export const get_system_dept_list = async (
   params: get_system_dept_list_request,
+  config?: any,
 ): Promise<get_system_dept_list_response['data']> => {
   const response = await request<get_system_dept_list_response['data']>({
     url: '/api/system/dept/list',
     method: 'GET',
     params,
+    ...config,
   });
   return response;
 };
@@ -49,10 +53,12 @@ export const get_system_dept_list = async (
  */
 export const get_system_dept_id = async (
   params: get_system_dept_id_request,
+  config?: any,
 ): Promise<get_system_dept_id_response['data']> => {
   const response = await request<get_system_dept_id_response['data']>({
     url: `/api/system/dept/${params.id}`,
     method: 'GET',
+    ...config,
   });
   return response;
 };
@@ -63,10 +69,12 @@ export const get_system_dept_id = async (
  */
 export const delete_system_dept_id = async (
   params: delete_system_dept_id_request,
+  config?: any,
 ): Promise<delete_system_dept_id_response['data']> => {
   const response = await request<delete_system_dept_id_response['data']>({
     url: `/api/system/dept/${params.id}`,
     method: 'DELETE',
+    ...config,
   });
   return response;
 };
@@ -77,11 +85,13 @@ export const delete_system_dept_id = async (
  */
 export const patch_system_dept_id = async (
   params: patch_system_dept_id_request,
+  config?: any,
 ): Promise<patch_system_dept_id_response['data']> => {
   const response = await request<patch_system_dept_id_response['data']>({
     url: `/api/system/dept/${params.id}`,
     method: 'PATCH',
     data: params.body,
+    ...config,
   });
   return response;
 };

@@ -70,6 +70,23 @@ export function useSchema(): VbenFormSchema[] {
       },
     },
     {
+      component: 'ApiSelect',
+      fieldName: 'roleIds',
+      label: $t('system.user.roles'),
+      componentProps: {
+        mode: 'multiple',
+        allowClear: true,
+        class: 'w-full',
+        api: async () => {
+          await systemStore.fetchRoles();
+          return systemStore.roles.map((r: any) => ({
+            label: r.name,
+            value: r.id,
+          }));
+        },
+      },
+    },
+    {
       component: 'RadioGroup',
       componentProps: {
         buttonStyle: 'solid',
@@ -103,19 +120,23 @@ export function useSchema(): VbenFormSchema[] {
 /**
  * 获取表格列配置
  */
-export function useColumns(onActionClick?: any): any[] {
+export function useColumns(
+  onActionClick?: any,
+  onStatusChange?: (
+    newStatus: number,
+    row: any,
+  ) => PromiseLike<boolean | undefined>,
+): any[] {
   return [
     {
       align: 'left',
       field: 'username',
       fixed: 'left',
       title: $t('system.user.username'),
-      width: 120,
     },
     {
       field: 'name',
       title: $t('system.user.realName'),
-      width: 120,
     },
     {
       field: 'email',
@@ -125,10 +146,23 @@ export function useColumns(onActionClick?: any): any[] {
     {
       field: 'department.name',
       title: $t('system.user.department'),
-      width: 150,
     },
     {
-      cellRender: { name: 'CellTag' },
+      field: 'userRoles',
+      title: $t('system.user.roles'),
+      minWidth: 200,
+      formatter: ({ row }: any) => {
+        const names = (row.userRoles || [])
+          .map((ur: any) => ur.role?.name)
+          .filter(Boolean);
+        return names.length > 0 ? names.join(', ') : '-';
+      },
+    },
+    {
+      cellRender: {
+        attrs: { beforeChange: onStatusChange },
+        name: onStatusChange ? 'CellSwitch' : 'CellTag',
+      },
       field: 'status',
       title: $t('system.user.status'),
       width: 100,
@@ -136,7 +170,6 @@ export function useColumns(onActionClick?: any): any[] {
     {
       field: 'createdAt',
       title: $t('system.user.createTime'),
-      width: 180,
     },
     {
       align: 'right',
@@ -155,6 +188,49 @@ export function useColumns(onActionClick?: any): any[] {
       showOverflow: false,
       title: $t('system.user.operation'),
       width: 150,
+    },
+  ];
+}
+export function useGridFormSchema(): VbenFormSchema[] {
+  const systemStore = useSystemStore();
+  return [
+    {
+      component: 'Input',
+      fieldName: 'username',
+      label: $t('system.user.username'),
+    },
+    {
+      component: 'Input',
+      fieldName: 'email',
+      label: $t('system.user.email'),
+    },
+    {
+      component: 'ApiTreeSelect',
+      fieldName: 'deptId',
+      label: $t('system.user.department'),
+      componentProps: {
+        allowClear: true,
+        api: async () => {
+          await systemStore.fetchDepartments();
+          return systemStore.departments;
+        },
+        class: 'w-full',
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
+      },
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: [
+          { label: $t('common.enabled'), value: 1 },
+          { label: $t('common.disabled'), value: 0 },
+        ],
+      },
+      fieldName: 'status',
+      label: $t('system.user.status'),
     },
   ];
 }
