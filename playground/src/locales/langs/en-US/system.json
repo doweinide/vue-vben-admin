@@ -14,6 +14,7 @@
     "title": "Menu Management",
     "parent": "Parent Menu",
     "menuTitle": "Title",
+    "orderNo": "Order No",
     "menuName": "Menu Name",
     "name": "Menu",
     "type": "Type",

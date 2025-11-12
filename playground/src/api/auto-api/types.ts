@@ -332,6 +332,27 @@ export type patch_users_id_response = {
   /** 响应消息，描述操作结果 */
   message: string;
 };
+export type get_auth_menus_response = {
+  /** 响应状态码，200表示成功，其他表示错误 */
+  code: number;
+  /** 响应数据 */
+  data: {
+    authCode?: string;
+    children?: any[];
+    component?: string;
+    createTime: string;
+    id: string;
+    meta?: any;
+    name: string;
+    path?: string;
+    pid?: string;
+    status: number;
+    type: string;
+    updateTime: string;
+  }[];
+  /** 响应消息，描述操作结果 */
+  message: string;
+};
 export type get_auth_profile_response = {
   /** 响应状态码，200表示成功，其他表示错误 */
   code: number;

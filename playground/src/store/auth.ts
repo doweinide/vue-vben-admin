@@ -15,6 +15,8 @@ import { defineStore } from 'pinia';
 import { get_auth_profile, post_auth_login } from '#/api/auto-api/auth';
 import { logoutApi } from '#/api/core/auth';
 import { $t } from '#/locales';
+import { generateAccess } from '#/router/access';
+import { accessRoutes } from '#/router/routes';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -74,6 +76,17 @@ export const useAuthStore = defineStore('auth', () => {
 
         const fetchUserInfoResult = await fetchUserInfo();
         userInfo = fetchUserInfoResult;
+
+        preferences.app.accessMode = 'backend';
+        const roles = userInfo?.roles ?? [];
+        const { accessibleMenus, accessibleRoutes } = await generateAccess({
+          roles,
+          router,
+          routes: accessRoutes,
+        });
+        accessStore.setAccessMenus(accessibleMenus);
+        accessStore.setAccessRoutes(accessibleRoutes);
+        accessStore.setIsAccessChecked(true);
 
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);

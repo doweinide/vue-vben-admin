@@ -289,6 +289,15 @@ const schema: VbenFormSchema[] = [
     label: $t('system.menu.badgeType.title'),
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      min: 0,
+      class: 'w-full',
+    },
+    fieldName: 'meta.order',
+    label: $t('system.menu.orderNo'),
+  },
+  {
     component: 'Input',
     componentProps: (values) => {
       return {

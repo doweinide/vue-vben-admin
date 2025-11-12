@@ -10,7 +10,7 @@ import type { get_system_menu_list_response } from '#/api/auto-api/types';
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { useAccessStore } from '@vben/stores';
+// import { useAccessStore } from '@vben/stores';
 
 import { MenuBadge } from '@vben-core/menu-ui';
 
@@ -23,6 +23,7 @@ import {
   patch_system_menu_id,
   post_system_menu_sync,
 } from '#/api/auto-api/menu';
+import { accessRoutes } from '#/router/routes';
 import { componentKeys } from '#/router/routes/index';
 // 使用 auto-api 的封装方法，不直接调用通用 request
 
@@ -71,7 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions,
 });
 
-const accessStore = useAccessStore();
+// const accessStore = useAccessStore();
 
 function extractComponentKey(route: RouteRecordRaw): string | undefined {
   const c: any = (route as any).component;
@@ -236,15 +237,14 @@ function onSync() {
     content:
       $t('system.menu.syncConfirmContent') ||
       '确定要同步菜单吗？此操作将更新所有菜单数据。',
-    okText: $t('ui.action.confirm') || '确认',
-    cancelText: $t('ui.action.cancel') || '取消',
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     onOk() {
-      // 从合并后的路由（accessRoutes）生成菜单数据并同步
+      // 使用项目静态路由（全部菜单）生成同步数据
       return Promise.resolve()
         .then(async () => {
-          const routes = accessStore.accessRoutes ?? [];
+          const routes = accessRoutes;
           const menus = routesToSyncMenus(routes);
-          // 使用 auto-api 方法，默认返回解析后的 data（三段式中的 data）
           await post_system_menu_sync(
             { body: { menus } },
             { successMessage: true },

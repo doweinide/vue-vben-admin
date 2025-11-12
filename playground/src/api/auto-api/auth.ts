@@ -1,10 +1,26 @@
 import type {
+  get_auth_menus_response,
   get_auth_profile_response,
   post_auth_login_request,
   post_auth_login_response,
 } from './types';
 
 import { request } from '#/api/request';
+
+/**
+ * 获取当前用户可访问菜单
+ * 合并用户启用角色的有效菜单并返回树结构
+ */
+export const get_auth_menus = async (
+  config?: any,
+): Promise<get_auth_menus_response['data']> => {
+  const response = await request<get_auth_menus_response['data']>({
+    url: '/api/auth/menus',
+    method: 'GET',
+    ...config,
+  });
+  return response;
+};
 
 /**
  * 获取当前用户信息
