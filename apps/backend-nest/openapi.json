@@ -5233,6 +5233,556 @@
         }
       }
     },
+    "/api/system/menu/sync": {
+      "post": {
+        "summary": "批量同步菜单（智能同步）",
+        "description": "一次性同步菜单：只更新变化、新增不存在、删除未提供（保留按钮）",
+        "tags": ["菜单管理"],
+        "operationId": "MenuController_sync",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "menus": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "菜单唯一标识（可选，仅用于关系映射）"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 100,
+                              "description": "菜单名称（唯一）"
+                            },
+                            "path": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 200,
+                              "description": "路由路径（唯一，可为空）"
+                            },
+                            "component": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 200,
+                              "description": "组件路径"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "catalog",
+                                "menu",
+                                "button",
+                                "embedded",
+                                "link"
+                              ],
+                              "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
+                            },
+                            "authCode": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 100,
+                              "description": "权限标识码"
+                            },
+                            "pid": {
+                              "type": "string",
+                              "nullable": true,
+                              "description": "父级菜单ID，支持树形结构"
+                            },
+                            "status": {
+                              "type": "integer",
+                              "nullable": true,
+                              "minimum": 0,
+                              "maximum": 1,
+                              "default": 1,
+                              "description": "菜单状态：0-禁用，1-启用"
+                            },
+                            "meta": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "title": {
+                                  "type": "string",
+                                  "description": "菜单标题"
+                                },
+                                "icon": {
+                                  "type": "string",
+                                  "description": "菜单图标"
+                                },
+                                "activeIcon": {
+                                  "type": "string",
+                                  "description": "菜单激活时的图标"
+                                },
+                                "hideInMenu": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否在菜单中隐藏"
+                                },
+                                "hideInBreadcrumb": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否在面包屑中隐藏"
+                                },
+                                "hideChildrenInMenu": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否隐藏子菜单"
+                                },
+                                "orderNo": {
+                                  "type": "number",
+                                  "nullable": true,
+                                  "description": "排序号"
+                                },
+                                "frameSrc": {
+                                  "type": "string",
+                                  "description": "内嵌框架地址"
+                                },
+                                "iframeSrc": {
+                                  "type": "string",
+                                  "description": "内嵌页面地址（iframeSrc 别名）"
+                                },
+                                "externalLink": {
+                                  "type": "string",
+                                  "description": "外部链接地址"
+                                },
+                                "link": {
+                                  "type": "string",
+                                  "description": "外部链接（link 别名）"
+                                },
+                                "ignoreKeepAlive": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否忽略缓存"
+                                },
+                                "keepAlive": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否开启缓存"
+                                },
+                                "affix": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否固定标签页"
+                                },
+                                "affixTab": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否固定标签页（别名）"
+                                },
+                                "carryParam": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否携带参数"
+                                },
+                                "single": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否单独显示"
+                                },
+                                "currentActiveMenu": {
+                                  "type": "string",
+                                  "description": "当前激活菜单"
+                                },
+                                "hideTab": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否隐藏标签页"
+                                },
+                                "hideInTab": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否隐藏标签页（别名）"
+                                },
+                                "hideMenu": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否隐藏菜单"
+                                },
+                                "isLink": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否为外链"
+                                },
+                                "ignoreRoute": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否忽略路由"
+                                },
+                                "hidePathForChildren": {
+                                  "type": "boolean",
+                                  "nullable": true,
+                                  "description": "是否为子级隐藏路径"
+                                },
+                                "badgeType": {
+                                  "type": "string",
+                                  "description": "徽标类型：dot-圆点，normal-文本"
+                                },
+                                "badge": {
+                                  "type": "string",
+                                  "description": "徽标文本"
+                                },
+                                "badgeVariants": {
+                                  "type": "string",
+                                  "description": "徽标样式变体"
+                                }
+                              },
+                              "additionalProperties": {
+                                "nullable": true
+                              },
+                              "description": "菜单元数据（JSON格式存储图标、标题等信息）"
+                            },
+                            "children": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "子菜单"
+                            }
+                          },
+                          "required": ["name", "type"],
+                          "additionalProperties": {
+                            "nullable": true
+                          }
+                        }
+                      }
+                    },
+                    "required": ["menus"]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "菜单唯一标识（可选，仅用于关系映射）"
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100,
+                          "description": "菜单名称（唯一）"
+                        },
+                        "path": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "路由路径（唯一，可为空）"
+                        },
+                        "component": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 200,
+                          "description": "组件路径"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "catalog",
+                            "menu",
+                            "button",
+                            "embedded",
+                            "link"
+                          ],
+                          "description": "菜单类型：catalog-目录，menu-菜单，button-按钮，embedded-内嵌，link-外链"
+                        },
+                        "authCode": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100,
+                          "description": "权限标识码"
+                        },
+                        "pid": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "父级菜单ID，支持树形结构"
+                        },
+                        "status": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 1,
+                          "default": 1,
+                          "description": "菜单状态：0-禁用，1-启用"
+                        },
+                        "meta": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "title": {
+                              "type": "string",
+                              "description": "菜单标题"
+                            },
+                            "icon": {
+                              "type": "string",
+                              "description": "菜单图标"
+                            },
+                            "activeIcon": {
+                              "type": "string",
+                              "description": "菜单激活时的图标"
+                            },
+                            "hideInMenu": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否在菜单中隐藏"
+                            },
+                            "hideInBreadcrumb": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否在面包屑中隐藏"
+                            },
+                            "hideChildrenInMenu": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否隐藏子菜单"
+                            },
+                            "orderNo": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "排序号"
+                            },
+                            "frameSrc": {
+                              "type": "string",
+                              "description": "内嵌框架地址"
+                            },
+                            "iframeSrc": {
+                              "type": "string",
+                              "description": "内嵌页面地址（iframeSrc 别名）"
+                            },
+                            "externalLink": {
+                              "type": "string",
+                              "description": "外部链接地址"
+                            },
+                            "link": {
+                              "type": "string",
+                              "description": "外部链接（link 别名）"
+                            },
+                            "ignoreKeepAlive": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否忽略缓存"
+                            },
+                            "keepAlive": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否开启缓存"
+                            },
+                            "affix": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否固定标签页"
+                            },
+                            "affixTab": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否固定标签页（别名）"
+                            },
+                            "carryParam": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否携带参数"
+                            },
+                            "single": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否单独显示"
+                            },
+                            "currentActiveMenu": {
+                              "type": "string",
+                              "description": "当前激活菜单"
+                            },
+                            "hideTab": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否隐藏标签页"
+                            },
+                            "hideInTab": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否隐藏标签页（别名）"
+                            },
+                            "hideMenu": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否隐藏菜单"
+                            },
+                            "isLink": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否为外链"
+                            },
+                            "ignoreRoute": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否忽略路由"
+                            },
+                            "hidePathForChildren": {
+                              "type": "boolean",
+                              "nullable": true,
+                              "description": "是否为子级隐藏路径"
+                            },
+                            "badgeType": {
+                              "type": "string",
+                              "description": "徽标类型：dot-圆点，normal-文本"
+                            },
+                            "badge": {
+                              "type": "string",
+                              "description": "徽标文本"
+                            },
+                            "badgeVariants": {
+                              "type": "string",
+                              "description": "徽标样式变体"
+                            }
+                          },
+                          "additionalProperties": {
+                            "nullable": true
+                          },
+                          "description": "菜单元数据（JSON格式存储图标、标题等信息）"
+                        },
+                        "children": {
+                          "type": "array",
+                          "items": {
+                            "nullable": true
+                          },
+                          "description": "子菜单"
+                        }
+                      },
+                      "required": ["name", "type"],
+                      "additionalProperties": {
+                        "nullable": true
+                      }
+                    }
+                  }
+                ],
+                "description": "批量菜单同步请求（智能同步，支持数组或 {menus: []}）"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "nullable": true,
+                      "description": "响应状态码，200表示成功，其他表示错误"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "响应消息，描述操作结果"
+                    },
+                    "data": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "createdCount": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "新增的菜单条数"
+                            },
+                            "updatedCount": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "更新的菜单条数"
+                            },
+                            "deletedCount": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "删除的菜单条数"
+                            },
+                            "logs": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "操作日志"
+                            }
+                          },
+                          "required": [
+                            "createdCount",
+                            "updatedCount",
+                            "deletedCount",
+                            "logs"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": ["running", "started"],
+                              "description": "同步状态"
+                            }
+                          },
+                          "required": ["status"]
+                        }
+                      ],
+                      "description": "响应数据"
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "请求参数验证失败"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "field": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "code": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/roles/{id}/permissions": {
       "post": {
         "summary": "分配角色权限",

@@ -441,7 +441,10 @@ class TypeScriptGenerator {
     const returnType = `Promise<${responseType}>`;
 
     // 构建函数签名
-    const signature = `export const ${functionName} = async (${paramType}): ${returnType} => {`;
+    const parameters = hasParams
+      ? `${paramType}, config?: any`
+      : `config?: any`;
+    const signature = `export const ${functionName} = async (${parameters}): ${returnType} => {`;
 
     const lines: string[] = [];
 
@@ -474,7 +477,7 @@ class TypeScriptGenerator {
     if (requestConfig.data) {
       lines.push(`    data: ${requestConfig.data},`);
     }
-
+    lines.push(`    ...config,`);
     lines.push('  });');
     lines.push('  return response;');
     lines.push('};');
