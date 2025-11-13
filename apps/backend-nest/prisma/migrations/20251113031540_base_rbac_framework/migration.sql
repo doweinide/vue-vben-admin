@@ -1,38 +1,3 @@
-/*
-  Warnings:
-
-  - The primary key for the `users` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - You are about to drop the column `createdAt` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `isActive` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `roles` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `updatedAt` on the `users` table. All the data in the column will be lost.
-  - You are about to alter the column `username` on the `users` table. The data in that column could be lost. The data in that column will be cast from `Text` to `VarChar(50)`.
-  - You are about to alter the column `email` on the `users` table. The data in that column could be lost. The data in that column will be cast from `Text` to `VarChar(100)`.
-  - You are about to alter the column `password` on the `users` table. The data in that column could be lost. The data in that column will be cast from `Text` to `VarChar(255)`.
-  - You are about to alter the column `avatar` on the `users` table. The data in that column could be lost. The data in that column will be cast from `Text` to `VarChar(500)`.
-  - Added the required column `updated_at` to the `users` table without a default value. This is not possible if the table is not empty.
-
-*/
--- AlterTable
-ALTER TABLE "users" DROP CONSTRAINT "users_pkey",
-DROP COLUMN "createdAt",
-DROP COLUMN "isActive",
-DROP COLUMN "roles",
-DROP COLUMN "updatedAt",
-ADD COLUMN     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "dept_id" TEXT,
-ADD COLUMN     "name" VARCHAR(50),
-ADD COLUMN     "status" SMALLINT NOT NULL DEFAULT 1,
-ADD COLUMN     "updated_at" TIMESTAMPTZ(6) NOT NULL,
-ALTER COLUMN "id" DROP DEFAULT,
-ALTER COLUMN "id" SET DATA TYPE TEXT,
-ALTER COLUMN "username" SET DATA TYPE VARCHAR(50),
-ALTER COLUMN "email" SET DATA TYPE VARCHAR(100),
-ALTER COLUMN "password" SET DATA TYPE VARCHAR(255),
-ALTER COLUMN "avatar" SET DATA TYPE VARCHAR(500),
-ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
-DROP SEQUENCE "users_id_seq";
-
 -- CreateTable
 CREATE TABLE "departments" (
     "id" TEXT NOT NULL,
@@ -83,6 +48,22 @@ CREATE TABLE "role_permissions" (
     "create_time" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "role_permissions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "username" VARCHAR(50) NOT NULL,
+    "email" VARCHAR(100) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
+    "name" VARCHAR(50),
+    "avatar" VARCHAR(500),
+    "dept_id" TEXT,
+    "status" SMALLINT NOT NULL DEFAULT 1,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -145,6 +126,21 @@ CREATE INDEX "idx_role_permissions_menu_id" ON "role_permissions"("menu_id");
 CREATE UNIQUE INDEX "uk_role_menu" ON "role_permissions"("role_id", "menu_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE INDEX "idx_users_dept_id" ON "users"("dept_id");
+
+-- CreateIndex
+CREATE INDEX "idx_users_status" ON "users"("status");
+
+-- CreateIndex
+CREATE INDEX "idx_users_created_at" ON "users"("created_at" DESC);
+
+-- CreateIndex
 CREATE INDEX "idx_user_roles_user_id" ON "user_roles"("user_id");
 
 -- CreateIndex
@@ -155,15 +151,6 @@ CREATE INDEX "idx_user_roles_assigned_at" ON "user_roles"("assigned_at" DESC);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "uk_user_role" ON "user_roles"("user_id", "role_id");
-
--- CreateIndex
-CREATE INDEX "idx_users_dept_id" ON "users"("dept_id");
-
--- CreateIndex
-CREATE INDEX "idx_users_status" ON "users"("status");
-
--- CreateIndex
-CREATE INDEX "idx_users_created_at" ON "users"("created_at" DESC);
 
 -- AddForeignKey
 ALTER TABLE "departments" ADD CONSTRAINT "departments_pid_fkey" FOREIGN KEY ("pid") REFERENCES "departments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
