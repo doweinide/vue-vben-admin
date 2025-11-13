@@ -286,6 +286,7 @@ export const useSystemStore = defineStore('system', () => {
       deptId?: string;
       email?: string;
       name?: string;
+      password?: string;
       roleIds?: string[];
       status?: number;
       username?: string;

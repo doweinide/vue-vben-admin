@@ -67,6 +67,7 @@ const [Modal, modalApi] = useVbenModal({
         deptId: data.deptId as string | undefined,
         email: data.email as string | undefined,
         name: data.name as string | undefined,
+        password: (data.password as string | undefined) ?? undefined,
         status: data.status as number | undefined,
         username: data.username as string | undefined,
         roleIds: (data.roleIds as string[] | undefined) ?? undefined,
@@ -75,6 +76,7 @@ const [Modal, modalApi] = useVbenModal({
         deptId?: string;
         email?: string;
         name?: string;
+        password?: string;
         roleIds?: string[];
         status?: number;
         username?: string;
