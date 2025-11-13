@@ -12,4 +12,5 @@ export * from './common/auth.schema';
 export * from './common/department.schema';
 export * from './common/menu.schema';
 export * from './common/role.schema';
+export * from './common/upload.schema';
 export * from './common/user.schema';

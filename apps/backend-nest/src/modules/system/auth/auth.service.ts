@@ -38,7 +38,7 @@ export class AuthService {
       where: { roleId: { in: roleIds } },
       select: { menuId: true },
     });
-    const menuIdSet = new Set(rp.map((x) => x.menuId));
+    const menuIdSet = new Set<string>(rp.map((x: any) => String(x.menuId)));
     if (menuIdSet.size === 0) {
       return ResponseBuilder.success([], '获取用户菜单成功');
     }

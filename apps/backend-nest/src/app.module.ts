@@ -14,6 +14,7 @@ import { AuthModule } from './modules/system/auth/auth.module';
 import { DepartmentModule } from './modules/system/department/department.module';
 import { MenuModule } from './modules/system/menu/menu.module';
 import { RoleModule } from './modules/system/role/role.module';
+import { UploadModule } from './modules/system/upload/upload.module';
 import { UserModule } from './modules/system/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TestValidationController } from './test-validation.controller';
@@ -57,6 +58,7 @@ import { TestValidationController } from './test-validation.controller';
     MenuModule, // 菜单管理
     RoleModule, // 角色管理
     OpenApiGeneratorModule, // OpenAPI 类型生成器
+    UploadModule,
   ],
   controllers: [AppController, TestValidationController], // 根控制器
   providers: [

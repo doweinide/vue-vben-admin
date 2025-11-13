@@ -1,5 +1,8 @@
+import path from 'node:path';
+
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import express from 'express';
 
 import { AppModule } from './app.module';
 
@@ -45,8 +48,13 @@ async function bootstrap() {
       origin: corsOrigin, // 允许的源地址
       credentials: true, // 允许携带认证信息
     });
-
     console.log(`[Bootstrap] CORS enabled for origin: ${corsOrigin}`);
+
+    const appCfg = configService.get('app') as any;
+    const uploadsRoot: string =
+      appCfg?.uploads?.root || path.resolve(process.cwd(), 'uploads');
+    app.use('/uploads', express.static(uploadsRoot));
+    console.log(`[Bootstrap] Static served at /uploads -> ${uploadsRoot}`);
 
     // 启动 HTTP 服务器
     const port = configService.get<number>('app.port') || 3333;

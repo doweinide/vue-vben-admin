@@ -2,7 +2,6 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import * as zRaw from 'zod';
 
 extendZodWithOpenApi(zRaw);
-
 // 工具函数
 const emptyToUndefined = <T extends zRaw.ZodTypeAny>(schema: T) =>
   zRaw.preprocess((v) => (v === '' ? undefined : v), schema);
@@ -36,3 +35,5 @@ export declare namespace zPro {
   export type ZodType = zRaw.ZodType;
   export type ZodSchema = zRaw.ZodSchema;
 }
+
+export { zRaw };

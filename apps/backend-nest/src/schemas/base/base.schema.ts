@@ -4,7 +4,7 @@ import { createSchema } from './schema.factory';
 
 // 重新导出 createSchema 函数
 export { createSchema };
-
+export { z };
 /**
  * ✅ 基础响应结构（所有接口通用的最外层格式）
  * 内部使用，不对外导出

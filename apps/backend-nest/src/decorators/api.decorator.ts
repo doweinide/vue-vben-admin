@@ -21,6 +21,8 @@ export interface ApiEndpointOptions {
   tags?: string[];
   /** 请求体 Schema */
   bodySchema?: z.ZodSchema;
+  /** 请求体内容类型 */
+  bodyContentType?: string;
   /** 查询参数 Schema */
   querySchema?: z.ZodSchema;
   /** 路径参数 Schema */
@@ -74,7 +76,7 @@ export function ApiEndpoint(options: ApiEndpointOptions) {
       apiConfig.request = {
         body: {
           content: {
-            'application/json': {
+            [options.bodyContentType || 'application/json']: {
               schema: options.bodySchema,
             },
           },

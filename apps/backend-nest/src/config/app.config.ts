@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { registerAs } from '@nestjs/config';
 
 /**
@@ -42,4 +44,17 @@ export default registerAs('app', () => ({
    * 环境变量: CORS_ORIGIN
    */
   corsOrigin: process.env.CORS_ORIGIN || '*',
+
+  uploads: {
+    root: process.env.UPLOAD_ROOT || path.resolve(process.cwd(), 'uploads'),
+    maxSizeBytes: {
+      image: Number.parseInt(process.env.UPLOAD_IMAGE_MAX || '5242880', 10),
+      video: Number.parseInt(process.env.UPLOAD_VIDEO_MAX || '52428800', 10),
+      audio: Number.parseInt(process.env.UPLOAD_AUDIO_MAX || '10485760', 10),
+      document: Number.parseInt(
+        process.env.UPLOAD_DOCUMENT_MAX || '20971520',
+        10,
+      ),
+    },
+  },
 }));
