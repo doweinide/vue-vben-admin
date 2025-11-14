@@ -281,7 +281,7 @@ class TypeScriptGenerator {
     // 处理查询参数
     const queryParams = operation.parameters?.filter((p) => p.in === 'query');
     if (queryParams?.length) {
-      config.params = 'params';
+      config.params = 'params.params';
     }
 
     // 处理请求体
@@ -572,32 +572,45 @@ class TypeScriptGenerator {
     functionName: string,
     operation: OperationObject,
   ): null | string {
-    const params: string[] = [];
+    const lines: string[] = [];
 
-    // 处理参数
-    if (operation.parameters) {
-      operation.parameters.forEach((param) => {
-        if (param.in === 'query' || param.in === 'path') {
-          const paramType = this.parameterToTypeScript(param);
-          params.push(
-            `  ${param.name}${param.required ? '' : '?'}: ${paramType};`,
-          );
-        }
-      });
+    const queryParams = (operation.parameters || []).filter(
+      (p) => p.in === 'query',
+    );
+    const pathParams = (operation.parameters || []).filter(
+      (p) => p.in === 'path',
+    );
+
+    if (queryParams.length > 0) {
+      const queryFields = queryParams
+        .map((param) => {
+          const typ = this.parameterToTypeScript(param);
+          const req = param.required ? '' : '?';
+          return `    ${param.name}${req}: ${typ};`;
+        })
+        .join('\n');
+      lines.push('  params?: {');
+      lines.push(queryFields);
+      lines.push('  };');
     }
 
-    // 处理请求体
+    pathParams.forEach((param) => {
+      const typ = this.parameterToTypeScript(param);
+      const req = param.required ? '' : '?';
+      lines.push(`  ${param.name}${req}: ${typ};`);
+    });
+
     if (operation.requestBody) {
       const bodyType = this.requestBodyToTypeScript(operation.requestBody);
-      params.push(`  body: ${bodyType};`);
+      lines.push(`  body: ${bodyType};`);
     }
 
-    if (params.length === 0) {
+    if (lines.length === 0) {
       return null;
     }
 
     const typeName = this.formatTypeName(`${functionName}Request`);
-    return `export interface ${typeName} {\n${params.join('\n')}\n}`;
+    return `export interface ${typeName} {\n${lines.join('\n')}\n}`;
   }
 
   /**
@@ -735,9 +748,18 @@ class TypeScriptGenerator {
    * 请求体转 TypeScript 类型
    */
   private requestBodyToTypeScript(requestBody: any): string {
-    const content = requestBody.content?.['application/json'];
-    if (content?.schema) {
-      return this.schemaToTypeScript(content.schema);
+    const multipart = requestBody.content?.['multipart/form-data'];
+    if (multipart) {
+      return 'FormData';
+    }
+    const json = requestBody.content?.['application/json'];
+    if (json?.schema) {
+      return this.schemaToTypeScript(json.schema);
+    }
+    const urlencoded =
+      requestBody.content?.['application/x-www-form-urlencoded'];
+    if (urlencoded) {
+      return 'Record<string, any>';
     }
     return 'any';
   }

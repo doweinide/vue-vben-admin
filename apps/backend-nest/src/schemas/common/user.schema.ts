@@ -213,6 +213,7 @@ export const CreateUserRequestSchema = createSchema(
     avatar: z
       .string()
       .max(500, '头像URL最多500位')
+      .nullable()
       .optional()
       .describe('用户头像 URL，可选字段，用于显示用户头像'),
     // / 所属部门ID
@@ -267,6 +268,7 @@ export const UpdateUserRequestSchema = createSchema(
     avatar: z
       .string()
       .max(500, '头像URL最多500位')
+      .nullable()
       .optional()
       .describe('用户头像 URL，可选字段，用于显示用户头像'),
     // / 所属部门ID
