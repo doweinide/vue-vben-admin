@@ -25,6 +25,27 @@
     "file": "file",
     "upload-image": "Click to upload image"
   },
+  "upload": {
+    "title": "Upload",
+    "simple": "Small File Upload",
+    "chunk": "Chunked Upload",
+    "start": "Start Upload",
+    "pickFile": "Pick File",
+    "uploadBtn": "Upload File",
+    "chooseType": "File Type",
+    "listType": "List Style",
+    "multiple": "Multiple",
+    "clear": "Clear",
+    "chunkSizeMB": "Chunk Size (MB)",
+    "pause": "Pause",
+    "resume": "Resume",
+    "reset": "Reset",
+    "fileInfo": "File Info",
+    "name": "Name",
+    "type": "Type",
+    "size": "Size",
+    "hash": "Hash"
+  },
   "vxeTable": {
     "title": "Vxe Table",
     "basic": "Basic Table",

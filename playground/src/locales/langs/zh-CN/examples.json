@@ -28,6 +28,27 @@
     "file": "文件",
     "upload-image": "点击上传图片"
   },
+  "upload": {
+    "title": "上传",
+    "simple": "小文件上传",
+    "chunk": "分片上传",
+    "start": "开始上传",
+    "pickFile": "选择文件",
+    "uploadBtn": "上传文件",
+    "chooseType": "文件类型",
+    "listType": "列表样式",
+    "multiple": "多文件",
+    "clear": "清空",
+    "chunkSizeMB": "分片大小(MB)",
+    "pause": "暂停",
+    "resume": "继续",
+    "reset": "重置",
+    "fileInfo": "文件信息",
+    "name": "名称",
+    "type": "类型",
+    "size": "大小",
+    "hash": "哈希"
+  },
   "vxeTable": {
     "title": "Vxe 表格",
     "basic": "基础表格",

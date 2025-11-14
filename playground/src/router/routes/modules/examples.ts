@@ -328,6 +328,33 @@ const routes: RouteRecordRaw[] = [
           title: $t('examples.button-group.title'),
         },
       },
+      {
+        name: 'UploadExample',
+        path: '/examples/upload',
+        meta: {
+          icon: 'mdi:file-upload-outline',
+          title: $t('examples.upload.title'),
+        },
+        redirect: '/examples/upload/simple',
+        children: [
+          {
+            name: 'UploadSimpleExample',
+            path: '/examples/upload/simple',
+            component: () => import('#/views/examples/upload/simple/index.vue'),
+            meta: {
+              title: $t('examples.upload.simple'),
+            },
+          },
+          {
+            name: 'UploadChunkExample',
+            path: '/examples/upload/chunk',
+            component: () => import('#/views/examples/upload/chunk/index.vue'),
+            meta: {
+              title: $t('examples.upload.chunk'),
+            },
+          },
+        ],
+      },
     ],
   },
 ];
