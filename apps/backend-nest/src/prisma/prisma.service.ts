@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client/edge';
+import { PrismaClient as PrismaClientNode } from '@prisma/client';
+import { PrismaClient as PrismaClientEdge } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 
 /**
@@ -19,7 +20,7 @@ import { withAccelerate } from '@prisma/extension-accelerate';
  */
 @Injectable()
 export class PrismaService implements OnModuleInit {
-  public client: ReturnType<typeof this.createPrismaClient>;
+  public client: any;
 
   // 代理原始执行方法
   get $executeRaw() {
@@ -92,6 +93,30 @@ export class PrismaService implements OnModuleInit {
    * 支持连接池、查询缓存等功能
    */
   private createPrismaClient() {
-    return new PrismaClient().$extends(withAccelerate());
+    const dbMode = process.env.DB_CONNECTION || 'auto';
+    const databaseUrl = process.env.DATABASE_URL || '';
+    const localUrl =
+      process.env.DATABASE_URL_LOCAL ||
+      'postgresql://postgres:postgres@localhost:5432/vben?schema=public';
+
+    const useRemote =
+      dbMode === 'remote' ||
+      (dbMode === 'auto' && databaseUrl.startsWith('prisma+'));
+
+    console.log(
+      `[Prisma] mode=${dbMode} useRemote=${useRemote} url=${
+        useRemote ? databaseUrl : localUrl
+      }`,
+    );
+
+    if (useRemote) {
+      return new PrismaClientEdge().$extends(withAccelerate());
+    }
+
+    process.env.DATABASE_URL = localUrl;
+    process.env.PRISMA_CLIENT_ENGINE_TYPE = 'binary';
+    return new PrismaClientNode({
+      datasources: { db: { url: localUrl } },
+    });
   }
 }

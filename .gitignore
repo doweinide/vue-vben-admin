@@ -57,3 +57,5 @@ vite.config.ts.*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/.pnpm-store/
