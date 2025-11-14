@@ -1,6 +1,10 @@
 {
   "title": "系统管理",
   "dept": {
+    "switchStatus": "切换状态",
+    "switchStatusConfirm": "你要将{0}的状态切换为【{1}】吗？",
+    "operationCancelled": "已取消",
+    "addChild": "新增下级",
     "list": "部门列表",
     "createTime": "创建时间",
     "deptName": "部门名称",
@@ -12,6 +16,10 @@
     "title": "部门管理"
   },
   "menu": {
+    "switchStatus": "切换状态",
+    "switchStatusConfirm": "你要将{0}的状态切换为【{1}】吗？",
+    "operationCancelled": "已取消",
+    "addChild": "新增下级",
     "list": "菜单列表",
     "activeIcon": "激活图标",
     "activePath": "激活路径",
@@ -59,6 +67,9 @@
     "syncFailed": "菜单同步失败"
   },
   "role": {
+    "switchStatus": "切换状态",
+    "switchStatusConfirm": "你要将{0}的状态切换为【{1}】吗？",
+    "operationCancelled": "已取消",
     "title": "角色管理",
     "list": "角色列表",
     "name": "角色",
@@ -72,9 +83,13 @@
     "setPermissions": "授权"
   },
   "user": {
+    "switchStatus": "切换状态",
+    "switchStatusConfirm": "你要将{0}的状态切换为【{1}】吗？",
+    "operationCancelled": "已取消",
     "title": "用户管理",
     "list": "用户列表",
     "name": "用户",
+    "avatar": "头像",
     "username": "用户名",
     "realName": "真实姓名",
     "email": "邮箱",

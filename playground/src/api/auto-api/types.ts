@@ -12,8 +12,10 @@ export type get__response = {
   message?: string;
 };
 export interface get_test_validation_request {
-  limit?: string;
-  page?: string;
+  params?: {
+    limit?: string;
+    page?: string;
+  };
 }
 export type get_test_validation_response = {
   code?: number;
@@ -54,12 +56,14 @@ export type post_test_validation_id_response = {
   message?: string;
 };
 export interface get_users_request {
-  deptId?: string;
-  email?: string;
-  limit?: number;
-  page?: number;
-  status?: number;
-  username?: string;
+  params?: {
+    deptId?: string;
+    email?: string;
+    limit?: number;
+    page?: number;
+    status?: number;
+    username?: string;
+  };
 }
 export type get_users_response = {
   /** 响应状态码，200表示成功，其他表示错误 */
@@ -571,11 +575,13 @@ export type post_system_dept_response = {
   message: string;
 };
 export interface get_system_dept_list_request {
-  limit?: number;
-  name?: string;
-  page?: number;
-  pid?: string;
-  status?: number;
+  params?: {
+    limit?: number;
+    name?: string;
+    page?: number;
+    pid?: string;
+    status?: number;
+  };
 }
 export type get_system_dept_list_response = {
   /** 响应状态码，200表示成功，其他表示错误 */
@@ -801,6 +807,8 @@ export interface post_system_menu_request {
       keepAlive?: boolean;
       /** 外部链接（link 别名） */
       link?: string;
+      /** 排序号（别名） */
+      order?: number;
       /** 排序号 */
       orderNo?: number;
       /** 是否单独显示 */
@@ -882,12 +890,14 @@ export type post_system_menu_response = {
   message: string;
 };
 export interface get_system_menu_list_request {
-  limit?: number;
-  name?: string;
-  page?: number;
-  pid?: string;
-  status?: number;
-  type?: 'button' | 'catalog' | 'embedded' | 'link' | 'menu';
+  params?: {
+    limit?: number;
+    name?: string;
+    page?: number;
+    pid?: string;
+    status?: number;
+    type?: 'button' | 'catalog' | 'embedded' | 'link' | 'menu';
+  };
 }
 export type get_system_menu_list_response = {
   /** 响应状态码，200表示成功，其他表示错误 */
@@ -1078,6 +1088,8 @@ export interface patch_system_menu_id_request {
       keepAlive?: boolean;
       /** 外部链接（link 别名） */
       link?: string;
+      /** 排序号（别名） */
+      order?: number;
       /** 排序号 */
       orderNo?: number;
       /** 是否单独显示 */
@@ -1160,8 +1172,10 @@ export type patch_system_menu_id_response = {
   message: string;
 };
 export interface get_system_menu_name_exists_request {
-  id?: string;
-  name: string;
+  params?: {
+    id?: string;
+    name: string;
+  };
 }
 export type get_system_menu_name_exists_response = {
   code?: number;
@@ -1169,8 +1183,10 @@ export type get_system_menu_name_exists_response = {
   message?: string;
 };
 export interface get_system_menu_path_exists_request {
-  id?: string;
-  path: string;
+  params?: {
+    id?: string;
+    path: string;
+  };
 }
 export type get_system_menu_path_exists_response = {
   code?: number;
@@ -1222,10 +1238,12 @@ export type post_roles_check_name_response = {
   message?: string;
 };
 export interface get_roles_request {
-  limit?: number;
-  name?: string;
-  page?: number;
-  status?: number;
+  params?: {
+    limit?: number;
+    name?: string;
+    page?: number;
+    status?: number;
+  };
 }
 export type get_roles_response = {
   /** 响应状态码，200表示成功，其他表示错误 */
@@ -1578,4 +1596,124 @@ export type patch_roles_id_response = {
   };
   /** 响应消息，描述操作结果 */
   message: string;
+};
+export interface post_upload_chunk_init_request {
+  body: {
+    /** 单个分片大小（字节） */
+    chunkSize: number;
+    /** 文件MD5值（用于分片标识和断点续传） */
+    fileMd5: string;
+    /** 原始文件名 */
+    filename: string;
+    /** 文件MIME类型 */
+    mimeType: string;
+    /** 自定义上传子目录 */
+    subDir?: string;
+    /** 分片总数 */
+    totalChunks: number;
+    /** 文件总大小（字节） */
+    totalSize: number;
+  };
+}
+export type post_upload_chunk_init_response = {
+  /** 响应状态码，200表示成功，其他表示错误 */
+  code: number;
+  /** 响应数据 */
+  data: {
+    /** 缺失分片索引列表（从0开始） */
+    missing: number[];
+  };
+  /** 响应消息，描述操作结果 */
+  message: string;
+};
+export interface post_upload_chunk_merge_request {
+  body: {
+    /** 文件MD5值（目标文件唯一标识） */
+    fileMd5: string;
+    /** 原始文件名（用于扩展名补全） */
+    filename: string;
+    /** 文件MIME类型 */
+    mimeType: string;
+    /** 自定义上传子目录 */
+    subDir?: string;
+  };
+}
+export type post_upload_chunk_merge_response = {
+  /** 响应状态码，200表示成功，其他表示错误 */
+  code: number;
+  /** 响应数据 */
+  data: {
+    /** 文件类别 */
+    category: 'audio' | 'document' | 'image' | 'video';
+    /** 是否命中去重 */
+    dedup?: boolean;
+    /** 系统保存的唯一文件名 */
+    filename: string;
+    /** 文件MD5值（用于去重） */
+    md5: string;
+    /** 文件MIME类型 */
+    mimeType: string;
+    /** 原始文件名 */
+    originalName: string;
+    /** 静态资源相对路径 */
+    path: string;
+    /** 文件大小（字节） */
+    size: number;
+    /** 自定义上传子目录 */
+    subDir?: string;
+    /** 文件可访问 URL */
+    url: string;
+  };
+  /** 响应消息，描述操作结果 */
+  message: string;
+};
+export interface post_upload_request {
+  body: FormData;
+  params?: {
+    subDir?: string;
+  };
+}
+export type post_upload_response = {
+  /** 响应状态码，200表示成功，其他表示错误 */
+  code: number;
+  /** 响应数据 */
+  data: {
+    files: {
+      /** 文件类别 */
+      category: 'audio' | 'document' | 'image' | 'video';
+      /** 是否命中去重 */
+      dedup?: boolean;
+      /** 系统保存的唯一文件名 */
+      filename: string;
+      /** 文件MD5值（用于去重） */
+      md5: string;
+      /** 文件MIME类型 */
+      mimeType: string;
+      /** 原始文件名 */
+      originalName: string;
+      /** 静态资源相对路径 */
+      path: string;
+      /** 文件大小（字节） */
+      size: number;
+      /** 自定义上传子目录 */
+      subDir?: string;
+      /** 文件可访问 URL */
+      url: string;
+    }[];
+  };
+  /** 响应消息，描述操作结果 */
+  message: string;
+};
+export interface post_upload_chunk_upload_request {
+  body: FormData;
+  params?: {
+    fileMd5: string;
+    index?: number;
+    subDir?: string;
+  };
+}
+export type post_upload_chunk_upload_response = {
+  code?: number;
+  data?: Record<string, any>;
+  message?: string;
 };

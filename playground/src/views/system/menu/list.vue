@@ -183,14 +183,20 @@ function onActionClick({
 }
 
 async function onStatusChange(newStatus: number, row: any) {
-  const status = { 0: '禁用', 1: '启用' } as const;
+  const status = {
+    0: $t('common.disabled'),
+    1: $t('common.enabled'),
+  } as const;
   try {
     await new Promise((resolve, reject) => {
       Modal.confirm({
-        title: '切换状态',
-        content: `你要将${row.name}的状态切换为 【${status[newStatus as 0 | 1]}】 吗？`,
+        title: $t('system.menu.switchStatus'),
+        content: $t('system.menu.switchStatusConfirm', [
+          row.name,
+          status[newStatus as 0 | 1],
+        ]),
         onOk: () => resolve(true),
-        onCancel: () => reject(new Error('已取消')),
+        onCancel: () => reject(new Error($t('system.menu.operationCancelled'))),
       });
     });
     await patch_system_menu_id({ id: row.id, body: { status: newStatus } });

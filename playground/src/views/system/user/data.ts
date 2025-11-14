@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
 import { z } from '#/adapter/form';
+import { post_upload } from '#/api/auto-api/system';
 import { $t } from '#/locales';
 import { useSystemStore } from '#/store/system';
 
@@ -10,6 +11,69 @@ import { useSystemStore } from '#/store/system';
 export function useSchema(): VbenFormSchema[] {
   const systemStore = useSystemStore();
   return [
+    {
+      component: 'Input',
+      fieldName: 'avatar',
+      label: $t('system.user.avatar'),
+      hide: true,
+      rules: z.string().url().optional(),
+    },
+    {
+      component: 'Upload',
+      fieldName: 'avatarUpload',
+      label: $t('system.user.avatar'),
+      defaultValue: [],
+      renderComponentContent: () => ({
+        default: () => $t('examples.form.upload-image'),
+      }),
+      componentProps: (_values: Record<string, any>, formApi: any) => {
+        return {
+          accept: 'image/*',
+          listType: 'picture-card',
+          maxCount: 1,
+          multiple: false,
+          showUploadList: true,
+          customRequest: async ({
+            file,
+            onProgress,
+            onSuccess,
+            onError,
+          }: any) => {
+            try {
+              onProgress?.({ percent: 20 });
+              const formData = new FormData();
+              const rawFile = (file as any)?.originFileObj ?? file;
+              formData.append('file', rawFile as File);
+              const data = await post_upload(
+                {
+                  body: formData,
+                  params: {
+                    subDir: 'avatars',
+                  },
+                },
+                { headers: { 'Content-Type': 'multipart/form-data' } },
+              );
+              const info = data?.files?.[0];
+              const url = info?.url ?? '';
+              if (url) {
+                try {
+                  // @ts-ignore: assign preview url to UploadFile for UI display
+                  file.url = url;
+                } catch {}
+                formApi?.setFieldValue?.('avatar', url, true);
+              }
+              onProgress?.({ percent: 100 });
+              onSuccess?.(data, file);
+            } catch (error) {
+              onError?.(error);
+            }
+          },
+          onRemove: () => {
+            formApi?.setFieldValue?.('avatar', undefined, true);
+          },
+        };
+      },
+    },
     {
       component: 'Input',
       fieldName: 'username',

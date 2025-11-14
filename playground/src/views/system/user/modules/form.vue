@@ -34,6 +34,9 @@ function resetForm() {
       .map((ur: any) => ur?.roleId)
       .filter(Boolean);
   }
+  initial.avatarUpload = initial?.avatar
+    ? [{ uid: 'avatar', name: 'avatar', status: 'done', url: initial.avatar }]
+    : [];
   formApi.setValues(initial);
 }
 
@@ -43,8 +46,10 @@ const [Modal, modalApi] = useVbenModal({
     if (valid) {
       modalApi.lock();
       const data = await formApi.getValues();
+      const normalizeAvatar = (v: any) =>
+        typeof v === 'string' && v.trim().length > 0 ? v.trim() : undefined;
       const createPayload = {
-        avatar: data.avatar as string | undefined,
+        avatar: normalizeAvatar(data.avatar),
         deptId: data.deptId as string | undefined,
         email: data.email as string,
         name: data.name as string | undefined,
@@ -62,8 +67,21 @@ const [Modal, modalApi] = useVbenModal({
         status?: number;
         username: string;
       };
+      const hadAvatar = Boolean(formData.value?.avatar);
+      const uploadList = Array.isArray((data as any).avatarUpload)
+        ? (data as any).avatarUpload
+        : [];
+      const hasUpload = uploadList.length > 0;
+      let avatarForUpdate: null | string | undefined;
+      if (hasUpload) {
+        avatarForUpdate = normalizeAvatar(data.avatar);
+      } else if (hadAvatar) {
+        avatarForUpdate = null;
+      } else {
+        avatarForUpdate = undefined;
+      }
       const updatePayload = {
-        avatar: data.avatar as string | undefined,
+        avatar: avatarForUpdate,
         deptId: data.deptId as string | undefined,
         email: data.email as string | undefined,
         name: data.name as string | undefined,
@@ -103,6 +121,16 @@ const [Modal, modalApi] = useVbenModal({
             .map((ur: any) => ur?.roleId)
             .filter(Boolean);
         }
+        initial.avatarUpload = initial?.avatar
+          ? [
+              {
+                uid: 'avatar',
+                name: 'avatar',
+                status: 'done',
+                url: initial.avatar,
+              },
+            ]
+          : [];
         formApi.setValues(initial);
       }
     }

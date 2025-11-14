@@ -41,7 +41,7 @@ export const get_system_dept_list = async (
   const response = await request<get_system_dept_list_response['data']>({
     url: '/api/system/dept/list',
     method: 'GET',
-    params,
+    params: params.params,
     ...config,
   });
   return response;

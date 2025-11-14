@@ -77,14 +77,20 @@ function onActionClick({ code, row }: OnActionClickParams<any>) {
 }
 
 async function onStatusChange(newStatus: number, row: any) {
-  const status: Record<number, string> = { 0: '禁用', 1: '启用' };
+  const status: Record<number, string> = {
+    0: $t('common.disabled'),
+    1: $t('common.enabled'),
+  };
   try {
     await new Promise((resolve, reject) => {
       Modal.confirm({
-        title: '切换状态',
-        content: `你要将${row.username}的状态切换为 【${status[newStatus]}】 吗？`,
+        title: $t('system.user.switchStatus'),
+        content: $t('system.user.switchStatusConfirm', [
+          row.username,
+          status[newStatus],
+        ]),
         onOk: () => resolve(true),
-        onCancel: () => reject(new Error('已取消')),
+        onCancel: () => reject(new Error($t('system.user.operationCancelled'))),
       });
     });
     await systemStore.updateUser(row.id, { status: newStatus });
@@ -143,7 +149,7 @@ function refreshGrid() {
 <template>
   <Page auto-content-height>
     <FormModal @success="refreshGrid" />
-    <Grid table-title="用户列表">
+    <Grid :table-title="$t('system.user.list')">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />

@@ -47,7 +47,7 @@ export const get_system_menu_list = async (
   const response = await request<get_system_menu_list_response['data']>({
     url: '/api/system/menu/list',
     method: 'GET',
-    params,
+    params: params.params,
     ...config,
   });
   return response;
@@ -113,7 +113,7 @@ export const get_system_menu_name_exists = async (
   const response = await request<get_system_menu_name_exists_response['data']>({
     url: '/api/system/menu/name-exists',
     method: 'GET',
-    params,
+    params: params.params,
     ...config,
   });
   return response;
@@ -130,7 +130,7 @@ export const get_system_menu_path_exists = async (
   const response = await request<get_system_menu_path_exists_response['data']>({
     url: '/api/system/menu/path-exists',
     method: 'GET',
-    params,
+    params: params.params,
     ...config,
   });
   return response;

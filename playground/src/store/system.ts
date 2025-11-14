@@ -58,7 +58,7 @@ export const useSystemStore = defineStore('system', () => {
   async function fetchDepartments(params?: { name?: string; status?: number }) {
     departmentLoading.value = true;
     try {
-      const response = await get_system_dept_list(params ?? {});
+      const response = await get_system_dept_list({ params: params ?? {} });
       // 接口返回为 data，不含 items，这里按数组处理以适配视图
       departments.value =
         (response as unknown as get_system_dept_list_response['data'][]) ?? [];
@@ -134,7 +134,7 @@ export const useSystemStore = defineStore('system', () => {
   }) {
     roleLoading.value = true;
     try {
-      const response = await get_roles(params ?? {});
+      const response = await get_roles({ params: params ?? {} });
       roles.value = (response as unknown as get_roles_response['data'][]) ?? [];
       return response;
     } finally {
@@ -240,7 +240,7 @@ export const useSystemStore = defineStore('system', () => {
   }) {
     userLoading.value = true;
     try {
-      const response = await get_users(params ?? {});
+      const response = await get_users({ params: params ?? {} });
       users.value = response.items || [];
       return response;
     } finally {

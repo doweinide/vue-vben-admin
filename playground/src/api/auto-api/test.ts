@@ -22,7 +22,7 @@ export const get_test_validation = async (
   const response = await request<get_test_validation_response['data']>({
     url: '/api/test-validation',
     method: 'GET',
-    params,
+    params: params.params,
     ...config,
   });
   return response;

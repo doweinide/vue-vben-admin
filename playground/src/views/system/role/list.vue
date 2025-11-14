@@ -87,7 +87,7 @@ function confirm(content: string, title: string) {
     Modal.confirm({
       content,
       onCancel() {
-        reject(new Error('已取消'));
+        reject(new Error($t('system.role.operationCancelled')));
       },
       onOk() {
         reslove(true);
@@ -105,13 +105,16 @@ function confirm(content: string, title: string) {
  */
 async function onStatusChange(newStatus: number, row: any) {
   const status: Recordable<string> = {
-    0: '禁用',
-    1: '启用',
+    0: $t('common.disabled'),
+    1: $t('common.enabled'),
   };
   try {
     await confirm(
-      `你要将${row.name}的状态切换为 【${status[newStatus.toString()]}】 吗？`,
-      `切换状态`,
+      $t('system.role.switchStatusConfirm', [
+        row.name,
+        status[newStatus.toString()],
+      ]),
+      $t('system.role.switchStatus'),
     );
     await systemStore.updateRole(row.id, { status: newStatus });
     return true;

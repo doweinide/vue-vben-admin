@@ -1,6 +1,10 @@
 {
   "title": "System Management",
   "dept": {
+    "switchStatus": "Switch Status",
+    "switchStatusConfirm": "Do you want to switch {0}'s status to [{1}]?",
+    "operationCancelled": "Cancelled",
+    "addChild": "Add Child",
     "name": "Department",
     "title": "Department Management",
     "deptName": "Department Name",
@@ -11,6 +15,10 @@
     "parentDept": "Parent Department"
   },
   "menu": {
+    "switchStatus": "Switch Status",
+    "switchStatusConfirm": "Do you want to switch {0}'s status to [{1}]?",
+    "operationCancelled": "Cancelled",
+    "addChild": "Add Child",
     "title": "Menu Management",
     "parent": "Parent Menu",
     "menuTitle": "Title",
@@ -57,6 +65,9 @@
     "syncFailed": "Menu sync failed"
   },
   "role": {
+    "switchStatus": "Switch Status",
+    "switchStatusConfirm": "Do you want to switch {0}'s status to [{1}]?",
+    "operationCancelled": "Cancelled",
     "title": "Role Management",
     "list": "Role List",
     "name": "Role",
@@ -70,6 +81,9 @@
     "setPermissions": "Permissions"
   },
   "user": {
+    "switchStatus": "Switch Status",
+    "switchStatusConfirm": "Do you want to switch {0}'s status to [{1}]?",
+    "operationCancelled": "Cancelled",
     "title": "User Management",
     "list": "User List",
     "name": "User",

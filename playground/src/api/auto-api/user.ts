@@ -24,7 +24,7 @@ export const get_users = async (
   const response = await request<get_users_response['data']>({
     url: '/api/users',
     method: 'GET',
-    params,
+    params: params.params,
     ...config,
   });
   return response;

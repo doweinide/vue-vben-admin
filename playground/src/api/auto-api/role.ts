@@ -80,7 +80,7 @@ export const get_roles = async (
   const response = await request<get_roles_response['data']>({
     url: '/api/roles',
     method: 'GET',
-    params,
+    params: params.params,
     ...config,
   });
   return response;
