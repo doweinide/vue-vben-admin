@@ -93,30 +93,34 @@ export class PrismaService implements OnModuleInit {
    * 支持连接池、查询缓存等功能
    */
   private createPrismaClient() {
-    const dbMode = process.env.DB_CONNECTION || 'auto';
-    const databaseUrl = process.env.DATABASE_URL || '';
-    const localUrl =
-      process.env.DATABASE_URL_LOCAL ||
-      'postgresql://postgres:postgres@localhost:5432/vben?schema=public';
+    const mode = (process.env.DB_CONNECTION || '').trim();
+    const remoteUrl = (process.env.DATABASE_URL || '').trim();
+    const localUrl = (process.env.DATABASE_URL || '').trim();
 
-    const useRemote =
-      dbMode === 'remote' ||
-      (dbMode === 'auto' && databaseUrl.startsWith('prisma+'));
+    if (!mode) {
+      throw new Error("DB_CONNECTION is required. Set 'local' or 'remote'.");
+    }
 
-    console.log(
-      `[Prisma] mode=${dbMode} useRemote=${useRemote} url=${
-        useRemote ? databaseUrl : localUrl
-      }`,
-    );
-
-    if (useRemote) {
+    if (mode === 'remote') {
+      if (!remoteUrl) {
+        throw new Error(
+          'DATABASE_URL_REMOTE is required when DB_CONNECTION=remote.',
+        );
+      }
       return new PrismaClientEdge().$extends(withAccelerate());
     }
 
-    process.env.DATABASE_URL = localUrl;
-    process.env.PRISMA_CLIENT_ENGINE_TYPE = 'binary';
-    return new PrismaClientNode({
-      datasources: { db: { url: localUrl } },
-    });
+    if (mode === 'local') {
+      if (!localUrl) {
+        throw new Error(
+          'DATABASE_URL_LOCAL is required when DB_CONNECTION=local.',
+        );
+      }
+      return new PrismaClientNode({ datasources: { db: { url: localUrl } } });
+    }
+
+    throw new Error(
+      "Unsupported DB_CONNECTION value. Use 'local' or 'remote'.",
+    );
   }
 }
