@@ -25,6 +25,10 @@
       "path": "apps/web-next",
     },
     {
+      "name": "@vben/web-tdesign",
+      "path": "apps/web-tdesign",
+    },
+    {
       "name": "@vben/docs",
       "path": "docs",
     },
