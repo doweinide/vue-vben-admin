@@ -8,10 +8,7 @@ const emptyToUndefined = <T extends zRaw.ZodTypeAny>(schema: T) =>
 
 // 增强版 zPro
 export const zPro = Object.assign({}, zRaw, {
-  string: (...args: Parameters<typeof zRaw.string>) =>
-    zRaw
-      .string(...args)
-      .refine((v) => v.trim() !== '', { message: '不能为空' }),
+  string: (...args: Parameters<typeof zRaw.string>) => zRaw.string(...args), // .refine((v) => v.trim() !== '', { message: '不能为空' }),
 
   number: (...args: Parameters<typeof zRaw.number>) =>
     zRaw.coerce.number(...args),

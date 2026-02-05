@@ -82,7 +82,7 @@ export const RoleQuerySchema = createSchema(
       .default(10)
       .describe('每页数量，最大100条'),
     // / 按角色名称筛选
-    name: z.string().optional().describe('按角色名称筛选'),
+    name: z.string().nullable().optional().describe('按角色名称筛选'),
     status: z
       .number()
       .int()

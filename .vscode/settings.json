@@ -238,5 +238,6 @@
     "nolebase",
     "rollup",
     "vitest"
-  ]
+  ],
+  "liveServer.settings.port": 5501
 }
